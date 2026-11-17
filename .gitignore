@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+book-mobile/node_modules/
+
+# Firebase local cache
+.firebase/
+
+# Expo local cache & builds
+book-mobile/.expo/
+book-mobile/dist/
+book-mobile/web-build/
+book-mobile/expo-env.d.ts
+
+# Temporary scripts, screenshots & archives
+scratch/
+BOOK.zip
+BOOK.rar
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+
+# OS & Editor artifacts
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*

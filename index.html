@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#0f5c4b">
+<meta name="description" content="كتاب الرياضيات التفاعلي للصف الخامس: القيمة المنزلية ضمن الملايين ومقارنة الأعداد وترتيبها، مع محطات وأنشطة تدريبية.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='20' fill='%230f5c4b'/%3E%3Cpath d='M16 23h17a7 7 0 0 1 7 4 7 7 0 0 1 7-4h17v34H47a6 6 0 0 0-7 4 6 6 0 0 0-7-4H16V23Z' fill='%23fffef4' stroke='%23fffef4' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M40 27v33' stroke='%23c88d21' stroke-width='4.5' stroke-linecap='round'/%3E%3Crect x='22' y='31' width='11' height='3.5' rx='1.75' fill='%230f5c4b'/%3E%3Crect x='22' y='39' width='8' height='3.5' rx='1.75' fill='%23c88d21'/%3E%3Crect x='47' y='31' width='11' height='3.5' rx='1.75' fill='%230f5c4b'/%3E%3Crect x='47' y='39' width='8' height='3.5' rx='1.75' fill='%237fb3a2'/%3E%3C/svg%3E">
+<title>كتاب الرياضيات · كتاب تفاعلي للصف الخامس</title>
+<link rel="stylesheet" href="styles/fonts.css">
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css?v=20261117z">
+<link rel="stylesheet" href="styles/lesson1.css?v=20261117z">
+<link rel="stylesheet" href="styles/lesson1-mobile.css?v=20261114g">
+<link rel="stylesheet" href="styles/lesson1-runner.css?v=20261117z">
+<link rel="stylesheet" href="styles/lesson2.css?v=20261114g">
+<link rel="stylesheet" href="styles/lesson3.css?v=20261115b">
+<link rel="stylesheet" href="styles/lesson4.css?v=20261117z">
+<link rel="stylesheet" href="styles/lesson5.css?v=20261117a3">
+<link rel="stylesheet" href="styles/concept-anim.css?v=20261117z">
+</head>
+<body data-view="map">
+<a class="skip" href="#main-content">انتقل إلى المحتوى الرئيسي</a>
+<div id="test-mode-banner" class="test-mode-banner" role="status"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="8.5" y1="14" x2="15.5" y2="14"/></svg><span class="test-mode-text">وضع الاختبار مفعّل: جميع الدروس متاحة دون إكمال السابق.</span><button type="button" id="test-mode-toggle">إيقاف وضع الاختبار</button></div>
+<header class="hud-wrap"><section class="hud" aria-label="شريط التنقل والمحطة والتقدم"><a class="brand" id="hud-brand" href="#duolingo-map" aria-label="كتاب الرياضيات: العودة إلى خريطة التعلّم"><span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#0f5c4b"/><path d="M7.5 10.5h7.5a3 3 0 0 1 3 2 3 3 0 0 1 3-2h7.5v15H21a2.8 2.8 0 0 0-3 2 2.8 2.8 0 0 0-3-2H7.5v-15Z" fill="#fffef4"/><path d="M18 12.5v15" stroke="#c88d21" stroke-width="2.2" stroke-linecap="round"/><rect x="10.2" y="14" width="4.8" height="1.8" rx="0.9" fill="#0f5c4b"/><rect x="10.2" y="18" width="3.5" height="1.8" rx="0.9" fill="#c88d21"/><rect x="21" y="14" width="4.8" height="1.8" rx="0.9" fill="#0f5c4b"/><rect x="21" y="18" width="3.5" height="1.8" rx="0.9" fill="#7fb3a2"/></svg></span><span><strong>كتاب الرياضيات</strong><small>الصف الخامس · تعلّم تفاعلي</small></span></a><button type="button" id="back-to-map" class="station-back-btn unified-back-btn" aria-label="العودة إلى خريطة التعلم" title="الخريطة"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></span><span class="back-text">الخريطة</span></button><div class="station-progress-wrap" id="station-topbar" role="region" aria-label="شريط تقدم وإرشاد المحطة الحالية" hidden><div class="station-progress-meta"><span id="station-title-label">المحطة 1</span><span id="station-streak-pill" class="station-streak-pill" role="status" aria-live="polite"></span><small id="station-step-label">1 / 6</small></div><div class="station-bar" role="progressbar" id="station-progress-role" aria-label="مستوى تقدم خطوات المحطة الحالية" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="station-progress-fill"></i></div></div><div class="level"><span aria-hidden="true" id="level-ico"></span><div><small>مستواك الآن</small><strong id="level-name">مبتدئ</strong></div></div><div class="hearts-block"><span id="hearts" class="hud-hearts" role="img" aria-label="3 قلوب"></span><small>كل محاولة تعلّم</small></div><div class="progress-block"><div class="progress-label"><span id="progress-caption">رحلتك · 0 من 12 مهمة</span><span id="hud-streak-pill" class="hud-streak-pill" role="status" aria-live="polite"></span><bdi id="percent">0%</bdi></div><div class="progress" role="progressbar" aria-label="تقدم الكتاب" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress"><div id="progress-fill"></div></div></div><div class="points"><span aria-hidden="true" class="points-icon"><svg viewBox="0 0 24 24" class="svg-ico gold"><polygon points="12,2 14.5,9.5 22,12 14.5,14.5 12,22 9.5,14.5 2,12 9.5,9.5" fill="currentColor"/></svg></span><strong id="points">0</strong><small>نقطة</small></div><span class="hud-badge" id="hud-badge" hidden aria-label="شارة أسطورة الملايين"><svg viewBox="0 0 24 24" class="svg-ico gold"><circle cx="12" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 14L18 22l-6-3-6 3 2.5-8" fill="none" stroke="currentColor" stroke-width="2"/></svg></span><div class="hud-micro-badges" id="hud-micro-badges" role="group" aria-label="شارات الإتقان"></div><button class="icon-btn" id="report-open" type="button" aria-label="تقرير المهارات والشهادة" title="تقرير المهارات والشهادة"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></button><button type="button" class="hud-tool-btn lab-trigger" id="l2-open-lab-btn" aria-label="مختبر مقارنة الأعداد" title="افتح مختبر مقارنة الأعداد في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span class="hud-tool-label">مختبر المقارنة</span></button><button type="button" class="hud-tool-btn lab-trigger" id="l3-open-lab-btn" aria-label="مختبر الجمع والطرح العمودي" title="افتح مختبر الجمع والطرح العمودي في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg><span class="hud-tool-label">مختبر العمليات</span></button><button type="button" class="hud-tool-btn lab-trigger" id="l4-open-lab-btn" aria-label="مختبر الأعداد السالبة" title="افتح مختبر الأعداد السالبة وخط الأعداد في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/></svg><span class="hud-tool-label">مختبر الأعداد</span></button><button type="button" class="hud-tool-btn lab-trigger" id="l5-open-lab-btn" aria-label="مختبر خطة إنشاء جدول" title="افتح مختبر الجداول لحل المسائل في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16M15 4v16"/></svg><span class="hud-tool-label">مختبر الجداول</span></button><button class="icon-btn" id="sound-toggle" type="button" aria-label="كتم الصوت" aria-pressed="false"><span id="sound-toggle-ico"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span></button><button class="icon-btn" id="reset-open" type="button" aria-label="إعادة بدء الكتاب"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button><button class="icon-btn ai-hud-btn" id="ai-tutor-hud-btn" type="button" aria-label="المعلم الذكي Gemini" title="المعلم الذكي Gemini"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z"/></svg></span></button><button class="icon-btn" id="prefs-open" type="button" aria-label="إعدادات العرض: حجم الخط والتباين والحركة" title="إعدادات العرض">Aa</button></section></header>
+<main class="desk" id="main-content">
+ <h1 class="sr-only" id="app-global-heading">كتاب الرياضيات التفاعلي: القيمة المنزلية ضمن الملايين ومقارنة الأعداد - الصف الخامس الابتدائي</h1>
+ <nav class="scene-tabs" aria-label="مشاهد الكتاب"><button type="button" data-scene="0" class="active" aria-pressed="true"><span>الصفحتان <bdi>8 - 9</bdi></span><small>أفهم وأكتشف</small></button><button type="button" data-scene="1" aria-pressed="false" aria-disabled="true"><span id="training-tab-label">الصفحتان <bdi>10 - 11</bdi></span><small>أتدرّب وأحل المسائل</small></button></nav>
+ <nav class="learning-nav" aria-label="إلى أين أذهب؟"><button type="button" id="nav-map-btn" class="active-nav"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></span><span>المسار</span></button><button type="button" data-jump="player-title" id="nav-story-btn"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span>الشرح</span></button><button type="button" data-jump="number-playground" id="nav-play-btn"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span>الملعب</span></button><button type="button" data-jump="action-coach" id="nav-mission-btn" class="go-task"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span>مهمتي</span></button><button type="button" id="infinite-toggle" class="infinite-btn" aria-pressed="false"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span>تحدٍّ متجدد</span></button></nav>
+ <section id="duolingo-map" class="duo-map" aria-label="خريطة مسار التعلّم">
+  <header class="book-brand-bar" aria-label="هوية كتاب الرياضيات">
+   <div class="book-brand-id">
+    <span class="book-brand-mark" aria-hidden="true"><svg viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#0f5c4b"/><path d="M7.5 10.5h7.5a3 3 0 0 1 3 2 3 3 0 0 1 3-2h7.5v15H21a2.8 2.8 0 0 0-3 2 2.8 2.8 0 0 0-3-2H7.5v-15Z" fill="#fffef4"/><path d="M18 12.5v15" stroke="#c88d21" stroke-width="2.2" stroke-linecap="round"/><rect x="10.2" y="14" width="4.8" height="1.8" rx="0.9" fill="#0f5c4b"/><rect x="10.2" y="18" width="3.5" height="1.8" rx="0.9" fill="#c88d21"/><rect x="21" y="14" width="4.8" height="1.8" rx="0.9" fill="#0f5c4b"/><rect x="21" y="18" width="3.5" height="1.8" rx="0.9" fill="#7fb3a2"/></svg></span>
+    <div class="book-brand-copy">
+     <strong class="book-brand-name">كتاب الرياضيات</strong>
+     <small class="book-brand-sub">الصف الخامس · رحلة تعلّم تفاعلية</small>
+    </div>
+   </div>
+   <div class="book-brand-meta">
+    <span class="book-edition-pill">الوحدة <bdi>1</bdi></span>
+   </div>
+  </header>
+  <div class="duo-map-nav" id="duo-map-nav" role="tablist" aria-label="التنقل بين أقسام الكتاب ومسار الدرس">
+   <button type="button" class="duo-map-tab active" id="duo-tab-sections" data-subview="sections" role="tab" aria-selected="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/></svg>
+    <span>الأقسام والدروس <span class="tab-unit-keep">(الوحدة <bdi>1</bdi>)</span></span>
+   </button>
+   <button type="button" class="duo-map-tab" id="duo-tab-lesson1" data-subview="lesson1" role="tab" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><path d="M8.5 16.5c3.5-1 3.5-8 7-9"/></svg>
+    <span>مسار الدرس 1: القيمة المنزلية</span>
+   </button>
+    <button type="button" class="duo-map-tab" id="duo-tab-lesson2" data-subview="lesson2" role="tab" aria-selected="false">
+     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+     <span>مسار الدرس 2: مقارنة الأعداد</span>
+    </button>
+    <button type="button" class="duo-map-tab" id="duo-tab-lesson3" data-subview="lesson3" role="tab" aria-selected="false">
+     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+     <span>مسار الدرس 3: جمع الأعداد وطرحها</span>
+    </button>
+    <button type="button" class="duo-map-tab" id="duo-tab-lesson4" data-subview="lesson4" role="tab" aria-selected="false">
+     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><circle cx="12" cy="12" r="2.2"/><path d="M6 8v8M18 8v8"/></svg>
+     <span>مسار الدرس 4: الأعداد السالبة</span>
+    </button>
+    <button type="button" class="duo-map-tab" id="duo-tab-lesson5" data-subview="lesson5" role="tab" aria-selected="false">
+     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16M15 4v16"/></svg>
+     <span>مسار الدرس 5: أنشئ جدولاً</span>
+    </button>
+  </div>
+  <div id="duo-sections-root" class="duo-sections-root"></div>
+  <div id="duo-lesson-wrap" hidden>
+   <div class="duo-lesson-topbar" id="duo-lesson-topbar" role="region" aria-label="شريط سياق الدرس والتنقل">
+    <button type="button" class="duo-back-sections-btn" id="duo-back-sections" aria-label="العودة إلى قائمة الدروس والأقسام" title="قائمة الدروس">
+     <span class="btn-svg" aria-hidden="true"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+     <span>قائمة الدروس</span>
+    </button>
+    <div class="duo-lesson-topbar-info">
+     <span class="lesson-meta-unit">الوحدة 1 · الصفحات 8 - 11</span>
+     <strong class="lesson-meta-title">الدرس 1: القيمة المنزلية ضمن الملايين</strong>
+    </div>
+    <button type="button" class="duo-open-lab-btn" id="duo-open-lab-btn" hidden aria-label="فتح المختبر التفاعلي للدرس">
+     <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+     <span id="duo-open-lab-label">مختبر الجمع والطرح</span>
+    </button>
+   </div>
+   <div id="stage-overview-banner"></div>
+   <div id="duo-units" class="duo-units"></div>
+  </div>
+  <button type="button" class="duo-jump-current" id="duo-jump-current" hidden aria-label="الانتقال إلى محطتي الحالية"><span class="jump-arrow" aria-hidden="true">↓</span><span>محطتي</span></button>
+  <button type="button" class="primary duo-start-btn duo-float-cta" id="duo-hero-start">▶ تابع: المحطة 1</button>
+ </section>
+ 
+ <section id="step-clarity-bar" class="step-clarity-bar" aria-label="خطوتك الحالية وهدفك" hidden>
+  <div class="scb-top">
+   <div class="scb-pills">
+    <span class="scb-stage-step" id="scb-stage-step">الخطوة 1 من 3 داخل المرحلة الحالية</span>
+    <span class="scb-action-badge" id="scb-action-badge">اضغط البطاقة</span>
+   </div>
+   <div class="scb-tools">
+    <button type="button" class="scb-tool-btn" id="scb-review-slides-btn" hidden>راجع الشرح</button>
+    <button type="button" class="scb-tool-btn" id="scb-opt-review-btn" hidden>أراجع قليلًا</button>
+    <button type="button" class="scb-read-btn" id="scb-read-btn" aria-label="استمع لإرشاد البومة والهدف">استمع للإرشاد</button>
+   </div>
+  </div>
+  <div class="scb-main">
+   <span class="scb-owl" aria-hidden="true" id="scb-owl-ico"><svg viewBox="0 0 32 32" class="svg-ico"><ellipse cx="16" cy="18" rx="12" ry="11" fill="#18795b"/><ellipse cx="12" cy="15" rx="4.5" ry="5" fill="#ffffff"/><ellipse cx="20" cy="15" rx="4.5" ry="5" fill="#ffffff"/><circle cx="12" cy="15" r="2" fill="#102a24"/><circle cx="20" cy="15" r="2" fill="#102a24"/><polygon points="16,18 18,22 14,22" fill="#d99b26"/></svg></span>
+   <div class="scb-texts">
+    <strong class="scb-goal" id="scb-goal">هدف هذه الخطوة</strong>
+    <p class="scb-owl-msg" id="scb-owl-msg">إرشاد البومة</p>
+   </div>
+  </div>
+  <div class="scb-bypass-banner" id="scb-bypass-banner" hidden>
+   <span id="scb-bypass-text">المراجعة القصيرة: تم تجاوزها بناءً على التهيئة</span>
+   <button type="button" id="scb-bypass-review-now">أراجع قليلًا الآن</button>
+  </div>
+ </section>
+ <div class="book" id="book">
+  <article class="paper explanation-page" aria-labelledby="lesson-title">
+   <div class="pattern" aria-hidden="true"><span>×　3　÷　7　+　8　=　5　×　2　+　9</span></div>
+   <div class="lesson-heading"><span class="lesson-circle" id="lesson-circle">1</span><div><span class="eyebrow" id="right-eyebrow">الدرس الأول</span><h2 id="lesson-title">القيمة المنزلية<br>ضمن الملايين</h2></div></div>
+   <div class="idea"><span class="idea-bulb" aria-hidden="true"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5z"/></svg></span><div><h2>فكرة الدرس</h2><p>أحدّد قيمة كل رقم، وأقرأ الأعداد ضمن الملايين، وأكتبها بصيغ مختلفة.</p></div></div>
+   <div class="terms"><strong>المصطلحات</strong><span>دورة الملايين</span><span>القيمة المنزلية</span></div>
+   <section class="player" id="story-player-section" aria-labelledby="player-title"><div id="s1-slides-mode-bar" class="s1-slides-mode-bar" hidden><strong>تستعرض الآن شرائح الشرح الست (مراجعة حرة)</strong><div class="s1-slides-mode-actions"><button type="button" class="secondary" id="s1-back-interactive-btn">العودة إلى التهيئة وجسر الملايين</button><button type="button" class="primary" id="s1-skip-to-play-btn">انتقل إلى ملعب الأعداد ←</button></div></div><div id="station1-experience" class="station1-experience" hidden></div><div class="section-label"><span class="section-icon" aria-hidden="true">▶</span><h2 id="player-title">الدرس بالحركة</h2><small>خطوة واحدة في كل مرة</small></div><div class="chapter-tabs" id="chapter-tabs" role="group" aria-label="أقسام الشرح"></div><div class="animation-stage" id="animation-stage"></div><div class="caption" id="story-caption" aria-live="polite" aria-atomic="true"></div><div class="player-controls"><button id="story-prev" type="button" aria-label="خطوة الشرح السابقة">→ <span>السابق</span></button><button class="play-btn" id="story-play" type="button" aria-pressed="false">▶ تشغيل تلقائي</button><button id="story-speak" type="button" aria-label="نطق العدد المعروض بالدورات"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span><span>نطق العدد</span></button><button id="story-read" type="button" aria-label="اقرأ نص الشرح بصوت عالٍ"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></span><span>اقرأ الشرح</span></button><button id="story-next" type="button" aria-label="خطوة الشرح التالية"><span>التالي</span> ←</button></div><div class="story-position"><div id="story-dots" class="story-dots" aria-label="خطوات القسم"></div><small id="story-count"></small></div>
+    <div id="story-gate-bar" class="gate-bar locked">
+     <div class="gate-info"><strong id="story-gate-title">أكمل مشاهدة شرائح هذه المحطة</strong><small id="story-gate-sub">تصفّح جميع الشرائح بالترتيب لفتح المحطة التالية.</small></div>
+     <div class="gate-actions"><button type="button" id="story-gate-btn" class="primary">الشريحة التالية ←</button></div>
+    </div>
+   </section>
+   <section class="playground" id="number-playground" aria-labelledby="playground-title">
+    <div class="section-label"><span aria-hidden="true"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v7"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.83L7 15"/></svg></span><h2 id="playground-title">ملعب الأعداد</h2><small>المس الرقم… وشاهده يتغيّر أمامك فورًا!</small></div>
+    <p id="touch-instructions" class="touch-instructions">اسحب الرقم لأعلى ليزيد، ولأسفل لينقص، أو اضغط ▲▼. شاشة العدد في الأعلى تتحرك مع إصبعك مباشرة.</p>
+    <div class="quest-box" id="playground-quest" role="region" aria-label="تحدي ملعب الأعداد">
+     <div class="quest-main-row">
+      <div class="quest-info">
+       <span class="quest-badge sr-only" id="quest-badge">تحدي الملعب 1 من 5</span>
+       <div id="quest-prompt" class="quest-prompt"></div>
+      </div>
+      <div class="quest-owl-mascot" aria-hidden="true"><svg viewBox="0 0 110 110" class="quest-owl-svg" width="48" height="48" aria-hidden="true"><ellipse cx="44" cy="98" rx="8" ry="4" fill="#c88d21"/><ellipse cx="66" cy="98" rx="8" ry="4" fill="#c88d21"/><path d="M22 66 C10 64, 8 48, 22 42 Z" fill="#0a4236"/><path d="M88 66 C100 64, 102 48, 88 42 Z" fill="#0a4236"/><path d="M22 42 C22 18, 88 18, 88 42 L86 86 C86 96, 24 96, 24 86 Z" fill="#18795b"/><path d="M22 36 L16 20 L34 28 Z" fill="#0f5c4b"/><path d="M88 36 L94 20 L76 28 Z" fill="#0f5c4b"/><ellipse cx="55" cy="70" rx="26" ry="20" fill="#7bc49d" opacity="0.55"/><ellipse cx="42" cy="46" rx="12.5" ry="13.5" fill="#fbf3db"/><ellipse cx="68" cy="46" rx="12.5" ry="13.5" fill="#fbf3db"/><ellipse cx="42" cy="46" rx="10" ry="11" fill="#ffffff"/><ellipse cx="68" cy="46" rx="10" ry="11" fill="#ffffff"/><ellipse cx="43" cy="46" rx="5.5" ry="6.5" fill="#102a24"/><ellipse cx="67" cy="46" rx="5.5" ry="6.5" fill="#102a24"/><circle cx="45" cy="43" r="2.2" fill="#ffffff"/><circle cx="69" cy="43" r="2.2" fill="#ffffff"/><polygon points="50,51 60,51 55,60" fill="#d99b26"/><path d="M28 84 Q55 88 55 77 Q55 88 82 84 L80 67 Q55 72 55 61 Q55 72 30 67 Z" fill="#c88d21"/><path d="M30 82 Q55 86 55 75 Q55 86 80 82 L78 68 Q55 73 55 63 Q55 73 32 68 Z" fill="#fffdf5"/><line x1="55" y1="63" x2="55" y2="76" stroke="#946616" stroke-width="1.5"/><path d="M36 73 Q44 75 51 74 M36 77 Q44 79 51 78" stroke="#d8b566" stroke-width="1.2" stroke-linecap="round"/><path d="M59 74 Q66 75 74 73 M59 78 Q66 79 74 77" stroke="#d8b566" stroke-width="1.2" stroke-linecap="round"/><ellipse cx="28" cy="75" rx="5" ry="7" fill="#0f5c4b" transform="rotate(20 28 75)"/><ellipse cx="82" cy="75" rx="5" ry="7" fill="#0f5c4b" transform="rotate(-20 82 75)"/></svg></div>
+     </div>
+     <div class="quest-actions">
+      <button type="button" id="quest-read" aria-label="اقرأ التحدي بصوت عالٍ"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span></button>
+      <button type="button" id="quest-hint-btn" aria-label="مساعدة في تحدي الملعب"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5z"/></svg></span><span>ساعدني</span></button>
+      <button type="button" id="quest-next" aria-label="التحدي التالي في الملعب"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"/></svg></span><span>تحدٍّ آخر</span></button>
+     </div>
+    </div>
+    <div class="play-monitor" id="play-monitor">
+     <div class="play-readout"><span>العدد الآن</span><div id="play-live-strip" class="live-digit-strip" aria-hidden="true"></div><output id="play-number" class="num sr-only">2,051,841</output></div>
+     <div class="touch-results">
+      <div class="tr-card tr-selected">
+       <div class="tr-header">
+        <span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>
+        <span>الرقم المختار وبيته</span>
+       </div>
+       <strong id="play-selected"></strong>
+      </div>
+      <div class="tr-card tr-value">
+       <div class="tr-header">
+        <span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></span>
+        <span>قيمته المنزلية</span>
+       </div>
+       <output class="num" id="play-value"></output>
+      </div>
+     </div>
+     <p class="live-caption" id="play-status" role="status" aria-live="polite" aria-atomic="true"></p>
+     <div class="play-analysis"><strong>التحليل المباشر:</strong><div id="play-expanded" class="expanded-preview"></div></div><div class="play-color-coded-wrap" id="play-color-coded-wrap"></div>
+    </div>
+    <div id="play-digits" class="play-digits"></div>
+    <div class="play-actions"><button type="button" id="play-speak"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span><span>اقرأ بالدورات</span></button><button type="button" id="play-random"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="16" cy="8" r="1" fill="currentColor"/><circle cx="8" cy="16" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span><span>عدد عشوائي</span></button><button type="button" id="play-zero">تصفير</button><button type="button" id="play-example">مثال من الكتاب</button></div>
+    <p class="touch-scroll-note">لتمرير الصفحة، حرّك إصبعك خارج خانات الأرقام.</p>
+    <div id="playground-gate-bar" class="gate-bar locked">
+     <div class="gate-info"><strong id="playground-gate-title">أنجز 3 تحديات في الملعب لفتح التمارين</strong><small id="playground-gate-sub">غيّر الأرقام لتطابق التحدي الأصفر أعلاه.</small></div>
+     <div class="gate-actions"><button type="button" id="playground-gate-btn" class="primary" disabled>أكمل تحديات الملعب أولًا</button></div>
+    </div>
+   </section>
+   <aside class="magic" id="magic-card"><span aria-hidden="true"><svg viewBox="0 0 24 24" class="svg-ico gold"><polygon points="12,2 14.5,9.5 22,12 14.5,14.5 12,22 9.5,14.5 2,12 9.5,9.5" fill="currentColor"/></svg></span><div><h2>السر السحري</h2><p>عدّ الأرقام على يمين الرقم، ثم أَلحِق به هذا العدد من الأصفار.</p><div class="magic-example"><bdi>5 → 50,000</bdi><span>أربعة أرقام على يمينه ← أربعة أصفار</span></div><small>أي: الرقم × قيمة المنزلة. والصفر قيمته صفر دائمًا.</small></div></aside>
+   <details class="experiments" id="experiments"><summary><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="8.5" y1="14" x2="15.5" y2="14"/></svg></span>تجارب إضافية <span>افتح وجرّب بنفسك</span></summary><p>اضغط أي رقم؛ تعرف منزِلته وقيمته مباشرة في الشريط العلوي.</p><p id="experiment-answer" class="experiment-answer" aria-live="polite">أي رقم تريد أن تستكشف؟</p><div id="experiment-cards"></div></details>
+   <div class="source-tag" id="source-tag">أمثلة الدرس من الصفحتين 8 و9 · السكان في نهاية 2019 والمسافات تقريبية.</div>
+   <footer class="paper-footer"><span>أفهم، ثم أجرّب</span><bdi id="right-page-number">8</bdi><i aria-hidden="true"></i></footer>
+  </article>
+  <article class="paper missions-page" aria-labelledby="mission-title"><div class="work-heading"><div><span class="eyebrow" id="task-section-name">أجرّب وأتعلّم</span><h2 id="left-title">ست محطات للاكتشاف</h2><p>كل مهمة مكتملة تمنحك 20 نقطة، وتُحفظ تلقائيًا.</p></div><div class="owl-seal" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><ellipse cx="16" cy="18" rx="12" ry="11" fill="#18795b"/><ellipse cx="12" cy="15" rx="4.5" ry="5" fill="#ffffff"/><ellipse cx="20" cy="15" rx="4.5" ry="5" fill="#ffffff"/><circle cx="12" cy="15" r="2" fill="#102a24"/><circle cx="20" cy="15" r="2" fill="#102a24"/><polygon points="16,18 18,22 14,22" fill="#d99b26"/></svg></div></div><div id="infinite-bar" class="infinite-bar" hidden><div class="infinite-top"><strong><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.178 8c5.096 0 5.096 8 0 8-2.673 0-4.577-2.617-6.178-5.322-1.6 2.705-3.505 5.322-6.178 5.322-5.096 0-5.096-8 0-8 2.673 0 4.577 2.617 6.178 5.322 1.6-2.705 3.505-5.322 6.178-5.322z"/></svg></span>وضع التحدي المتجدد اللانهائي</strong><span class="infinite-stats" id="infinite-stats">سلسلة: 0 · حُلّت: 0</span></div><div class="infinite-skills" id="infinite-skills" role="group" aria-label="مهارات التحدي المتجدد"><button type="button" data-skill="all" class="active">ذكي شامل</button><button type="button" data-skill="place">المنزلة والقيمة</button><button type="button" data-skill="verbal">الصيغة اللفظية</button><button type="button" data-skill="standard">خزنة القياسية</button><button type="button" data-skill="expanded">التحليلية والخطأ</button></div><div class="infinite-actions"><button type="button" id="infinite-new" class="primary"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></span><span>مسألة جديدة</span></button><button type="button" id="infinite-exit" class="secondary"><span>العودة لمسار التعلّم</span></button></div></div><nav class="mission-steps" id="mission-steps" aria-label="مراحل المهام الست"></nav><div class="mission-meta"><span id="mission-index">المهمة 1 من 12 · الدرس</span><span id="mission-source"></span></div><h2 class="mission-title" id="mission-title"></h2><p class="mission-goal" id="mission-goal"></p><button type="button" class="read-btn" id="read-task" aria-label="اقرأ لي المطلوب في هذه المهمة"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span><span>اقرأ لي المطلوب</span></button><aside class="action-coach" id="action-coach" role="status" aria-live="polite"><span class="coach-owl-ico" aria-hidden="true"><svg viewBox="0 0 32 32" class="svg-ico"><ellipse cx="16" cy="18" rx="12" ry="11" fill="#18795b"/><ellipse cx="12" cy="15" rx="4.5" ry="5" fill="#ffffff"/><ellipse cx="20" cy="15" rx="4.5" ry="5" fill="#ffffff"/><circle cx="12" cy="15" r="2" fill="#102a24"/><circle cx="20" cy="15" r="2" fill="#102a24"/><polygon points="16,18 18,22 14,22" fill="#d99b26"/></svg></span><div><strong id="coach-title">ابدأ من هنا</strong><p id="coach-text"></p><button type="button" class="ai-coach-trigger" id="ask-ai-coach-btn"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z"/></svg></span><span>اسأل المعلم الذكي عن هذه الخطوة</span></button></div></aside><div id="heart-recharge-box" class="heart-recharge-box" hidden><div><strong>نفدت قلوبك الثلاثة!</strong><p>لا تقلق، تقدمك ونقاطك محفوظة! اشحن قلوبك الكاملة بإنجاز تحدٍّ سريع واحد في «ملعب الأعداد».</p></div><button type="button" id="start-heart-recharge"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v7"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.83L7 15"/></svg></span><span>اشحن قلوبك في الملعب</span></button></div><div class="sub-progress" id="sub-progress"></div><div class="mission-card-wrap"><div class="mission-card" id="mission-content"></div><div id="in-place-recharge-overlay" class="in-place-recharge-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="recharge-overlay-title"></div></div><div class="hint-area"><div class="hint-header"><button id="hint-button" type="button" aria-expanded="false" aria-controls="hint-text"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5z"/></svg></span><span>تلميح متدرّج (1/3)</span></button><span class="hint-dots" id="hint-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><p id="hint-text" hidden></p></div><div id="feedback" class="feedback" role="status" aria-live="polite"></div><div class="mission-nav"><button id="task-prev" class="secondary" type="button"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></span><span>خريطة المسار</span></button><button id="task-next" class="primary" type="button" disabled>أنجز المهمة أولًا ←</button></div><div class="task-note"><span class="points-icon"><svg viewBox="0 0 24 24" class="svg-ico gold"><polygon points="12,2 14.5,9.5 22,12 14.5,14.5 12,22 9.5,14.5 2,12 9.5,9.5" fill="currentColor"/></svg></span><p>ليس المطلوب أن تُسرع. جرّب، واطلب تلميحًا متدرجًا، وستصل.</p></div><footer class="paper-footer"><span id="left-footer">أتعلّم بالمحاولة</span><bdi id="left-page-number">9</bdi><i aria-hidden="true"></i></footer></article>
+  <div class="turning-sheet" id="turning-sheet" aria-hidden="true"><span>كتاب الرياضيات</span></div>
+ </div>
+
+<section id="exit-ticket-view" class="exit-ticket-view" aria-label="بطاقة خروج الدرس · تقييم الإتقان المستقل" hidden>
+ <header class="et-header">
+  <button type="button" class="et-back-btn" id="et-back-btn" aria-label="العودة لخريطة المسار">
+   <span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></span>
+   <span>العودة للمسار</span>
+  </button>
+  <div class="et-header-center">
+   <h2 class="et-main-title">بطاقة خروج الدرس</h2>
+   <span class="et-sub-title">تقييم مستقل وشامل لقياس إتقان أهداف الدرس الخمسة</span>
+  </div>
+  <div class="et-progress-pill" id="et-progress-pill">
+   <span id="et-step-counter">السؤال 1 من 5</span>
+  </div>
+ </header>
+ <div class="et-progress-bar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="20" aria-label="تقدم بطاقة الخروج">
+  <div class="et-progress-bar-fill" id="et-progress-bar-fill" style="width:20%"></div>
+ </div>
+ <div class="et-card" id="et-card">
+  <div class="et-card-head" id="et-card-head"></div>
+  <div class="et-card-body" id="et-card-body"></div>
+  <footer class="et-card-footer">
+   <button type="button" class="et-nav-btn prev" id="et-prev-btn" disabled>
+    <span>→ السؤال السابق</span>
+   </button>
+   <button type="button" class="et-nav-btn next" id="et-next-btn">
+    <span>السؤال التالي ←</span>
+   </button>
+   <button type="button" class="et-submit-btn" id="et-submit-btn" hidden>
+    <span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+    <span>تسليم بطاقة الخروج واعتماد النتيجة</span>
+   </button>
+  </footer>
+ </div>
+ <div class="et-report-sheet" id="et-report-sheet" hidden></div>
+</section>
+
+<!-- LESSON 2 MAIN INTERACTIVE VIEW -->
+<section id="lesson2-view" class="lesson2-view" hidden aria-label="أنشطة ومحطات الدرس الثاني: مقارنة الأعداد وترتيبها">
+  <!-- Station Active Card -->
+  <article class="l2-card" id="l2-activity-card">
+    <div class="l2-card-head">
+      <div class="l2-card-titles">
+        <h2 id="l2-station-title">1. رحلة أعداد الحجاج</h2>
+        <p class="l2-card-desc" id="l2-station-desc">استكشف بيانات حجاج بيت الله الحرام، وقارن بين الأعوام لاكتشاف العام الأكبر.</p>
+      </div>
+      <button type="button" class="l2-sound-btn l2-card-speak-btn" id="l2-speak-btn" aria-label="استمع للشرح والقراءة الصوتية" title="استمع لقراءة النشاط">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <span>استمع</span>
+      </button>
+    </div>
+
+    <!-- Dynamic Activity Container -->
+    <div class="l2-act-box" id="l2-interactive-container">
+      <!-- Injected per station -->
+    </div>
+
+    <!-- Formative Feedback Area -->
+    <div class="l2-feedback" id="l2-feedback-box" role="status" aria-live="polite">
+      <svg viewBox="0 0 24 24" class="svg-ico" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <div id="l2-feedback-text">فكّر وجرّب بنفسك أولاً. المساعدة التدريجية ستظهر إذا احتجت إليها.</div>
+    </div>
+
+    <!-- Progressive Hint System (Tier 1 -> Tier 2 -> Tier 3 -> Solution) -->
+    <div class="l2-hints-wrap" id="l2-hints-wrap">
+      <div class="l2-hint-pills" id="l2-hint-pills">
+        <button type="button" class="l2-hint-btn" id="l2-hint-btn-1" hidden>تلميح 1: تذكّر القاعدة</button>
+        <button type="button" class="l2-hint-btn" id="l2-hint-btn-2" hidden>تلميح 2: وجّه انتباهك</button>
+        <button type="button" class="l2-hint-btn" id="l2-hint-btn-3" hidden>تلميح 3: خطوة جزئية</button>
+        <button type="button" class="l2-hint-btn" id="l2-hint-btn-solution" hidden>عرض الشرح الكامل</button>
+      </div>
+      <div class="l2-hint-box" id="l2-hint-box" hidden></div>
+    </div>
+
+    <!-- Actions & Nav Footer -->
+    <div class="l2-actions" id="l2-actions-footer">
+      <button type="button" class="l2-action-btn secondary" id="l2-action-prev" hidden>السابق</button>
+      <button type="button" class="l2-action-btn primary" id="l2-action-check">تحقق من إجابتي</button>
+      <button type="button" class="l2-action-btn primary" id="l2-action-next" hidden>الانتقال للمحطة التالية ←</button>
+      <button type="button" class="l2-action-btn secondary" id="l2-action-retry" hidden>تدريب جديد مماثل</button>
+    </div>
+  </article>
+</section>
+
+ <section id="l1-shell" class="l1-shell" hidden aria-label="شاشة التعلّم التفاعلي">
+  <header class="l1-topbar">
+   <div class="l1-topbar-inner">
+    <button type="button" class="l1-exit-btn" id="l1-exit-btn" aria-label="العودة إلى الخريطة وحفظ التقدم">
+     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+     <span class="l1-exit-text">الخريطة</span>
+    </button>
+    <div class="l1-progress-wrap">
+     <div class="l1-progress-meta">
+      <span class="l1-station-pill" id="l1-station-pill">الدرس الأول</span>
+      <span class="l1-step-counter" id="l1-step-counter">١ / ١</span>
+     </div>
+     <div class="l1-progress-track" id="l1-progress-track" role="progressbar" aria-label="تقدّم المحطة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="l1-progress-fill" id="l1-progress-fill"></div>
+     </div>
+    </div>
+    <button type="button" class="l1-audio-btn" id="l2-shell-lab-btn" hidden aria-label="فتح مختبر مقارنة الأعداد" title="مختبر المقارنة">
+     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+     <span class="l1-audio-text">المختبر</span>
+    </button>
+    <button type="button" class="l1-audio-btn l3-shell-lab-btn" id="l3-shell-lab-btn" hidden aria-label="فتح مختبر الجمع والطرح" title="مختبر الجمع والطرح">
+     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+     <span class="l1-audio-text">المختبر</span>
+    </button>
+    <button type="button" class="l1-audio-btn l4-shell-lab-btn" id="l4-shell-lab-btn" hidden aria-label="فتح مختبر الأعداد السالبة" title="مختبر الأعداد السالبة">
+     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><circle cx="12" cy="12" r="2.2"/><path d="M6 8v8M18 8v8"/></svg>
+     <span class="l1-audio-text">المختبر</span>
+    </button>
+    <button type="button" class="l1-audio-btn l5-shell-lab-btn" id="l5-shell-lab-btn" hidden aria-label="فتح مختبر الجداول التفاعلي" title="مختبر الجداول">
+     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16M15 4v16"/></svg>
+     <span class="l1-audio-text">المختبر</span>
+    </button>
+    <button type="button" class="l1-audio-btn" id="l1-audio-btn" hidden aria-label="الاستماع إلى النشاط">
+     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+     <span class="l1-audio-text">استمع</span>
+    </button>
+    <div class="l1-hearts-pill" id="l1-hearts-pill" role="img" hidden aria-label="القلوب المتبقية"></div>
+   </div>
+  </header>
+  <div class="l1-stage" id="l1-stage">
+   <div class="l1-stage-inner">
+    <div class="l1-context-row">
+     <span class="l1-context-pill" id="l1-context-pill">خطوة تعليمية</span>
+     <span class="l1-sub-tag" id="l1-sub-tag"></span>
+    </div>
+    <h1 class="l1-prompt" id="l1-prompt"></h1>
+    <div class="l1-body" id="l1-body"></div>
+   </div>
+  </div>
+  <footer class="l1-footer" id="l1-footer">
+   <div class="l1-footer-inner">
+    <div class="l1-feedback" id="l1-feedback" hidden role="status" aria-live="polite">
+     <span class="l1-feedback-ico" id="l1-feedback-ico" aria-hidden="true"></span>
+     <span id="l1-feedback-text"></span>
+    </div>
+    <button type="button" class="l1-primary-btn" id="l1-primary-btn" disabled>تحقّق</button>
+   </div>
+  </footer>
+ </section>
+
+ <section id="l1-result-view" class="l1-result-view" hidden aria-label="نتيجة المحطة">
+  <div class="l1-result-card" id="l1-result-card"></div>
+ </section>
+
+ <footer class="desk-footer"><span>صُمّم للتعلّم بالمحاولة والاكتشاف · يُحفظ التقدم تلقائيًا</span><span>12 مهمة <i>·</i> تحدٍّ متجدد <i>·</i> شهادة وتقرير مهارات</span></footer>
+</main>
+<aside class="guide" id="guide" aria-live="polite" aria-atomic="true"><span class="guide-owl-ico" aria-hidden="true"><svg viewBox="0 0 32 32" class="svg-ico"><ellipse cx="16" cy="18" rx="12" ry="11" fill="#18795b"/><ellipse cx="12" cy="15" rx="4.5" ry="5" fill="#ffffff"/><ellipse cx="20" cy="15" rx="4.5" ry="5" fill="#ffffff"/><circle cx="12" cy="15" r="2" fill="#102a24"/><circle cx="20" cy="15" r="2" fill="#102a24"/><polygon points="16,18 18,22 14,22" fill="#d99b26"/></svg></span><p id="guide-message"></p><button id="guide-read" type="button" aria-label="اقرأ الرسالة بصوت عالٍ"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button><button id="guide-close" type="button" aria-label="إغلاق رسالة المرشد"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></aside><div class="confetti" id="confetti" aria-hidden="true"></div>
+<nav class="bottom-tabs" id="bottom-tabs" aria-label="التنقل الرئيسي"><button type="button" class="bt on" data-tab="map" aria-current="page"><span class="bt-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></span><span>المسار</span></button><button type="button" class="bt" data-tab="challenge"><span class="bt-ico" aria-hidden="true" id="bt-challenge-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span>التحدي</span></button><button type="button" class="bt" data-tab="report"><span class="bt-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span><span>تقدمي</span></button><button type="button" class="bt" data-tab="ai"><span class="bt-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z"/></svg></span><span>المعلم الذكي</span></button><button type="button" class="bt" data-tab="more"><span class="bt-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span>المزيد</span></button></nav>
+<dialog id="station-sheet" class="modal station-sheet" aria-labelledby="st-sheet-title">
+ <div class="st-sheet-header">
+  <div class="st-sheet-pill-group">
+   <span class="st-sheet-badge" id="st-sheet-badge">المحطة 1 من 20</span>
+   <span class="st-sheet-status" id="st-sheet-status">متاحة</span>
+  </div>
+  <button type="button" class="st-sheet-close" id="st-sheet-close" aria-label="إغلاق ورقة المعلومات"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+ </div>
+ <div class="st-sheet-main">
+  <div class="st-sheet-ico-wrap"><span class="st-sheet-ico" id="st-sheet-ico" aria-hidden="true"></span></div>
+  <div class="st-sheet-headings">
+   <h2 id="st-sheet-title">فكرة الدرس وأستكشف</h2>
+   <p class="st-sheet-tag" id="st-sheet-type">شرح تفاعلي · 6 شرائح</p>
+  </div>
+ </div>
+ <div class="st-sheet-body">
+  <div class="st-sheet-stars-card" id="st-sheet-stars-card" hidden>
+   <div class="st-stars-header">
+    <span class="st-stars-title">نجوم الإتقان:</span>
+    <div class="st-stars-cluster" id="st-sheet-stars-icons"></div>
+   </div>
+   <p class="st-stars-hint" id="st-sheet-stars-hint"></p>
+  </div>
+  <div class="st-sheet-section">
+   <strong class="st-sheet-label">ما ستتعلّمه وتكتشفه:</strong>
+   <p id="st-sheet-desc">شاهد شرائح الشرح الـ 6 بالترتيب لفتح ملعب الأعداد واكتشاف القيمة المنزلية.</p>
+  </div>
+  <div class="st-sheet-meta-grid">
+   <div class="st-meta-card"><small>المكافأة</small><strong id="st-sheet-points">25 نقطة</strong></div>
+   <div class="st-meta-card"><small>المدة المقدرة</small><strong id="st-sheet-duration">3 دقائق</strong></div>
+   <div class="st-meta-card"><small>النوع</small><strong id="st-sheet-kind">شرح تفاعلي</strong></div>
+  </div>
+  <div class="st-sheet-lock-info" id="st-sheet-lock-info" hidden>
+   <span class="lock-icon-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+   <div>
+    <strong>شرط فتح المحطة:</strong>
+    <p id="st-sheet-lock-text">أكمل المحطة السابقة أولاً لإتاحة هذا التحدي بالترتيب.</p>
+   </div>
+  </div>
+ </div>
+ <div class="st-sheet-actions">
+  <button type="button" class="primary st-sheet-action-btn" id="st-sheet-start-btn">ابدأ المحطة الآن</button>
+  <button type="button" class="secondary" id="st-sheet-dismiss-btn">إغلاق</button>
+ </div>
+</dialog>
+<dialog id="more-sheet" class="modal more-sheet" aria-labelledby="more-title"><h2 id="more-title">المزيد</h2><button type="button" class="more-item" id="more-sound"><span class="more-ico" aria-hidden="true"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span><div><strong>الصوت</strong><small id="more-sound-state">مفعّل</small></div></button><button type="button" class="more-item" id="more-prefs"><span class="more-ico" aria-hidden="true">Aa</span><div><strong>إعدادات العرض</strong><small>حجم الخط، التباين، تقليل الحركة</small></div></button><button type="button" class="more-item danger" id="more-reset"><span class="more-ico" aria-hidden="true"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></span><div><strong>إعادة بدء الكتاب</strong><small>يمسح تقدمك المحفوظ</small></div></button><div class="modal-actions"><button type="button" class="primary" id="more-close">إغلاق</button></div></dialog>
+<dialog id="prefs-dialog" class="modal" aria-labelledby="prefs-title"><h2 id="prefs-title">إعدادات العرض</h2><div class="prefs-row"><span>حجم الخط</span><div><button type="button" id="zoom-out" aria-label="تصغير الخط">أ−</button><bdi id="zoom-val">100%</bdi><button type="button" id="zoom-in" aria-label="تكبير الخط">أ+</button></div></div><div class="prefs-row"><span>تباين عالٍ</span><button type="button" id="hc-toggle" aria-pressed="false">متوقف</button></div><div class="prefs-row"><span>تقليل الحركة</span><button type="button" id="calm-toggle" aria-pressed="false">متوقف</button></div><div class="modal-actions"><button type="button" id="prefs-reset" class="secondary">إعادة الضبط</button><button type="button" id="prefs-close" class="primary" autofocus>تم</button></div></dialog>
+<dialog id="finish-dialog" class="modal report-modal" aria-labelledby="finish-title"><div class="report-header"><div class="trophy" aria-hidden="true"><svg viewBox="0 0 24 24" class="trophy-svg" fill="none" stroke="#c88d21" stroke-width="2"><path d="M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2"/><path d="M18 9h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"/><path d="M4 3h16v6a8 8 0 0 1-16 0V3z"/><path d="M12 17v4"/><path d="M8 21h8"/></svg></div><span class="eyebrow" id="finish-eyebrow">تقرير الإنجاز وتشخيص المهارات</span><h2 id="finish-title">أنت أسطورة الملايين!</h2><p id="finish-subtitle">أكملت الدرس والتدريب، واستحققت شارة الإنجاز.</p><div id="finish-exit-ticket-banner"></div></div><div class="finish-stats four-cols"><div><strong id="final-score">0</strong><small>مجموع النقاط</small></div><div><strong id="final-done">0/12</strong><small>مهام الكتاب</small></div><div><strong id="final-infinite">0</strong><small>تحديات متجددة</small></div><div><strong id="final-errors">0</strong><small>محاولات تعلّمت منها</small></div></div><section class="skill-diag" aria-label="تشخيص المهارات الأربع"><h3><span>بطاقة تشخيص المهارات</span><button type="button" id="train-weakest" class="skill-train-btn"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>درّبني على المهارة الأضعف</span></button></h3><div id="skill-rows"></div></section><section class="cert-section" aria-label="شهادة التفوق"><div class="cert-input-row"><label for="student-name-input"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></span>اسم بطل/بطلة الأعداد:</label><input id="student-name-input" type="text" maxlength="40" placeholder="اكتب اسمك ليظهر في الشهادة..."></div><div class="cert-card" id="cert-card"><span>المملكة الأردنية الهاشمية · الرياضيات · الصف الخامس</span><h3>شهادة أسطورة الملايين</h3><p>تُمنح هذه الشهادة بفخر إلى</p><div class="cert-name" id="cert-student-name">بطل/بطلة رحلة الملايين</div><p id="cert-achievement">لإتقانه قراءة الأعداد ضمن الملايين وتحديد قيمها المنزلية وصيغها القياسية واللفظية والتحليلية.</p><div class="cert-meta"><span id="cert-score-badge">النقاط: 0</span><span id="cert-level-badge">المستوى: مبتدئ</span><span id="cert-date"></span></div></div></section>
+<section class="report-badges-section" aria-label="شارات المحطات الإتقانية">
+ <div class="report-badges-header"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico gold"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5L18 22l-6-3-6 3 2.5-8.5"/></svg></span><span>شارات المحطات الإتقانية</span></div>
+ <div class="report-badges-grid" id="report-badges-grid"></div>
+</section>
+<div class="modal-actions"><button id="print-cert" type="button" class="secondary"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></span><span>طباعة الشهادة</span></button><button id="finish-infinite" type="button" class="secondary"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.178 8c5.096 0 5.096 8 0 8-2.673 0-4.577-2.617-6.178-5.322-1.6 2.705-3.505 5.322-6.178 5.322-5.096 0-5.096-8 0-8 2.673 0 4.577 2.617 6.178 5.322 1.6-2.705 3.505-5.322 6.178-5.322z"/></svg></span><span>تحدٍّ متجدد</span></button><button id="finish-review" type="button" class="primary">أكمل التصفح</button><button id="finish-replay" type="button" class="secondary">العب من جديد</button></div></dialog>
+<dialog id="badge-unlock-modal" class="modal badge-modal" aria-labelledby="badge-modal-title">
+ <div class="badge-modal-body">
+  <div class="badge-modal-icon-wrap" id="badge-modal-icon"></div>
+  <span class="badge-modal-tag" id="badge-modal-tag">وسام إتقان جديد</span>
+  <h2 id="badge-modal-title" class="badge-modal-title"></h2>
+  <p id="badge-modal-desc" class="badge-modal-desc"></p>
+  <div class="badge-modal-meta" id="badge-modal-meta"></div>
+  <div class="modal-actions">
+   <button type="button" class="primary" id="badge-modal-close">متابعة الرحلة</button>
+  </div>
+ </div>
+</dialog>
+<dialog id="reset-dialog" class="modal" aria-labelledby="reset-title"><h2 id="reset-title">نبدأ رحلة جديدة؟</h2><p>ستعود المهام والنقاط والقلوب إلى بدايتها.</p><div class="modal-actions"><button type="button" id="reset-confirm" class="primary">نعم، من البداية</button><button type="button" id="reset-cancel" class="secondary" autofocus>أكمل رحلتي</button></div></dialog>
+<button type="button" id="ai-floating-fab" class="ai-floating-fab" aria-label="افتح المعلم الذكي Gemini">
+ <span class="fab-ico" aria-hidden="true"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z"/></svg></span>
+ <span>المعلم الذكي Gemini</span>
+</button>
+<dialog id="ai-tutor-sheet" class="modal ai-tutor-sheet" aria-labelledby="ai-tutor-title">
+ <div class="ai-sheet-top">
+  <div class="ai-brand-row">
+   <span class="ai-avatar-badge" aria-hidden="true"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z"/></svg></span>
+   <div class="ai-brand-text">
+    <h2 id="ai-tutor-title">المعلم الذكي · Gemini</h2>
+    <small id="ai-status-sub">يرشدك خطوة بخطوة ويخصص تدريباتك</small>
+   </div>
+  </div>
+  <div class="ai-top-actions">
+   <button type="button" class="ai-icon-btn" id="ai-settings-toggle" aria-label="إعدادات مفتاح Gemini والنموذج" aria-expanded="false"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+   <button type="button" class="ai-icon-btn" id="ai-clear-chat" aria-label="بدء محادثة جديدة"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+   <button type="button" class="ai-icon-btn" id="ai-tutor-close" aria-label="إغلاق نافذة المعلم الذكي"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+ </div>
+ <div class="ai-context-pill" id="ai-context-pill">
+  <span id="ai-ctx-station">المحطة الحالية: فكرة الدرس</span>
+  <strong id="ai-ctx-skill">التركيز: القيمة المنزلية</strong>
+  <span id="ai-ctx-reward" class="ai-ctx-reward">مكافآت اليوم: 0 من 3</span>
+ </div>
+ <div class="ai-settings-box" id="ai-settings-panel" hidden>
+  <label for="ai-api-key-input">مفتاح Gemini API (يُحفظ محلياً في متصفحك فقط):</label>
+  <div class="ai-key-row">
+   <input id="ai-api-key-input" type="password" placeholder="AIzaSy..." autocomplete="off" spellcheck="false">
+   <button type="button" id="ai-save-key-btn">حفظ المفتاح</button>
+  </div>
+  <label>اختر نموذج Gemini (Interactions API):</label>
+  <div class="ai-model-group" role="group" aria-label="اختيار نموذج الذكاء الاصطناعي">
+   <button type="button" class="ai-model-btn" data-ai-model="gemini-3.5-flash-lite" aria-pressed="true">3.5 Flash-Lite (فائق السرعة)</button>
+   <button type="button" class="ai-model-btn" data-ai-model="gemini-3.8-flash" aria-pressed="false">Gemini 3.8 Flash (متوازن)</button>
+   <button type="button" class="ai-model-btn" data-ai-model="gemini-4-argon" aria-pressed="false">Gemini 4 Argon (عميق)</button>
+  </div>
+  <label style="margin-top:8px">محرك القراءة الصوتية الأساسي (الأولوية لـ Gemini TTS):</label>
+  <div class="ai-model-group" role="group" aria-label="اختيار محرك الصوت">
+   <button type="button" class="ai-model-btn ai-tts-mode-btn" data-tts-mode="gemini-3.8-flash-tts" aria-pressed="true">صوت Gemini 3.8 TTS (الأساسي)</button>
+   <button type="button" class="ai-model-btn ai-tts-mode-btn" data-tts-mode="gemini-3.8-flash-lite-tts" aria-pressed="false">Gemini TTS Lite (سريع)</button>
+   <button type="button" class="ai-model-btn ai-tts-mode-btn" data-tts-mode="browser" aria-pressed="false">صوت المتصفح فقط</button>
+  </div>
+  <label style="margin-top:7px">نبرة صوت المعلم في Gemini TTS:</label>
+  <div class="ai-model-group" role="group" aria-label="اختيار نبرة الصوت">
+   <button type="button" class="ai-model-btn ai-tts-voice-btn" data-tts-voice="Kore" aria-pressed="true">Kore (واضح ودافئ)</button>
+   <button type="button" class="ai-model-btn ai-tts-voice-btn" data-tts-voice="Aoede" aria-pressed="false">Aoede (هادئ ومعبّر)</button>
+   <button type="button" class="ai-model-btn ai-tts-voice-btn" data-tts-voice="Puck" aria-pressed="false">Puck (حيوي ومشجّع)</button>
+  </div>
+  <p class="ai-settings-hint" id="ai-key-status">الخيار الأول للصوت مضبوط على Gemini 3.8 TTS لجميع قراءات الأعداد والشرح والمهام.</p>
+ </div>
+ <div class="ai-quick-chips" id="ai-quick-chips" aria-label="إرشادات ذكية سريعة">
+  <button type="button" class="ai-chip" data-ai-prompt="explain"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span>اشرح لي المحطة الحالية ببساطة</span></button>
+  <button type="button" class="ai-chip" data-ai-prompt="hint"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5z"/></svg></span><span>تلميح ذكي للمسألة دون كشف الحل</span></button>
+  <button type="button" class="ai-chip" data-ai-prompt="diagnose"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span><span>حلّل أدائي وخصّص لي خطة تقوية</span></button>
+  <button type="button" class="ai-chip" data-ai-prompt="custom-quiz"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>ولّد لي مسألة مخصصة لمهارتي</span></button>
+ </div>
+ <div class="ai-chat-log" id="ai-chat-log" role="log" aria-live="polite"></div>
+ <form class="ai-chat-form" id="ai-chat-form" novalidate>
+  <input id="ai-chat-input" type="text" maxlength="280" placeholder="اسأل المعلم الذكي عن أي عدد أو منزلة..." aria-label="رسالتك إلى المعلم الذكي">
+  <button type="submit" id="ai-send-btn"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span><span>إرسال</span></button>
+ </form>
+</dialog>
+
+<!-- COMPARISON LAB STANDALONE MODAL (مختبر مقارنة الأعداد) -->
+<dialog id="cmp-lab-dialog" class="cmp-lab-dialog" aria-label="مختبر مقارنة الأعداد التفاعلي">
+  <div class="cmp-lab-header">
+    <h3>
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span>مختبر مقارنة الأعداد التفاعلي</span>
+    </h3>
+    <button type="button" class="cmp-lab-close" id="cmp-lab-close-btn" aria-label="إغلاق مختبر المقارنة"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="cmp-lab-body">
+    <!-- Presets from Textbook -->
+    <div class="cmp-lab-presets" aria-label="أمثلة جاهزة من الكتاب">
+      <span style="font-size:0.88rem; font-weight:700; align-self:center; color:#64748b;">أمثلة الكتاب:</span>
+      <button type="button" class="cmp-lab-preset-btn" data-a="3456210" data-b="3759120">مثال 1 (ص 12)</button>
+      <button type="button" class="cmp-lab-preset-btn" data-a="56109789" data-b="5678089">منازل مختلفة (ص 13)</button>
+      <button type="button" class="cmp-lab-preset-btn" data-a="671984675" data-b="671984380">اختلاف في المئات (ص 14)</button>
+      <button type="button" class="cmp-lab-preset-btn" data-a="27039810" data-b="27039810">عددان متساويان (=)</button>
+    </div>
+
+    <!-- Inputs Row -->
+    <div style="display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; margin:14px 0;">
+      <div style="text-align:center;">
+        <label for="cmp-input-a" style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:4px; color:#475569;">العدد الأول:</label>
+        <input type="text" id="cmp-input-a" value="3456210" maxlength="9" style="font-size:1.25rem; font-weight:800; text-align:center; padding:8px 14px; border:2px solid #cbd5e1; border-radius:12px; width:170px; direction:ltr;">
+      </div>
+      <div style="font-size:2rem; font-weight:800; color:var(--action-info); padding-top:20px;" id="cmp-lab-symbol-display">؟</div>
+      <div style="text-align:center;">
+        <label for="cmp-input-b" style="display:block; font-size:0.85rem; font-weight:700; margin-bottom:4px; color:#475569;">العدد الثاني:</label>
+        <input type="text" id="cmp-input-b" value="3759120" maxlength="9" style="font-size:1.25rem; font-weight:800; text-align:center; padding:8px 14px; border:2px solid #cbd5e1; border-radius:12px; width:170px; direction:ltr;">
+      </div>
+      <div style="align-self:flex-end; padding-bottom:2px;">
+        <button type="button" class="l2-tool-btn primary" id="cmp-lab-load-btn">تحديث اللوحة</button>
+      </div>
+    </div>
+
+    <!-- Comparison Place Value Board -->
+    <div class="cmp-board-wrap" id="cmp-lab-board-wrap" tabindex="0" role="region" aria-label="لوحة مقارنة المنازل التفاعلية">
+      <!-- Rendered dynamically -->
+    </div>
+
+    <!-- Step Banner & Explanation -->
+    <div class="cmp-lab-banner" id="cmp-lab-banner">
+      اضغط «ابدأ الفحص التفاعلي» لتتبع فحص المنازل خطوة بخطوة من اليسار مع الصوت والتظليل.
+    </div>
+
+    <!-- Stepper Controls -->
+    <div style="display:flex; justify-content:center; gap:10px; margin-top:18px; flex-wrap:wrap;">
+      <button type="button" class="l2-tool-btn primary" id="cmp-lab-play-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span>ابدأ الفحص التفاعلي</span>
+      </button>
+      <button type="button" class="l2-tool-btn" id="cmp-lab-step-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+        <span>المنزلة التالية</span>
+      </button>
+      <button type="button" class="l2-tool-btn" id="cmp-lab-reset-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        <span>إعادة الفحص</span>
+      </button>
+      <button type="button" class="l2-tool-btn" id="cmp-lab-voice-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <span>استمع للشرح</span>
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="cmp-lab-dialog" id="ops-lab-dialog" aria-labelledby="ops-lab-title">
+  <div class="cmp-lab-head">
+    <h2 id="ops-lab-title">مختبر الجمع والطرح العمودي</h2>
+    <button type="button" class="l2-tool-btn" id="ops-lab-close" aria-label="إغلاق المختبر">إغلاق</button>
+  </div>
+  <div class="cmp-lab-body">
+    <div class="cmp-lab-presets" role="group" aria-label="أمثلة جاهزة من الكتاب">
+      <span class="ops-lab-presets-lbl">أمثلة الكتاب:</span>
+      <button type="button" class="cmp-lab-preset-btn ops-lab-preset-btn" data-a="3421664" data-b="1897632" data-op="add">مثال 1 (ص 16)</button>
+      <button type="button" class="cmp-lab-preset-btn ops-lab-preset-btn" data-a="35421664" data-b="17897632" data-op="add">أتحقق 1 (ص 17)</button>
+      <button type="button" class="cmp-lab-preset-btn ops-lab-preset-btn" data-a="6938179" data-b="3165478" data-op="sub">مثال 2 (ص 17)</button>
+      <button type="button" class="cmp-lab-preset-btn ops-lab-preset-btn" data-a="303631" data-b="214711" data-op="sub">طائرات الشحن (ص 19)</button>
+    </div>
+
+    <div class="ops-lab-inputs">
+      <div class="ops-lab-num-row">
+        <div class="ops-lab-field">
+          <label for="ops-input-a">العدد الأول</label>
+          <input type="text" id="ops-input-a" class="ops-lab-input" value="3421664" maxlength="8" inputmode="numeric">
+        </div>
+        <div class="ops-lab-field">
+          <label for="ops-input-b">العدد الثاني</label>
+          <input type="text" id="ops-input-b" class="ops-lab-input" value="1897632" maxlength="8" inputmode="numeric">
+        </div>
+        <div class="ops-lab-controls-pair">
+          <div class="ops-lab-op-toggle" role="group" aria-label="اختيار العملية الحسابية">
+            <button type="button" class="ops-lab-op-btn is-active" id="ops-op-add" aria-pressed="true" aria-label="عملية الجمع">+</button>
+            <button type="button" class="ops-lab-op-btn" id="ops-op-sub" aria-pressed="false" aria-label="عملية الطرح">−</button>
+          </div>
+          <button type="button" class="l2-tool-btn primary ops-lab-refresh-btn" id="ops-lab-load-btn">تحديث</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cmp-board-wrap" id="ops-lab-board-wrap" tabindex="0" role="region" aria-label="لوحة الجمع والطرح العمودي التفاعلية"></div>
+
+    <div class="cmp-lab-banner" id="ops-lab-banner" aria-live="polite">
+      اختر «تشغيل الخطوات» أو «المنزلة التالية» لمتابعة الحل من اليمين إلى اليسار.
+    </div>
+
+    <div class="ops-lab-actions">
+      <button type="button" class="l2-tool-btn primary" id="ops-lab-play-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span>تشغيل الخطوات</span>
+      </button>
+      <button type="button" class="l2-tool-btn" id="ops-lab-step-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+        <span>المنزلة التالية</span>
+      </button>
+      <button type="button" class="l2-tool-btn" id="ops-lab-reset-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        <span>إعادة</span>
+      </button>
+      <button type="button" class="l2-tool-btn" id="ops-lab-voice-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <span>استمع للشرح</span>
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="neg-lab-dialog" id="neg-lab-dialog" aria-labelledby="neg-lab-title">
+  <div class="neg-lab-head">
+    <h2 id="neg-lab-title">مختبر الأعداد السالبة وخط الأعداد</h2>
+    <button type="button" class="neg-lab-close" id="neg-lab-close" aria-label="إغلاق المختبر">إغلاق</button>
+  </div>
+  <div class="neg-lab-body">
+    <div class="neg-lab-modes" role="group" aria-label="أوضاع العرض التفاعلي">
+      <button type="button" class="neg-lab-mode-btn is-active" data-mode="line" aria-pressed="true">خط الأعداد</button>
+      <button type="button" class="neg-lab-mode-btn" data-mode="thermo" aria-pressed="false">ميزان الحرارة</button>
+      <button type="button" class="neg-lab-mode-btn" data-mode="altitude" aria-pressed="false">الارتفاع والعمق</button>
+    </div>
+
+    <div class="neg-lab-presets" role="group" aria-label="أمثلة سريعة من الكتاب">
+      <button type="button" class="neg-lab-preset-btn" data-preset="shubak">الشوبك <bdi dir="ltr">-3°C</bdi></button>
+      <button type="button" class="neg-lab-preset-btn" data-preset="fish">السمكة <bdi dir="ltr">-20m</bdi></button>
+      <button type="button" class="neg-lab-preset-btn" data-preset="plane">الطائرة <bdi dir="ltr">+40m</bdi></button>
+      <button type="button" class="neg-lab-preset-btn" data-preset="rotana">روتانا <bdi dir="ltr">-7</bdi></button>
+      <button type="button" class="neg-lab-preset-btn" data-preset="tafilah">الطفيلة <bdi dir="ltr">-5°C</bdi></button>
+      <button type="button" class="neg-lab-preset-btn" data-preset="nevin">تحدي نيفين <bdi dir="ltr">-5°C</bdi></button>
+    </div>
+
+    <div class="neg-lab-slider-wrap">
+      <div class="neg-lab-val-row">
+        <span>القيمة المختارة:</span>
+        <span class="l4-signed-badge is-neg" id="neg-lab-val-badge"><bdi dir="ltr">-3</bdi></span>
+      </div>
+      <input type="range" class="neg-lab-slider" id="neg-lab-slider" min="-10" max="10" step="1" value="-3" aria-label="تغيير القيمة على المقياس">
+      <div class="neg-lab-stepper-row">
+        <button type="button" class="l4-step-btn is-neg" data-lab-delta="-5"><bdi dir="ltr">-5</bdi></button>
+        <button type="button" class="l4-step-btn is-neg" data-lab-delta="-1"><bdi dir="ltr">-1</bdi></button>
+        <button type="button" class="l4-step-btn" data-lab-delta="zero"><bdi dir="ltr">0</bdi></button>
+        <button type="button" class="l4-step-btn is-primary" data-lab-delta="1"><bdi dir="ltr">+1</bdi></button>
+        <button type="button" class="l4-step-btn is-primary" data-lab-delta="5"><bdi dir="ltr">+5</bdi></button>
+        <button type="button" class="l4-step-btn" data-lab-delta="opp">اعكس الإشارة</button>
+      </div>
+    </div>
+
+    <div id="neg-lab-stage"></div>
+    <div class="neg-lab-summary" id="neg-lab-summary" aria-live="polite"></div>
+
+    <div class="neg-lab-footer">
+      <button type="button" class="secondary" id="neg-lab-speak">استمع للشرح</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="table-lab-dialog" id="table-lab-dialog" aria-labelledby="table-lab-title">
+  <div class="table-lab-head">
+    <h2 id="table-lab-title">مختبر إنشاء الجداول لحل المسائل</h2>
+    <button type="button" class="table-lab-close" id="table-lab-close" aria-label="إغلاق مختبر الجداول">إغلاق</button>
+  </div>
+  <div class="table-lab-body">
+    <div class="table-lab-presets" role="group" aria-label="مسائل الدرس الخامس">
+      <button type="button" class="table-lab-preset-btn is-active" data-preset="marbles" aria-pressed="true">كرات مهند</button>
+      <button type="button" class="table-lab-preset-btn" data-preset="flowers" aria-pressed="false">زهور لمياء</button>
+      <button type="button" class="table-lab-preset-btn" data-preset="outfits" aria-pressed="false">ملابس مازن</button>
+      <button type="button" class="table-lab-preset-btn" data-preset="coffee" aria-pressed="false">آلة القهوة</button>
+      <button type="button" class="table-lab-preset-btn" data-preset="rope" aria-pressed="false">القفز بالحبل</button>
+    </div>
+    <div id="table-lab-stage"></div>
+    <div class="table-lab-summary" id="table-lab-summary" aria-live="polite"></div>
+    <div class="table-lab-controls">
+      <button type="button" class="table-lab-ctrl-btn" id="table-lab-prev">عمود سابق</button>
+      <button type="button" class="table-lab-ctrl-btn is-primary" id="table-lab-next">خطوة تالية</button>
+      <button type="button" class="table-lab-ctrl-btn" id="table-lab-all">كل الجدول</button>
+      <button type="button" class="table-lab-ctrl-btn" id="table-lab-speak">استمع</button>
+    </div>
+  </div>
+</dialog>
+
+<script defer src="js/core/utils.js?v=20261114g"></script>
+<script defer src="js/core/state.js?v=20261116a"></script>
+<script defer src="js/core/audio-feedback.js?v=20261114g"></script>
+<script defer src="js/lesson1/badges-recharge.js?v=20261114g"></script>
+<script defer src="js/lesson1/engine.js?v=20261116a"></script>
+<script defer src="js/lesson1/story-and-playground.js?v=20261116a"></script>
+<script defer src="js/lesson1/exit-ticket.js?v=20261114g"></script>
+<script defer src="js/lesson1/map-and-nav.js?v=20261117z"></script>
+<script defer src="js/features/concept-anim.js?v=20261117z"></script>
+<script defer src="js/lesson1/runner.js?v=20261117a3"></script>
+<script defer src="js/lesson2/state-and-map.js?v=20261114g"></script>
+<script defer src="js/lesson2/stations.js?v=20261117z"></script>
+<script defer src="js/lesson2/compare-lab.js?v=20261114g"></script>
+<script defer src="js/lesson3/state-and-map.js?v=20261114g"></script>
+<script defer src="js/lesson3/stations.js?v=20261117z"></script>
+<script defer src="js/lesson3/add-sub-lab.js?v=20261115b"></script>
+<script defer src="js/lesson4/state-and-map.js?v=20261115a"></script>
+<script defer src="js/lesson4/stations.js?v=20261117z"></script>
+<script defer src="js/lesson4/neg-line-lab.js?v=20261117x"></script>
+<script defer src="js/lesson5/state-and-map.js?v=20261116a"></script>
+<script defer src="js/lesson5/stations.js?v=20261117a3"></script>
+<script defer src="js/lesson5/table-lab.js?v=20261116b"></script>
+<script defer src="js/main.js?v=20261116a"></script>
+<script defer src="js/features/display-prefs.js?v=20261116a"></script>
+<script defer src="js/features/bottom-tabs.js"></script>
+<script defer src="js/features/ai-tutor.js?v=20261116a"></script>
+</body>
+</html>

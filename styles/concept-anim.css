@@ -1,0 +1,158 @@
+/* Shared Non-Spoiling Concept Animation Widget (Mobile-First, Token-Only CSS) */
+
+:root {
+  --ca-card-bg: #fffef9;
+  --ca-stage-bg: #f6f8f1;
+  --ca-stage-border: #d5dfd0;
+  --ca-grid-line: #e4eadc;
+  --ca-teal-soft: #e6f2ef;
+  --ca-teal-border: #86b9ab;
+  --ca-gold-soft: #fdf4df;
+  --ca-gold-border: #d9a74a;
+  --ca-blue-soft: #e8f2fb;
+  --ca-blue-border: #78a9d6;
+  --ca-neg-soft: #fbecec;
+  --ca-neg-border: #dc8d92;
+  --ca-pos-soft: #e9f2f9;
+  --ca-pos-border: #7da8cf;
+  --ca-ocean-wash: #dff0f6;
+  --ca-sky-wash: #eef6fb;
+  --ca-earth-line: #8f6b24;
+  --ca-stage-h: 96px;
+  --ca-replay-min: 44px;
+  --ca-radius-box: 12px;
+  --ca-radius-pill: 999px;
+  --ca-dur-play: 650ms;
+  --ca-font-num: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.ca-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-1-5) var(--space-2);
+  margin: var(--space-1) 0 var(--space-1-5);
+  border-radius: var(--ca-radius-box);
+  border: var(--border-mid) solid var(--ca-stage-border);
+  background: var(--ca-card-bg);
+}
+
+.ca-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1-5);
+  min-height: var(--ca-replay-min);
+}
+
+.ca-caption {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--body);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  color: var(--ink-dark);
+  line-height: 1.35;
+}
+
+.ca-replay-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  flex: 0 0 auto;
+  min-width: var(--ca-replay-min);
+  min-height: var(--ca-replay-min);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--ca-radius-pill);
+  border: var(--border-mid) solid var(--border-muted);
+  background: var(--surface-cream-soft);
+  color: var(--brand-primary);
+  font-family: var(--body);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  cursor: pointer;
+  transition: background var(--l1-dur-fast) ease, transform var(--l1-dur-fast) ease;
+}
+
+.ca-replay-btn:hover {
+  background: var(--ca-teal-soft);
+  border-color: var(--ca-teal-border);
+}
+
+.ca-replay-btn:active {
+  transform: scale(0.97);
+}
+
+.ca-replay-btn svg {
+  width: var(--space-4);
+  height: var(--space-4);
+  flex: none;
+}
+
+.ca-stage {
+  position: relative;
+  width: 100%;
+  min-height: var(--ca-stage-h);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--ca-grid-line);
+  background: var(--ca-stage-bg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ca-svg {
+  width: 100%;
+  height: var(--ca-stage-h);
+  display: block;
+}
+
+.ca-num-txt {
+  font-family: var(--ca-font-num);
+  font-weight: 800;
+}
+
+.ca-ar-txt {
+  font-family: var(--body);
+  font-weight: 800;
+}
+
+.ca-talk-stage {
+  margin-block: var(--space-0-5);
+}
+
+/* Smooth animated classes driven by replay tick & CSS vars */
+.ca-pulse-soft {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: caSoftPulse var(--ca-dur-play) ease-out 1;
+}
+
+.ca-fade-in {
+  animation: caFadeSlide var(--ca-dur-play) ease-out both;
+}
+
+@keyframes caSoftPulse {
+  0% { transform: scale(0.92); opacity: 0.55; }
+  60% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes caFadeSlide {
+  0% { opacity: 0; transform: translateY(var(--space-1)); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ca-pulse-soft,
+  .ca-fade-in {
+    animation: none !important;
+  }
+}
+
+html.calm .ca-pulse-soft,
+html.calm .ca-fade-in {
+  animation: none !important;
+}

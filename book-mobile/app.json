@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "رحلة الملايين",
+    "slug": "rihlat-almalayeen",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "extra": {
+      "supportsRTL": true
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "jo.edu.math.millions"
+    },
+    "android": {
+      "package": "jo.edu.math.millions",
+      "adaptiveIcon": {
+        "backgroundColor": "#0f5346",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
