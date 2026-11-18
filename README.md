@@ -2,6 +2,9 @@
 
 منصة تعليمية تفاعلية عربية (RTL) مصممة لتدريس منهاج الرياضيات للصف الخامس الأساسي عبر محطات تفاعلية، مختبرات بصرية، نظام نقاط وقلوب (Gamification)، ومعلم ذكي اختياري (Gemini AI).
 
+**المعاينة المباشرة (GitHub Pages):** https://omarabotrad97.github.io/interactive-math-book/  
+*(يتحدث الموقع تلقائياً عبر GitHub Actions عند كل `push` على فرع `main`)*
+
 ---
 
 ## محتويات المستودع (Monorepo)
