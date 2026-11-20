@@ -1446,10 +1446,16 @@ function evaluateLocalJustification(rawInput,targetDigit=9){
  return{status:'unclear',feedback:'وضّح إجابتك أكثر: اذكر اسم المنزلة التي يقع فيها الرقم 9 في كلا العددين.'};
 }
 async function evaluateSemanticWithGemini(prompt, systemInstruction){
+ if (typeof window.isAiBackendAvailable === 'function' && !window.isAiBackendAvailable()) {
+  return null;
+ }
  try {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 8000);
-  const resp = await fetch('/api/ai/evaluate-text', {
+  const apiUrl = typeof window.resolveAiApiUrl === 'function'
+   ? window.resolveAiApiUrl('/api/ai/evaluate-text')
+   : '/api/ai/evaluate-text';
+  const resp = await fetch(apiUrl, {
    method: 'POST',
    headers: { 'Content-Type': 'application/json' },
    signal: controller.signal,
@@ -1466,12 +1472,18 @@ async function evaluateSemanticWithGemini(prompt, systemInstruction){
 
 async function evaluateAudioWithGemini(audioBlob, targetVal, mode = 'reading'){
  if (!audioBlob) return null;
+ if (typeof window.isAiBackendAvailable === 'function' && !window.isAiBackendAvailable()) {
+  return null;
+ }
  try {
   const base64Data = await blobToBase64(audioBlob);
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10000);
   const expectedWords = mode === 'reading' && typeof words === 'function' ? words(targetVal) : '';
-  const resp = await fetch('/api/ai/evaluate-audio', {
+  const apiUrl = typeof window.resolveAiApiUrl === 'function'
+   ? window.resolveAiApiUrl('/api/ai/evaluate-audio')
+   : '/api/ai/evaluate-audio';
+  const resp = await fetch(apiUrl, {
    method: 'POST',
    headers: { 'Content-Type': 'application/json' },
    signal: controller.signal,

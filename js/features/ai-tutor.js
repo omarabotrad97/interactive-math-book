@@ -23,11 +23,67 @@
     expanded: 'الصيغة التحليلية واكتشاف الخطأ'
   };
 
+  function isLocalhostHost(hostname) {
+    const h = String(hostname || '').trim().toLowerCase();
+    return h === 'localhost' || h === '127.0.0.1' || h === '[::1]';
+  }
+
+  function isStaticHostingEnv() {
+    const proto = String(window.location.protocol || '').toLowerCase();
+    if (proto === 'file:') return true;
+    const host = String(window.location.hostname || '').trim().toLowerCase();
+    return host.endsWith('.github.io') || host.endsWith('.pages.dev') || host.endsWith('.netlify.app');
+  }
+
+  function normalizeAiApiBase(raw) {
+    const trimmed = String(raw || '').trim();
+    if (!trimmed) return '';
+    try {
+      const parsed = new URL(trimmed);
+      const proto = parsed.protocol.toLowerCase();
+      if (proto !== 'https:' && !(proto === 'http:' && isLocalhostHost(parsed.hostname))) {
+        return '';
+      }
+      return parsed.origin + parsed.pathname.replace(/\/+$/, '');
+    } catch {
+      return '';
+    }
+  }
+
+  function detectConfiguredApiBase() {
+    const fromGlobal = normalizeAiApiBase(window.__AI_API_BASE__);
+    if (fromGlobal) return fromGlobal;
+    const metaEl = document.querySelector('meta[name="ai-api-base"]');
+    const fromMeta = normalizeAiApiBase(metaEl ? metaEl.getAttribute('content') : '');
+    if (fromMeta) return fromMeta;
+    return '';
+  }
+
+  const configuredApiBase = detectConfiguredApiBase();
+  const initialStaticHostMode = isStaticHostingEnv() && !configuredApiBase;
+
+  function resolveAiApiUrl(apiPath) {
+    const p = String(apiPath || '').startsWith('/') ? String(apiPath) : '/' + String(apiPath || '');
+    return configuredApiBase ? configuredApiBase + p : p;
+  }
+
+  function resolveLiveWsUrl() {
+    if (configuredApiBase) {
+      const parsed = new URL(configuredApiBase);
+      const wsProto = parsed.protocol === 'https:' ? 'wss:' : 'ws:';
+      return wsProto + '//' + parsed.host + parsed.pathname.replace(/\/+$/, '') + '/ws/live';
+    }
+    const wsProto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    return wsProto + '//' + window.location.host + '/ws/live';
+  }
+
   let selectedModel = 'gemini-3.1-flash-lite';
   let selectedTtsMode = 'gemini-3.8-flash-lite-tts';
   let selectedTtsVoice = 'Kore';
-  let serverConfigured = true;
-  let healthChecked = false;
+  let backendAvailable = !initialStaticHostMode;
+  let staticTutorMode = initialStaticHostMode;
+  let serverConfigured = !initialStaticHostMode;
+  let healthChecked = initialStaticHostMode;
   let isBusy = false;
   let currentGeminiAudio = null;
   let ttsRequestToken = 0;
@@ -35,6 +91,9 @@
   let quizVariantCounter = 0;
   const chatHistory = [];
   const geminiAudioCache = new Map();
+
+  window.resolveAiApiUrl = resolveAiApiUrl;
+  window.isAiBackendAvailable = () => backendAvailable && serverConfigured && !staticTutorMode;
 
   try {
     const savedModel = localStorage.getItem(AI_MODEL_STORAGE);
@@ -46,15 +105,47 @@
   } catch {}
 
   async function checkServerHealth() {
+    if (initialStaticHostMode) {
+      backendAvailable = false;
+      staticTutorMode = true;
+      serverConfigured = false;
+      healthChecked = true;
+      updateContextUI();
+      return;
+    }
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
     try {
-      const res = await fetch('/api/ai/health');
-      if (res.ok) {
+      const res = await fetch(resolveAiApiUrl('/api/ai/health'), {
+        headers: { Accept: 'application/json' },
+        signal: controller.signal
+      });
+      clearTimeout(timer);
+      const contentType = (res.headers.get('content-type') || '').toLowerCase();
+      if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
+        backendAvailable = true;
+        staticTutorMode = false;
         serverConfigured = Boolean(data && data.configured);
         healthChecked = true;
         updateContextUI();
+        return;
       }
-    } catch {}
+      // 404 or non-JSON HTML response indicates static hosting without backend API
+      backendAvailable = false;
+      staticTutorMode = true;
+      serverConfigured = false;
+      healthChecked = true;
+      updateContextUI();
+    } catch {
+      clearTimeout(timer);
+      backendAvailable = false;
+      staticTutorMode = true;
+      serverConfigured = false;
+      healthChecked = true;
+      updateContextUI();
+    }
   }
 
   let activeSpeakBtn = null;
@@ -156,7 +247,7 @@
     const cacheKey = ttsModel + ':' + selectedTtsVoice + ':' + text;
     if (geminiAudioCache.has(cacheKey)) return geminiAudioCache.get(cacheKey);
 
-    const res = await fetch('/api/ai/tts', {
+    const res = await fetch(resolveAiApiUrl('/api/ai/tts'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -191,7 +282,7 @@
       setSpeakBtnState(triggerBtn, 'loading');
     }
 
-    if (selectedTtsMode !== 'browser' && serverConfigured) {
+    if (selectedTtsMode !== 'browser' && backendAvailable && serverConfigured && !staticTutorMode) {
       try {
         const audioDataUri = await synthesizeWithServerTTS(clean);
         if (myToken !== ttsRequestToken) return;
@@ -651,7 +742,11 @@
       btn.setAttribute('aria-pressed', String(btn.dataset.ttsVoice === selectedTtsVoice));
     });
     if (keyStatus) {
-      if (!serverConfigured && healthChecked) {
+      if (staticTutorMode && healthChecked) {
+        keyStatus.hidden = false;
+        keyStatus.textContent =
+          'المعلم الذكي التفاعلي مفعّل مباشرة على هذه الصفحة (الشرح الخطوة بخطوة، الرسوم البصرية، الاختبارات، والقراءة الصوتية).';
+      } else if (!serverConfigured && healthChecked) {
         keyStatus.hidden = false;
         keyStatus.textContent = 'يعمل الشرح المنهجي المدمج حالياً عند عدم توفر اتصال مباشر بالخادم.';
       } else {
@@ -659,6 +754,127 @@
         keyStatus.textContent = '';
       }
     }
+  }
+
+  function buildComputedMathReply(userText, ctx) {
+    const qNorm = normArDigits(String(userText || '').trim());
+    const qNums = extractNumbersFromStr(qNorm);
+    const wantsRead = /اقرأ|قراءة|لفظية|بالكلمات/.test(qNorm);
+    const wantsExpanded = /تحليلية|تحليلي/.test(qNorm);
+    const wantsPlace = /منزلة|قيمة منزلية|دورة|أصفار|كم صفر/.test(qNorm);
+    const wantsCompare = /قارن|مقارنة|أكبر|أصغر|أيهما|ترتيب|[><=]/.test(qNorm);
+    const wantsOps = /جمع|طرح|استلاف|نستلف|ناتج|احسب|كم يساوي|\d[\d,]*\s*[+−-]\s*\d[\d,]*/.test(qNorm);
+    const wantsNeg = /سالب|تحت الصفر|فوق الصفر|معاكس|خط الأعداد|درجة حرارة|عمق|سطح البحر/.test(qNorm) || qNums.some(n => n < 0 && n >= -50);
+    const wantsTable = /جدول|نمط|يدخر|يدّخر|أسابيع|أسبوع|باقة|وردات/.test(qNorm);
+
+    if (wantsCompare && (qNums.filter(n => n >= 10).length >= 2 || ctx.lesson === 2)) {
+      const spec = buildClientVisualSpec(qNorm, ctx, 'comparison');
+      const d = spec.comparison;
+      if (d) {
+        const decCol = d.columns[d.decisiveIndexFromLeft];
+        if (!d.sameLength) {
+          return (
+            'لنقارن بين ' + d.formattedA + ' و ' + d.formattedB + ' خطوة بخطوة:\n' +
+            '1. نعدّ منازل كل عدد أولاً: العدد ' + d.formattedA + ' مكوّن من ' + d.lenA + ' منازل، والعدد ' + d.formattedB + ' مكوّن من ' + d.lenB + ' منازل.\n' +
+            '2. العدد ذو المنازل الأكثر هو الأكبر مباشرة.\n' +
+            '3. إذن النتيجة هي: ' + d.formattedA + ' ' + d.symbol + ' ' + d.formattedB + '.'
+          );
+        }
+        if (d.symbol === '=') {
+          return (
+            'لنقارن بين ' + d.formattedA + ' و ' + d.formattedB + ':\n' +
+            '1. كلا العددين مكوّن من ' + d.lenA + ' منازل.\n' +
+            '2. جميع الأرقام من أقصى اليسار إلى اليمين متطابقة تماماً.\n' +
+            '3. إذن العددان متساويان: ' + d.formattedA + ' = ' + d.formattedB + '.'
+          );
+        }
+        return (
+          'لنقارن بين ' + d.formattedA + ' و ' + d.formattedB + ' خطوة بخطوة:\n' +
+          '1. نعدّ المنازل أولاً: كلاهما مكوّن من ' + d.lenA + ' منازل.\n' +
+          '2. نقارن من أقصى اليسار حتى نجد أول اختلاف في منزلة «' + decCol.placeName + '»: الرقم ' + decCol.digitA + ' مقابل ' + decCol.digitB + '.\n' +
+          '3. إذن النتيجة الدقيقة هي: ' + d.formattedA + ' ' + d.symbol + ' ' + d.formattedB + '.'
+        );
+      }
+    }
+
+    if (wantsOps && (qNums.filter(n => n >= 10).length >= 2 || /\d[\d,]*\s*[+−-]\s*\d[\d,]*/.test(qNorm))) {
+      const spec = buildClientVisualSpec(qNorm, ctx, 'vertical_ops');
+      const d = spec.verticalOps;
+      if (d) {
+        const opSym = d.op === 'sub' ? '−' : '+';
+        const opName = d.op === 'sub' ? 'الطرح العمودي' : 'الجمع العمودي';
+        const keyCols = d.columns
+          .filter(c => (d.op === 'sub' ? c.borrowed : c.carryOut > 0))
+          .slice(0, 2)
+          .map(c => c.noteAr);
+        const step2 = keyCols.length > 0
+          ? keyCols.join(' ')
+          : 'نحسب كل عمود من الآحاد نحو اليسار بدقة دون الحاجة لإعادة تجميع.';
+        return (
+          'خطوات ' + opName + ' لحساب ' + d.numA.toLocaleString('en-US') + ' ' + opSym + ' ' + d.numB.toLocaleString('en-US') + ':\n' +
+          '1. نرتّب العددين عمودياً بمحاذاة منزلة الآحاد من اليمين.\n' +
+          '2. ' + step2 + '\n' +
+          '3. الناتج النهائي يساوي ' + d.result.toLocaleString('en-US') + ' (ويمكنك تتبّع كل عمود في الرسم التفاعلي أدناه).'
+        );
+      }
+    }
+
+    if (wantsNeg) {
+      const spec = buildClientVisualSpec(qNorm, ctx, 'number_line');
+      const d = spec.numberLine;
+      if (d) {
+        const signVal = d.value > 0 ? '+' + d.value : String(d.value);
+        const oppVal = d.oppositeValue > 0 ? '+' + d.oppositeValue : String(d.oppositeValue);
+        return (
+          'لفهم العدد ' + signVal + ' على خط الأعداد:\n' +
+          '1. الصفر (0) هو نقطة المرجع الفاصلة بين الموجب والسالب.\n' +
+          '2. ' + d.summaryAr + '\n' +
+          '3. العدد المعاكس له هو ' + oppVal + ' لأنه يبعد المسافة نفسها (' + d.distanceFromZero + ' وحدات) على الجهة المقابلة من الصفر.'
+        );
+      }
+    }
+
+    if (wantsTable) {
+      const spec = buildClientVisualSpec(qNorm, ctx, 'pattern_table');
+      const d = spec.patternTable;
+      if (d) {
+        const preview = d.columns.slice(0, 4).map(c => '(' + c.rowA + ' ← ' + c.rowB + ')').join('، ');
+        return (
+          'لنحلها باستعمال خطة إنشاء جدول:\n' +
+          '1. نحدّد النمط الثابت في الجدول: نضيف ' + d.stepDeltaB + ' في كل خطوة.\n' +
+          '2. نملأ الأعمدة بالترتيب: ' + preview + '…\n' +
+          '3. ' + d.summaryAr
+        );
+      }
+    }
+
+    if (wantsPlace || wantsRead || wantsExpanded || qNums.some(n => n >= 100)) {
+      const spec = buildClientVisualSpec(qNorm, ctx, 'place_value');
+      const d = spec.placeValue;
+      if (d) {
+        const focused = d.cells[d.focusIndexFromLeft] || d.cells[0];
+        const verbalPart =
+          typeof words === 'function'
+            ? '\n3. يُقرأ بالصيغة اللفظية: ' + words(d.targetNumber) + '.'
+            : '\n3. الصيغة التحليلية: ' + d.expandedTerms.join(' + ') + '.';
+        if (wantsExpanded) {
+          return (
+            'تحليل العدد ' + d.formattedNumber + ' إلى الصيغة التحليلية:\n' +
+            '1. نكتب القيمة المنزلية لكل رقم غير صفري في العدد.\n' +
+            '2. الصيغة التحليلية: ' + d.expandedTerms.join(' + ') + '.\n' +
+            '3. تذكّر أن الصفر يحفظ المنزلة في الصيغة القياسية ولا يُكتب في الصيغة التحليلية.'
+          );
+        }
+        return (
+          'تحليل العدد ' + d.formattedNumber + ' في لوحة المنازل:\n' +
+          '1. نقسّمه من اليمين إلى دورات ثلاثية (الآحاد، الألوف، الملايين).\n' +
+          '2. الرقم ' + focused.digit + ' يقع في منزلة «' + focused.placeName + '» (' + focused.periodName + ') وعلى يمينه ' + focused.zerosCount + ' منازل، فقيمته المنزلية تساوي ' + focused.placeValue.toLocaleString('en-US') + '.' +
+          verbalPart
+        );
+      }
+    }
+
+    return '';
   }
 
   function buildSlideAwareFallback(kind, userText, ctx) {
@@ -678,18 +894,7 @@
       return examplesByLesson[ctx.lesson] || examplesByLesson[1];
     }
 
-    if (kind === 'explain' || ctx.isTeachingSlide || q.includes('اشرح') || q.includes('وضح') || q.includes('فهم') || q.includes('شريحة')) {
-      const explainByLesson = {
-        1: 'توضح شريحة «' + slideSnippet + '»' + numNote + ' طريقة قراءة الأعداد وتحديد القيمة المنزلية:\n1. نقسّم العدد من اليمين إلى دورات ثلاثية: الآحاد، ثم الألوف، ثم الملايين.\n2. نقرأ العدد بدءاً من الدورة الكبرى في اليسار.\n3. لمعرفة القيمة المنزلية لأي رقم، نستبدل كل خانة عن يمينه بصفر.',
-        2: 'توضح شريحة «' + slideSnippet + '»' + numNote + ' خطوات مقارنة الأعداد وترتيبها:\n1. نعدّ منازل كل عدد أولاً؛ فالعدد ذو المنازل الأكثر هو الأكبر.\n2. إذا تساوى عدد المنازل، نقارن الأرقام من أقصى اليسار منزلة بمنزلة حتى نجد أول رقمين مختلفين.',
-        3: 'توضح شريحة «' + slideSnippet + '»' + numNote + ' خطوات الجمع والطرح العمودي:\n1. نحاذي المنازل من اليمين (الآحاد تحت الآحاد).\n2. نجمع أو نطرح من اليمين إلى اليسار مع إعادة التجميع عند الحاجة.\n3. نتحقق من معقولية الجواب بالتقريب لأعلى منزلة.',
-        4: 'توضح شريحة «' + slideSnippet + '»' + numNote + ' مفهوم الأعداد السالبة:\n- الصفر 0 هو نقطة المرجع الفاصلة (ليس موجباً ولا سالباً).\n- الأعداد الموجبة أكبر من 0 وتقع يمينه أو فوقه.\n- الأعداد السالبة أصغر من 0 وتقع يساره أو تحته وتُكتب بإشارة سالب مثل -3.',
-        5: 'توضح شريحة «' + slideSnippet + '»' + numNote + ' خطة حل المسألة بإنشاء جدول:\n1. أفهم المعطيات والمطلوب في المسألة.\n2. أخطط بإنشاء جدول منظم للصفوف والأعمدة.\n3. أحل بمتابعة النمط عموداً بعد عمود ثم أتحقق من صحة الجواب.'
-      };
-      return explainByLesson[ctx.lesson] || explainByLesson[1];
-    }
-
-    if (kind === 'hint' || q.includes('تلميح') || q.includes('ساعد') || q.includes('حل')) {
+    if (kind === 'hint' || q.includes('تلميح') || q.includes('ساعدني على حل')) {
       if (ctx.hintText) {
         return 'تلميح خطوة بخطوة:\n' + stripEmojisClean(ctx.hintText);
       }
@@ -703,12 +908,36 @@
       return hintsByLesson[ctx.lesson] || hintsByLesson[1];
     }
 
+    if (kind === 'chat') {
+      const computed = buildComputedMathReply(userText, ctx);
+      if (computed) return computed;
+    }
+
+    if (kind === 'explain' || ctx.isTeachingSlide || q.includes('اشرح') || q.includes('وضح') || q.includes('فهم') || q.includes('شريحة')) {
+      const explainByLesson = {
+        1: 'توضح شريحة «' + slideSnippet + '»' + numNote + ' طريقة قراءة الأعداد وتحديد القيمة المنزلية:\n1. نقسّم العدد من اليمين إلى دورات ثلاثية: الآحاد، ثم الألوف، ثم الملايين.\n2. نقرأ العدد بدءاً من الدورة الكبرى في اليسار.\n3. لمعرفة القيمة المنزلية لأي رقم، نستبدل كل خانة عن يمينه بصفر.',
+        2: 'توضح شريحة «' + slideSnippet + '»' + numNote + ' خطوات مقارنة الأعداد وترتيبها:\n1. نعدّ منازل كل عدد أولاً؛ فالعدد ذو المنازل الأكثر هو الأكبر.\n2. إذا تساوى عدد المنازل، نقارن الأرقام من أقصى اليسار منزلة بمنزلة حتى نجد أول رقمين مختلفين.',
+        3: 'توضح شريحة «' + slideSnippet + '»' + numNote + ' خطوات الجمع والطرح العمودي:\n1. نحاذي المنازل من اليمين (الآحاد تحت الآحاد).\n2. نجمع أو نطرح من اليمين إلى اليسار مع إعادة التجميع عند الحاجة.\n3. نتحقق من معقولية الجواب بالتقريب لأعلى منزلة.',
+        4: 'توضح شريحة «' + slideSnippet + '»' + numNote + ' مفهوم الأعداد السالبة:\n- الصفر 0 هو نقطة المرجع الفاصلة (ليس موجباً ولا سالباً).\n- الأعداد الموجبة أكبر من 0 وتقع يمينه أو فوقه.\n- الأعداد السالبة أصغر من 0 وتقع يساره أو تحته وتُكتب بإشارة سالب مثل -3.',
+        5: 'توضح شريحة «' + slideSnippet + '»' + numNote + ' خطة حل المسألة بإنشاء جدول:\n1. أفهم المعطيات والمطلوب في المسألة.\n2. أخطط بإنشاء جدول منظم للصفوف والأعمدة.\n3. أحل بمتابعة النمط عموداً بعد عمود ثم أتحقق من صحة الجواب.'
+      };
+      return explainByLesson[ctx.lesson] || explainByLesson[1];
+    }
+
+    const computedFallback = buildComputedMathReply(userText, ctx);
+    if (computedFallback) return computedFallback;
+
+    const lessonTips = {
+      1: 'في درس «القيمة المنزلية ضمن الملايين» نقسّم العدد إلى دورات ثلاثية من اليمين، وقيمة أي رقم تساوي الرقم متبوعاً بأصفار بعدد الخانات عن يمينه.',
+      2: 'في درس «مقارنة الأعداد وترتيبها» نعدّ المنازل أولاً، وإن تساوت نقارن من أقصى اليسار حتى يظهر أول رقمين مختلفين.',
+      3: 'في درس «جمع الأعداد الكلية وطرحها» نبدأ من منزلة الآحاد يميناً مع إعادة التجميع أو الاستلاف عند الحاجة.',
+      4: 'في درس «الأعداد السالبة» يقف الصفر في المنتصف؛ الموجب يمينه أو فوقه والسالب يساره أو تحته.',
+      5: 'في درس «خطة إنشاء جدول» ننظّم المعطيات في أعمدة متتابعة ونتابع الزيادة الثابتة حتى نصل للمطلوب.'
+    };
     return (
-      'نحن الآن في درس «' +
-      ctx.lessonTitle +
-      '» — «' +
-      slideSnippet +
-      '».\nاختر «اشرح لي» أو «أعطني مثالًا» أو اكتب سؤالك بالأسفل وسنحلّه معاً خطوة بخطوة.'
+      'نحن الآن في شريحة «' + slideSnippet + '»' + numNote + '.\n' +
+      (lessonTips[ctx.lesson] || lessonTips[1]) +
+      '\nجرّب كتابة أي عدد أو مسألة (مثل: ما القيمة المنزلية للرقم 5 في 2,540,310؟ أو قارن 3,759,120 و 3,456,210) وسأحلّها معك فوراً بالرسم التفاعلي!'
     );
   }
 
@@ -1369,8 +1598,9 @@
     }
     if (kind === 'number_line') {
       const signed =
-        qNums.find(n => n < 0 && n >= -10) ??
-        allNums.find(n => n < 0 && n >= -10) ??
+        qNums.find(n => n < 0 && n >= -20) ??
+        allNums.find(n => n < 0 && n >= -20) ??
+        qNums.find(n => Math.abs(n) <= 20 && n !== 0) ??
         -4;
       return {
         kind: 'number_line',
@@ -2231,34 +2461,61 @@
           };
     }
     if (l === 3) {
-      return {
-        id: 'local_l3_' + idx + '_' + Date.now(),
-        intro: 'سؤال سريع في جمع الأعداد الكلية وطرحها:',
-        question: 'ما ناتج طرح: 6,000 − 2,400؟',
-        options: ['3,600', '4,400', '3,400', '8,400'],
-        correctIndex: 0,
-        explanation: 'نستلف 1 من آحاد الألوف (6 تصبح 5) ومئات العدد الأول تصبح 10: 10 − 4 = 6 في المئات و5 − 2 = 3 في الألوف، فالناتج 3,600.'
-      };
+      return idx === 0
+        ? {
+            id: 'local_l3_0_' + Date.now(),
+            intro: 'سؤال سريع في جمع الأعداد الكلية وطرحها:',
+            question: 'ما ناتج طرح: 6,000 − 2,400؟',
+            options: ['3,600', '4,400', '3,400', '8,400'],
+            correctIndex: 0,
+            explanation: 'نستلف 1 من آحاد الألوف (6 تصبح 5) ومئات العدد الأول تصبح 10: 10 − 4 = 6 في المئات و5 − 2 = 3 في الألوف، فالناتج 3,600.'
+          }
+        : {
+            id: 'local_l3_1_' + Date.now(),
+            intro: 'سؤال سريع في الجمع مع إعادة التجميع:',
+            question: 'ما ناتج جمع: 3,420,000 + 1,580,000؟',
+            options: ['5,000,000', '4,900,000', '4,000,000', '5,100,000'],
+            correctIndex: 0,
+            explanation: 'نجمع من اليمين مع إعادة التجميع: 420 ألفاً + 580 ألفاً = مليون كامل يُضاف إلى 3 + 1 ملايين فيصبح الناتج 5,000,000.'
+          };
     }
     if (l === 4) {
-      return {
-        id: 'local_l4_' + idx + '_' + Date.now(),
-        intro: 'سؤال سريع في الأعداد السالبة:',
-        question: 'إذا كانت درجة الحرارة في الشوبك 3 درجات تحت الصفر، فكيف نكتبها بالرموز؟',
-        options: ['-3', '+3', '0', '30'],
-        correctIndex: 0,
-        explanation: 'عبارة «تحت الصفر» تعني قيمة أقل من الصفر، لذلك نمثّلها بعدد سالب مسبوق بإشارة (-) فيكون -3.'
-      };
+      return idx === 0
+        ? {
+            id: 'local_l4_0_' + Date.now(),
+            intro: 'سؤال سريع في الأعداد السالبة:',
+            question: 'إذا كانت درجة الحرارة في الشوبك 3 درجات تحت الصفر، فكيف نكتبها بالرموز؟',
+            options: ['-3', '+3', '0', '30'],
+            correctIndex: 0,
+            explanation: 'عبارة «تحت الصفر» تعني قيمة أقل من الصفر، لذلك نمثّلها بعدد سالب مسبوق بإشارة (-) فيكون -3.'
+          }
+        : {
+            id: 'local_l4_1_' + Date.now(),
+            intro: 'سؤال سريع على خط الأعداد:',
+            question: 'ما العدد المعاكس للعدد +7 على خط الأعداد؟',
+            options: ['-7', '0', '+7', '-1'],
+            correctIndex: 0,
+            explanation: 'العددان المتعاكسان يبعدان المسافة نفسها (7 وحدات) عن الصفر في اتجاهين متعاكسين، فمعاكس +7 هو -7.'
+          };
     }
     if (l === 5) {
-      return {
-        id: 'local_l5_' + idx + '_' + Date.now(),
-        intro: 'سؤال سريع في خطة حل المسألة (أنشئ جدولاً):',
-        question: 'يدّخر مهند 4 دنانير كل أسبوع. باستعمال جدول النمط، كم ديناراً يدّخر في 6 أسابيع؟',
-        options: ['24 ديناراً', '10 دنانير', '20 ديناراً', '28 ديناراً'],
-        correctIndex: 0,
-        explanation: 'بتكرار النمط في الجدول (4، 8، 12، 16، 20، 24) نجد أنه يدّخر 24 ديناراً.'
-      };
+      return idx === 0
+        ? {
+            id: 'local_l5_0_' + Date.now(),
+            intro: 'سؤال سريع في خطة حل المسألة (أنشئ جدولاً):',
+            question: 'يدّخر مهند 4 دنانير كل أسبوع. باستعمال جدول النمط، كم ديناراً يدّخر في 6 أسابيع؟',
+            options: ['24 ديناراً', '10 دنانير', '20 ديناراً', '28 ديناراً'],
+            correctIndex: 0,
+            explanation: 'بتكرار النمط في الجدول (4، 8، 12، 16، 20، 24) نجد أنه يدّخر 24 ديناراً.'
+          }
+        : {
+            id: 'local_l5_1_' + Date.now(),
+            intro: 'سؤال سريع في تنظيم الجداول:',
+            question: 'في كل باقة تضع لمياء 3 وردات حمراء مقابل 5 وردات بيضاء. إذا استعملت 9 وردات حمراء، فكم وردة بيضاء استعملت؟',
+            options: ['15 وردة بيضاء', '12 وردة بيضاء', '10 وردات بيضاء', '18 وردة بيضاء'],
+            correctIndex: 0,
+            explanation: 'في الجدول: (3 حمراء ← 5 بيضاء)، (6 حمراء ← 10 بيضاء)، (9 حمراء ← 15 بيضاء) لأن 9 تساوي 3 باقات × 5 = 15.'
+          };
     }
     return idx === 0
       ? {
@@ -2290,7 +2547,7 @@
     const timeoutId = setTimeout(() => controller.abort(), 60000);
 
     try {
-      const res = await fetch('/api/ai/chat', {
+      const res = await fetch(resolveAiApiUrl('/api/ai/chat'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -2305,6 +2562,13 @@
         signal: controller.signal
       });
       clearTimeout(timeoutId);
+
+      const contentType = (res.headers.get('content-type') || '').toLowerCase();
+      if (res.status === 404 || res.status === 405 || contentType.includes('text/html')) {
+        const staticErr = new Error('Static host without AI API');
+        staticErr.code = 'BACKEND_UNAVAILABLE';
+        throw staticErr;
+      }
 
       if (!res.ok) {
         let errData = null;
@@ -2468,7 +2732,22 @@
       chatHistory.push({ role: 'user', text: cleanPrompt }, { role: 'model', text: localReply });
       if (chatHistory.length > 20) chatHistory.splice(0, chatHistory.length - 20);
       notifyNewChatContent(false);
+      return localReply;
     };
+
+    if (staticTutorMode || !backendAvailable) {
+      try {
+        applyLocalExplanation();
+      } finally {
+        if (msgHandle && msgHandle.wrapEl) {
+          msgHandle.wrapEl.classList.remove('is-streaming');
+        }
+        isBusy = false;
+        if (!liveActive) setHeaderRealState('');
+        syncComposerState();
+      }
+      return;
+    }
 
     try {
       const finalReply = await streamChatFromServer(cleanPrompt, ctx, onChunk, onVisual);
@@ -2482,6 +2761,8 @@
       notifyNewChatContent(false);
       chatHistory.push({ role: 'user', text: cleanPrompt }, { role: 'model', text: replyText });
       if (chatHistory.length > 20) chatHistory.splice(0, chatHistory.length - 20);
+      backendAvailable = true;
+      staticTutorMode = false;
       serverConfigured = true;
       updateContextUI();
     } catch (err) {
@@ -2489,6 +2770,15 @@
         if (msgHandle && msgHandle.rowEl && !firstChunkReceived) {
           msgHandle.rowEl.remove();
         }
+        return;
+      }
+      if (err && err.code === 'BACKEND_UNAVAILABLE') {
+        backendAvailable = false;
+        staticTutorMode = true;
+        serverConfigured = false;
+        healthChecked = true;
+        updateContextUI();
+        applyLocalExplanation();
         return;
       }
       if (err && err.code === 'MISSING_API_KEY') {
@@ -2546,17 +2836,20 @@
     appendMessage('user', labelText);
 
     let spec = buildClientVisualSpec(qText, ctx);
-    try {
-      const res = await fetch('/api/ai/visualize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: qText, context: ctx })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.visual) spec = data.visual;
-      }
-    } catch {}
+    if (backendAvailable && !staticTutorMode) {
+      try {
+        const res = await fetch(resolveAiApiUrl('/api/ai/visualize'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: qText, context: ctx })
+        });
+        const contentType = (res.headers.get('content-type') || '').toLowerCase();
+        if (res.ok && contentType.includes('application/json')) {
+          const data = await res.json();
+          if (data && data.visual) spec = data.visual;
+        }
+      } catch {}
+    }
 
     const introText =
       (spec.placeValue && spec.placeValue.summaryAr) ||
@@ -2581,15 +2874,23 @@
     updateContextUI();
 
     appendMessage('user', 'اختبر فهمي بسؤال سريع');
+    const currentVariant = quizVariantCounter++;
+
+    if (staticTutorMode || !backendAvailable) {
+      const fallbackQuiz = buildClientFallbackQuiz(ctx.lesson, currentVariant);
+      appendMessage('assistant', fallbackQuiz.intro, fallbackQuiz);
+      notifyNewChatContent(false);
+      return;
+    }
+
     isBusy = true;
     setHeaderRealState('يكتب الآن…');
     syncComposerState();
 
-    const currentVariant = quizVariantCounter++;
     const loadingHandle = appendMessage('assistant', '', null, null, { isTyping: true });
 
     try {
-      const res = await fetch('/api/ai/quiz', {
+      const res = await fetch(resolveAiApiUrl('/api/ai/quiz'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2598,9 +2899,19 @@
           variant: currentVariant
         })
       });
+      const contentType = (res.headers.get('content-type') || '').toLowerCase();
+      if (!res.ok || !contentType.includes('application/json')) {
+        if (res.status === 404 || contentType.includes('text/html')) {
+          backendAvailable = false;
+          staticTutorMode = true;
+          serverConfigured = false;
+          updateContextUI();
+        }
+        throw new Error('HTTP ' + res.status);
+      }
       const data = await res.json();
-      if (!res.ok || !data || !data.quiz) {
-        throw new Error((data && data.error) || 'HTTP ' + res.status);
+      if (!data || !data.quiz) {
+        throw new Error((data && data.error) || 'Empty quiz payload');
       }
       if (loadingHandle && loadingHandle.rowEl) loadingHandle.rowEl.remove();
       appendMessage('assistant', data.quiz.intro || 'سؤال تدريبي مخصص:', data.quiz);
@@ -2627,6 +2938,9 @@
   let liveNextStartTime = 0;
   let liveReady = false;
   let liveActive = false;
+  let liveBrowserMode = false;
+  let liveRecognition = null;
+  let liveBrowserToken = 0;
   const liveActiveSources = new Set();
   let liveUserTranscriptHandle = null;
   let liveModelTranscriptHandle = null;
@@ -2765,10 +3079,27 @@
   function stopLiveVoiceSession(errorStatusMsg) {
     liveActive = false;
     liveReady = false;
+    liveBrowserMode = false;
+    liveBrowserToken++;
     liveUserTranscriptHandle = null;
     liveModelTranscriptHandle = null;
 
     clearLivePlaybackQueue();
+
+    if (liveRecognition) {
+      try {
+        liveRecognition.onresult = null;
+        liveRecognition.onerror = null;
+        liveRecognition.onend = null;
+        liveRecognition.stop();
+      } catch {}
+      liveRecognition = null;
+    }
+    if ('speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {}
+    }
 
     if (liveProcessor) {
       try {
@@ -2815,6 +3146,144 @@
     }
   }
 
+  function speakInBrowserVoiceSession(text, sessionToken, onDone) {
+    const clean = stripEmojisClean(String(text || '').replace(/\s+/g, ' ').trim());
+    if (!clean || !liveActive || !liveBrowserMode || sessionToken !== liveBrowserToken) {
+      if (typeof onDone === 'function') onDone();
+      return;
+    }
+    if (!('speechSynthesis' in window) || (typeof state !== 'undefined' && state.muted)) {
+      if (typeof onDone === 'function') onDone();
+      return;
+    }
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(clean);
+      u.lang = 'ar-SA';
+      u.rate = 0.95;
+      const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+      const arV = (voices || []).find(v => v.lang && v.lang.toLowerCase().startsWith('ar'));
+      if (arV) u.voice = arV;
+      setLiveUiState('speaking', 'المعلم يشرح لك صوتياً الآن…');
+      let finished = false;
+      const doneOnce = () => {
+        if (finished) return;
+        finished = true;
+        if (typeof onDone === 'function') onDone();
+      };
+      u.onend = doneOnce;
+      u.onerror = doneOnce;
+      window.speechSynthesis.speak(u);
+    } catch {
+      if (typeof onDone === 'function') onDone();
+    }
+  }
+
+  function startBrowserVoiceListening(sessionToken) {
+    if (!liveActive || !liveBrowserMode || sessionToken !== liveBrowserToken) return;
+    const RecCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!RecCtor) {
+      setLiveUiState(
+        'listening',
+        'الصوت المدمج نشط — اكتب سؤالك في الحقل بالأسفل ليجيبك المعلم صوتياً وبصرياً'
+      );
+      return;
+    }
+    if (liveRecognition) {
+      try {
+        liveRecognition.stop();
+      } catch {}
+      liveRecognition = null;
+    }
+    try {
+      const rec = new RecCtor();
+      rec.lang = 'ar-SA';
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+      liveRecognition = rec;
+      setLiveUiState('listening', 'تحدّث الآن بالعربية واسأل عن أي خطوة في الدرس');
+
+      rec.onresult = ev => {
+        if (!liveActive || !liveBrowserMode || sessionToken !== liveBrowserToken) return;
+        const spoken = String(ev.results?.[0]?.[0]?.transcript || '').trim();
+        if (!spoken) return;
+        handleBrowserVoiceTurn(spoken, sessionToken);
+      };
+      rec.onerror = ev => {
+        if (!liveActive || !liveBrowserMode || sessionToken !== liveBrowserToken) return;
+        if (ev && (ev.error === 'not-allowed' || ev.error === 'service-not-allowed')) {
+          setLiveUiState(
+            'listening',
+            'المايكروفون غير متاح — يمكنك كتابة سؤالك ليجيبك المعلم صوتياً'
+          );
+        }
+      };
+      rec.onend = () => {
+        if (liveRecognition === rec) liveRecognition = null;
+      };
+      rec.start();
+    } catch {
+      setLiveUiState(
+        'listening',
+        'الصوت المدمج نشط — يمكنك كتابة سؤالك في الحقل أدناه ليجيبك المعلم صوتياً'
+      );
+    }
+  }
+
+  function handleBrowserVoiceTurn(spokenText, sessionToken) {
+    if (!liveActive || !liveBrowserMode || sessionToken !== liveBrowserToken) return;
+    if (liveRecognition) {
+      try {
+        liveRecognition.stop();
+      } catch {}
+      liveRecognition = null;
+    }
+    const ctx = extractActiveSlideAndLessonContext();
+    appendMessage('user', spokenText, null, 'صوت مباشر');
+    const reply = buildSlideAwareFallback('chat', spokenText, ctx);
+    const handle = appendMessage('assistant', reply, null, 'صوت مباشر');
+    const spec = buildClientVisualSpec(spokenText, ctx);
+    attachVisualDiagramToMessage(handle, spec, ctx, true);
+    chatHistory.push({ role: 'user', text: spokenText }, { role: 'model', text: reply });
+    if (chatHistory.length > 20) chatHistory.splice(0, chatHistory.length - 20);
+    notifyNewChatContent(false);
+
+    speakInBrowserVoiceSession(reply, sessionToken, () => {
+      if (liveActive && liveBrowserMode && sessionToken === liveBrowserToken) {
+        startBrowserVoiceListening(sessionToken);
+      }
+    });
+  }
+
+  function startBrowserVoiceSession(ctx, autoExplainSlide) {
+    liveActive = true;
+    liveBrowserMode = true;
+    liveReady = true;
+    const sessionToken = ++liveBrowserToken;
+    const slideLabel = ctx.slideTitle || ctx.questionPrompt || ctx.stationTitle;
+    const openingText = autoExplainSlide
+      ? buildSlideAwareFallback('explain', slideLabel, ctx)
+      : 'أهلاً بك يا ' +
+        ctx.studentName +
+        ' في درس «' +
+        ctx.lessonTitle +
+        '»! أنا مستعد لشرح «' +
+        slideLabel +
+        '» — تحدّث بسؤالك أو اكتبه بالأسفل.';
+
+    const msgHandle = appendMessage('assistant', openingText, null, 'صوت مباشر');
+    if (autoExplainSlide) {
+      attachVisualDiagramToMessage(msgHandle, buildClientVisualSpec(slideLabel, ctx), ctx, true);
+    }
+    notifyNewChatContent(false);
+
+    speakInBrowserVoiceSession(openingText, sessionToken, () => {
+      if (liveActive && liveBrowserMode && sessionToken === liveBrowserToken) {
+        startBrowserVoiceListening(sessionToken);
+      }
+    });
+  }
+
   async function startLiveVoiceSession(autoExplainSlide) {
     if (liveActive) {
       stopLiveVoiceSession();
@@ -2830,6 +3299,12 @@
 
     const ctx = extractActiveSlideAndLessonContext();
     updateContextUI();
+
+    if (staticTutorMode || !backendAvailable) {
+      startBrowserVoiceSession(ctx, autoExplainSlide);
+      return;
+    }
+
     liveActive = true;
     liveReady = false;
     setLiveUiState('connecting', 'يتم تجهيز المحادثة الصوتية مع المعلم…');
@@ -2883,8 +3358,7 @@
 
       if (!liveActive) return;
 
-      const wsProto = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-      const ws = new WebSocket(wsProto + window.location.host + '/ws/live');
+      const ws = new WebSocket(resolveLiveWsUrl());
       liveWs = ws;
 
       ws.onopen = () => {
@@ -2989,6 +3463,15 @@
       };
 
       ws.onerror = () => {
+        if (liveActive && !liveReady) {
+          backendAvailable = false;
+          staticTutorMode = true;
+          serverConfigured = false;
+          updateContextUI();
+          stopLiveVoiceSession();
+          startBrowserVoiceSession(ctx, autoExplainSlide);
+          return;
+        }
         if (liveActive) {
           stopLiveVoiceSession('انقطع الاتصال الصوتي بالخادم');
         }
@@ -3000,7 +3483,8 @@
         }
       };
     } catch {
-      stopLiveVoiceSession('الصوت المباشر غير متاح في هذا المتصفح حالياً');
+      stopLiveVoiceSession();
+      startBrowserVoiceSession(ctx, autoExplainSlide);
     }
   }
 
@@ -3603,6 +4087,10 @@
       if (!q || isBusy) return;
       inputEl.value = '';
       syncComposerState();
+      if (liveActive && liveBrowserMode) {
+        handleBrowserVoiceTurn(q, liveBrowserToken);
+        return;
+      }
       if (liveActive && liveReady && liveWs && liveWs.readyState === WebSocket.OPEN) {
         clearLivePlaybackQueue();
         appendMessage('user', q, null, 'إلى المعلم الصوتي');

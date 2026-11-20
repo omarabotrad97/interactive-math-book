@@ -30,12 +30,33 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Stage static web files
+        env:
+          AI_API_BASE: ${{ vars.AI_API_BASE }}
         run: |
           mkdir -p _site
           cp index.html _site/
           cp -r js _site/
           cp -r styles _site/
           touch _site/.nojekyll
+          if [ -n "${AI_API_BASE:-}" ]; then
+            python3 - <<'PY'
+          import os, re, html
+          base = os.environ.get("AI_API_BASE", "").strip().rstrip("/")
+          if base.startswith("https://"):
+              with open("_site/index.html", "r", encoding="utf-8") as f:
+                  content = f.read()
+              safe = html.escape(base, quote=True)
+              updated, count = re.subn(
+                  r'<meta\s+name="ai-api-base"\s+content="[^"]*"\s*/?>',
+                  f'<meta name="ai-api-base" content="{safe}">',
+                  content,
+                  count=1
+              )
+              if count:
+                  with open("_site/index.html", "w", encoding="utf-8") as f:
+                      f.write(updated)
+          PY
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

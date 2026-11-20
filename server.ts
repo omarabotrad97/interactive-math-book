@@ -23,6 +23,7 @@ import {
   stripEmojis
 } from './lib/tutor-engine.ts';
 import type { StudentSlideContext, VisualDiagramKind } from './lib/tutor-engine.ts';
+import { isAllowedCorsOrigin } from './lib/tutor-api-config.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,6 +33,40 @@ const app = express();
 
 app.disable('x-powered-by');
 app.use(express.json({ limit: '12mb' }));
+
+// Allowlisted CORS for cross-origin static frontends (e.g. GitHub Pages)
+app.use('/api', (req: Request, res: Response, next) => {
+  const origin = typeof req.headers.origin === 'string' ? req.headers.origin : '';
+  const host = typeof req.headers.host === 'string' ? req.headers.host : '';
+  let sameHost = false;
+  if (origin && host) {
+    try {
+      sameHost = new URL(origin).host === host;
+    } catch {
+      sameHost = false;
+    }
+  }
+  const allowed = Boolean(origin) && (sameHost || isAllowedCorsOrigin(origin, process.env.ALLOWED_ORIGINS));
+
+  if (allowed) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+    res.setHeader('Access-Control-Max-Age', '86400');
+  }
+
+  if (req.method === 'OPTIONS') {
+    if (!origin || allowed) {
+      res.status(204).end();
+    } else {
+      res.status(403).json({ error: 'Origin not allowed' });
+    }
+    return;
+  }
+
+  next();
+});
 
 class MissingApiKeyError extends Error {
   statusCode: number;
@@ -774,7 +809,31 @@ app.use((req: Request, res: Response) => {
 const httpServer = http.createServer(app);
 
 // Gemini Live API WebSocket Bridge (/ws/live) -> model: gemini-3.8-live
-const wss = new WebSocketServer({ server: httpServer, path: '/ws/live' });
+const wss = new WebSocketServer({
+  server: httpServer,
+  path: '/ws/live',
+  verifyClient: (info, cb) => {
+    const origin = typeof info.origin === 'string' ? info.origin : '';
+    if (!origin) {
+      cb(true);
+      return;
+    }
+    const host = typeof info.req.headers.host === 'string' ? info.req.headers.host : '';
+    let sameHost = false;
+    if (host) {
+      try {
+        sameHost = new URL(origin).host === host;
+      } catch {
+        sameHost = false;
+      }
+    }
+    if (sameHost || isAllowedCorsOrigin(origin, process.env.ALLOWED_ORIGINS)) {
+      cb(true);
+      return;
+    }
+    cb(false, 403, 'Forbidden origin');
+  }
+});
 
 wss.on('connection', (clientWs: WebSocket) => {
   let sessionPromise: Promise<Session> | null = null;
