@@ -74,7 +74,38 @@ const PATH_NODES=[
  {id:19,unit:1,type:'mission',icon:'search',tag:'الختام والشهادة',title:'20. محقّق الأعداد والتحدي المفتوح',sub:'اكتشف خطأ سميرة وبرّر إجابتك لتستلم الشهادة وتفتح التحدي المتجدد!',missionId:11},
  {id:20,unit:1,type:'exit_ticket',icon:'target',tag:'التقييم المستقل المعتمد',title:'21. بطاقة خروج الدرس',sub:'خمسة أسئلة مستقلة تقيس إتقانك لأهداف الدرس الخمسة بالتساوي (100%)',requiredNodes:[19]}
 ];
-document.addEventListener("DOMContentLoaded",()=>{const banner=document.getElementById("test-mode-banner");const toggle=document.getElementById("test-mode-toggle");const label=banner?.querySelector(".test-mode-text")||banner?.querySelector("span");if(!banner||!toggle)return;banner.hidden=false;const update=()=>{if(label)label.textContent=testModeEnabled?"وضع الاختبار مفعّل: جميع الدروس متاحة دون إكمال السابق.":"وضع الاختبار متوقف: عادت شروط فتح الدروس الأصلية.";toggle.textContent=testModeEnabled?"إيقاف وضع الاختبار":"تفعيل وضع الاختبار";toggle.setAttribute("aria-pressed",String(testModeEnabled));};update();toggle.addEventListener("click",()=>{testModeEnabled=!testModeEnabled;try{localStorage.setItem(TEST_MODE_KEY,testModeEnabled?"on":"off");}catch{}location.reload();});});
+function syncTestModeUI(){
+ const banner=document.getElementById("test-mode-banner");
+ const toggle=document.getElementById("test-mode-toggle");
+ const moreBtn=document.getElementById("more-test-mode");
+ const moreState=document.getElementById("more-test-mode-state");
+ if(banner)banner.hidden=true;
+ if(toggle){
+  toggle.textContent=testModeEnabled?"إيقاف وضع الاختبار":"تفعيل وضع الاختبار";
+  toggle.setAttribute("aria-pressed",String(testModeEnabled));
+ }
+ if(moreBtn){
+  moreBtn.setAttribute("aria-pressed",String(testModeEnabled));
+  moreBtn.classList.toggle("is-active",testModeEnabled);
+ }
+ if(moreState){
+  moreState.textContent=testModeEnabled?"مفعّل · جميع الدروس متاحة دون تقييد":"متوقف · فتح الدروس تدريجياً";
+ }
+}
+window.syncTestModeUI=syncTestModeUI;
+function toggleTestMode(){
+ testModeEnabled=!testModeEnabled;
+ try{localStorage.setItem(TEST_MODE_KEY,testModeEnabled?"on":"off");}catch{}
+ syncTestModeUI();
+ location.reload();
+}
+document.addEventListener("DOMContentLoaded",()=>{
+ syncTestModeUI();
+ const toggle=document.getElementById("test-mode-toggle");
+ const moreBtn=document.getElementById("more-test-mode");
+ if(toggle)toggle.addEventListener("click",toggleTestMode);
+ if(moreBtn)moreBtn.addEventListener("click",toggleTestMode);
+});
 function isNodeCompleted(nodeId){
  const node=PATH_NODES[nodeId];if(!node)return false;
  if(state.nodesCompleted.has(nodeId))return true;

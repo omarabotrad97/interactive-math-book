@@ -273,9 +273,29 @@ body[data-l1-mode="result"] .desk {
   width: 100%;
   max-width: var(--l1-max-stage);
   margin-inline: auto;
+  margin-block: auto;
+  padding-block: var(--space-2);
   display: flex;
   flex-direction: column;
-  gap: var(--space-1-5);
+  gap: var(--space-2-5);
+}
+
+/* Focused Exercise Mode: Keep center stage calm and uncluttered while solving */
+#l1-shell[data-step-role="exercise"] .l1-context-pill {
+  border-color: var(--border-muted);
+  background: var(--surface-muted);
+  color: var(--muted);
+}
+
+#l1-shell[data-step-role="exercise"][data-help-revealed="false"] #l1-ai-tutor-btn,
+#l1-shell[data-step-role="exercise"][data-help-revealed="false"] #l2-shell-lab-btn,
+#l1-shell[data-step-role="exercise"][data-help-revealed="false"] #l3-shell-lab-btn,
+#l1-shell[data-step-role="exercise"][data-help-revealed="false"] #l4-shell-lab-btn,
+#l1-shell[data-step-role="exercise"][data-help-revealed="false"] #l5-shell-lab-btn,
+#l1-shell[data-step-role="exercise"][data-help-revealed="false"]:not([data-step-kind="produce_read"]) #l1-audio-btn,
+#l1-shell[data-step-role="exercise"][data-help-revealed="false"] .l1-hint-btn,
+#l1-shell[data-step-role="exercise"][data-help-revealed="false"] .l1-hint-bar:not(:has(.l1-hint-content:not([hidden]))) {
+  display: none !important;
 }
 
 .l1-context-row {
@@ -1427,8 +1447,8 @@ bdi[dir="ltr"] {
 
 .l1-primary-btn {
   width: 100%;
-  min-height: var(--control-md);
-  padding: var(--space-2) var(--space-3-5);
+  min-height: var(--control-lg);
+  padding: var(--space-2-5) var(--space-4);
   border-radius: var(--radius-card);
   font-size: var(--text-base);
   font-weight: 800;

@@ -30,7 +30,7 @@
   }else if(k==='challenge')$('infinite-toggle').click();
   else if(k==='report'){$('report-open').click();syncTabs();}
   else if(k==='ai'){openAiTutor();syncTabs();}
-  else if(k==='more'){try{pauseRapid();stopStory();}catch{}soundLabel();sheet.showModal();syncTabs();}
+  else if(k==='more'){try{pauseRapid();stopStory();}catch{}soundLabel();if(typeof window.syncTestModeUI==='function')window.syncTestModeUI();sheet.showModal();syncTabs();}
  }));
  $('more-sound').addEventListener('click',()=>{$('sound-toggle').click();soundLabel();});
  $('more-prefs').addEventListener('click',()=>{sheet.close();$('prefs-open').click();syncTabs();});

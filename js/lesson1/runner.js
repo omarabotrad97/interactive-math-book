@@ -1332,6 +1332,44 @@
      Footer Primary CTA State Machine
      ========================================================= */
 
+  function isTeachingStepKind(kind) {
+    return Boolean(
+      kind === 'story_slide' ||
+      kind === 's1_worked_model' ||
+      kind === 's1_bridge' ||
+      kind === 'l3_teach' ||
+      kind === 'l4_teach' ||
+      kind === 'l5_teach' ||
+      kind === 'rapid_intro' ||
+      kind === 'scratchpad'
+    );
+  }
+
+  function getCurrentStepHelpKey(cur) {
+    return String(cur?.key || cur?.kind || 'step') + ':' + String(session?.index ?? 0);
+  }
+
+  function syncShellFocusAttrs(btnState) {
+    const shellEl = byId('l1-shell');
+    if (!shellEl || !session) return;
+    const cur = session.steps?.[session.index];
+    const isTeaching = isTeachingStepKind(cur?.kind);
+    const stepKey = getCurrentStepHelpKey(cur);
+    if (!session.helpRevealedSteps) session.helpRevealedSteps = new Set();
+    if (btnState === 'wrong') {
+      session.helpRevealedSteps.add(stepKey);
+    }
+    const openHintEl = shellEl.querySelector('.l1-hint-content:not([hidden])');
+    const hasOpenHint = Boolean(openHintEl && String(openHintEl.textContent || '').trim());
+    if (hasOpenHint) {
+      session.helpRevealedSteps.add(stepKey);
+    }
+    shellEl.dataset.stepRole = isTeaching ? 'slide' : 'exercise';
+    shellEl.dataset.stepKind = String(cur?.kind || '');
+    shellEl.dataset.stepPhase = String(btnState || stepUi?.phase || 'incomplete');
+    shellEl.dataset.helpRevealed = (isTeaching || session.helpRevealedSteps.has(stepKey)) ? 'true' : 'false';
+  }
+
   function setPrimaryButtonState(btnState, customLabel) {
     const btn = byId('l1-primary-btn');
     const feedback = byId('l1-feedback');
@@ -1340,6 +1378,7 @@
     if (!btn) return;
 
     stepUi.phase = btnState;
+    syncShellFocusAttrs(btnState);
     btn.classList.remove('state-ready', 'state-correct', 'state-wrong');
 
     const cur = session?.steps?.[session.index];
@@ -2134,33 +2173,17 @@
         setPrimaryButtonState('explanation', 'متابعة');
     }
 
-    if (bodyEl && cur.kind !== 'recharge_quiz' && cur.kind !== 'rapid_round') {
-      const isTeachingSlide = Boolean(
-        cur.kind === 'story_slide' ||
-        cur.kind === 's1_worked_model' ||
-        cur.kind === 's1_bridge' ||
-        cur.kind === 'l3_teach' ||
-        cur.kind === 'l4_teach' ||
-        cur.kind === 'l5_teach' ||
-        cur.kind === 'rapid_intro'
-      );
+    const isTeachingSlide = isTeachingStepKind(cur.kind) && cur.kind !== 'scratchpad';
+    if (bodyEl && isTeachingSlide) {
       const tutorBar = document.createElement('div');
-      tutorBar.className = 'l1-slide-tutor-bar' + (isTeachingSlide ? ' is-slide' : ' is-question');
+      tutorBar.className = 'l1-slide-tutor-bar is-slide';
       tutorBar.innerHTML =
         '<div class="l1-slide-tutor-copy">' +
         '<span class="l1-slide-tutor-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z"/></svg></span>' +
-        '<span>' +
-        (isTeachingSlide
-          ? 'هل لديك أي سؤال في هذه الشريحة؟ المعلم الذكي جاهز لتوضيحها.'
-          : 'تحتاج توضيحاً لفكرة الدرس أو تلميحاً ذكياً لهذه الخطوة؟') +
-        '</span>' +
+        '<span>هل لديك أي سؤال في هذه الشريحة؟ المعلم الذكي جاهز لتوضيحها.</span>' +
         '</div>' +
         '<div class="l1-slide-tutor-actions">' +
-        '<button type="button" class="l1-slide-tutor-btn" data-tutor-act="' +
-        (isTeachingSlide ? 'explain' : 'hint') +
-        '">' +
-        (isTeachingSlide ? 'اشرح الشريحة' : 'تلميح ذكي') +
-        '</button>' +
+        '<button type="button" class="l1-slide-tutor-btn" data-tutor-act="explain">اشرح الشريحة</button>' +
         '<button type="button" class="l1-slide-tutor-btn is-voice" data-tutor-act="live">' +
         '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>' +
         '<span>اسأل صوتياً</span>' +
@@ -2174,6 +2197,8 @@
       });
       bodyEl.append(tutorBar);
     }
+
+    syncShellFocusAttrs(stepUi.phase);
 
     const stage = byId('l1-stage');
     if (stage) stage.scrollTop = 0;

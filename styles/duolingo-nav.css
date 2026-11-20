@@ -49,7 +49,8 @@ body[data-view="map"] #duolingo-map > .book-brand-bar.app-compact-header {
 body[data-view="map"] .app-compact-header .book-brand-id {
   padding: 2px !important;
   gap: 8px !important;
-  min-width: 0;
+  min-width: var(--touch-min);
+  justify-content: center;
 }
 
 body[data-view="map"] .app-compact-header .book-brand-mark {
@@ -103,19 +104,18 @@ body[data-view="map"] .app-compact-header .book-brand-sub {
 }
 
 body[data-view="map"] .app-compact-header .lesson-picker-trigger {
-  min-height: 38px !important;
-  padding: 6px 11px !important;
-  border-radius: 12px !important;
-  border: 2px solid var(--duo-line-strong) !important;
-  border-bottom-width: 3px !important;
-  background: #f8fbf9 !important;
+  min-height: var(--touch-min) !important;
+  padding: var(--space-2) var(--space-3) !important;
+  border-radius: var(--radius-card) !important;
+  border: 1.5px solid var(--duo-line-strong) !important;
+  background: var(--surface-muted) !important;
   color: var(--ink-dark) !important;
-  font-size: 0.84rem !important;
+  font-size: var(--text-sm-plus) !important;
   font-weight: 800 !important;
-  gap: 5px !important;
+  gap: var(--space-1-5) !important;
   box-shadow: none !important;
   flex-shrink: 0;
-  transition: transform 0.12s ease, border-color 0.16s ease, background-color 0.16s ease;
+  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
 }
 
 body[data-view="map"] .app-compact-header .lesson-picker-trigger:hover {
@@ -174,20 +174,11 @@ body[data-view="map"] .app-compact-header .lesson-picker-trigger:active {
 }
 
 /* --------------------------------------------------------------------------
-   3. 1-Tap Horizontal Quick Lesson & Units Strip
+   3. Quick Lesson Strip (Hidden — Lesson switching lives cleanly in #lesson-picker-btn
+      on mobile/tablet and in the left Companion Rail on wide desktop)
    -------------------------------------------------------------------------- */
 .duo-quick-strip {
-  position: relative;
-  z-index: 36;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding: 2px 2px 6px;
-  margin: 0 0 10px;
+  display: none !important;
 }
 
 .duo-quick-strip::-webkit-scrollbar {
@@ -451,19 +442,22 @@ body[data-view="map"] #duo-lesson-topbar .duo-sec-prog-pct {
 
 .duo-banner-cta {
   flex: 0 0 auto;
-  min-height: 38px;
-  padding: 6px 15px;
-  border-radius: 12px;
-  border: 2px solid #ffffff;
-  border-bottom: 4px solid rgba(0, 0, 0, 0.22);
-  background: #ffffff;
+  min-height: var(--touch-min);
+  padding: var(--space-1-5) var(--space-4);
+  border-radius: var(--radius-card);
+  border: 1.5px solid var(--surface-card);
+  background: var(--surface-card);
   color: var(--duo-accent-text);
   font-family: var(--heading);
-  font-size: 0.86rem;
+  font-size: var(--text-md);
   font-weight: 800;
   cursor: pointer;
   white-space: nowrap;
-  transition: transform 0.12s ease, background-color 0.16s ease;
+  transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+}
+
+.duo-banner-cta[hidden] {
+  display: none !important;
 }
 
 .duo-banner-cta:hover {
@@ -501,18 +495,18 @@ body[data-view="map"] #duo-lesson-topbar .duo-sec-prog-pct {
     display: none !important;
   }
   body[data-view="map"] #duo-lesson-topbar .duo-open-lab-btn.duo-guide-btn {
-    padding: 6px 10px !important;
-    min-height: 36px !important;
-    font-size: 0.78rem !important;
-    gap: 5px;
+    padding: var(--space-1-5) var(--space-2-5) !important;
+    min-height: var(--touch-min) !important;
+    font-size: var(--text-xs-plus) !important;
+    gap: var(--space-1-25);
   }
   .duo-banner-bottom-row {
-    padding-top: 6px;
+    padding-top: var(--space-1-5);
   }
   .duo-banner-cta {
-    padding: 5px 12px;
-    font-size: 0.8rem;
-    min-height: 34px;
+    padding: var(--space-1-5) var(--space-3);
+    font-size: var(--text-sm);
+    min-height: var(--touch-min);
   }
 }
 
@@ -625,7 +619,7 @@ body[data-view="map"] #duo-lesson-topbar .duo-sec-prog-pct {
   margin-top: 2px;
   font-size: 0.75rem !important;
   font-weight: 700 !important;
-  color: #748980 !important;
+  color: var(--muted) !important;
 }
 
 /* Winding Path Canvas */
@@ -667,7 +661,7 @@ body[data-view="map"] #duo-lesson-topbar .duo-sec-prog-pct {
   margin-top: 2px !important;
 }
 
-/* Centered Floating Callout Above Current Node */
+/* Centered Floating Primary Action Button Above Current Node */
 #duolingo-map .dp-callout {
   position: relative !important;
   top: auto !important;
@@ -675,32 +669,62 @@ body[data-view="map"] #duo-lesson-topbar .duo-sec-prog-pct {
   right: auto !important;
   transform: none;
   z-index: 6;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min) !important;
+  min-width: 88px;
   margin: 0 auto 14px !important;
-  padding: 6px 18px !important;
-  border-radius: 12px !important;
-  background: #ffffff !important;
-  border: 2px solid var(--duo-line-strong) !important;
+  padding: var(--space-2) var(--space-5) !important;
+  border-radius: var(--radius-card) !important;
+  background: var(--surface-card) !important;
+  border: 1.5px solid var(--duo-line-strong) !important;
   color: var(--duo-accent-text) !important;
   font-family: var(--heading);
-  font-size: 0.92rem !important;
+  font-size: var(--text-md-plus) !important;
   font-weight: 800 !important;
-  box-shadow: 0 4px 10px rgba(15, 45, 36, 0.1) !important;
-  animation: duoCalloutFloatY 2s ease-in-out infinite !important;
+  line-height: 1.2 !important;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm) !important;
+  animation: none !important;
   white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+#duolingo-map .dp-callout:hover {
+  background: var(--duo-accent-tint) !important;
+  border-color: var(--duo-accent) !important;
+}
+
+#duolingo-map .dp-callout:active {
+  animation: none !important;
+  transform: translateY(2px);
+}
+
+#duolingo-map .dp-callout:focus-visible {
+  outline: 2.5px solid var(--focus-ring) !important;
+  outline-offset: 2px !important;
 }
 
 #duolingo-map .dp-callout::after {
   content: "";
   position: absolute;
-  bottom: -7px;
+  bottom: -6.5px;
   left: 50%;
   width: 11px;
   height: 11px;
-  background: #ffffff;
+  background: var(--surface-card);
   border: 0 !important;
-  border-right: 2px solid var(--duo-line-strong) !important;
-  border-bottom: 2px solid var(--duo-line-strong) !important;
+  border-right: 1.5px solid var(--duo-line-strong) !important;
+  border-bottom: 1.5px solid var(--duo-line-strong) !important;
   transform: translateX(-50%) rotate(45deg);
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+
+#duolingo-map .dp-callout:hover::after {
+  background: var(--duo-accent-tint);
+  border-right-color: var(--duo-accent) !important;
+  border-bottom-color: var(--duo-accent) !important;
 }
 
 @keyframes duoCalloutFloatY {
@@ -1473,6 +1497,10 @@ body[data-view="map"] #duo-jump-current.duo-jump-current {
 
   body[data-ai-open="true"][data-view="map"] .duo-companion-rail {
     display: none !important;
+  }
+
+  body[data-ai-open="true"][data-view="map"] #duolingo-map > .book-brand-bar.app-compact-header {
+    display: flex !important;
   }
 
   body[data-ai-open="true"][data-view="map"] .duo-workspace {

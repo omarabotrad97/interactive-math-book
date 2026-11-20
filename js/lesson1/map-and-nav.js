@@ -1411,8 +1411,22 @@ function renderUnifiedStageMapUnits(unitsRoot,ctx){
    const wrap=document.createElement('div');
    wrap.className='dp-wrap'+(completed?' done':'')+(isFront?' current-wrap':'');
    wrap.style.setProperty('--x',x+'px');
+   const cleanTitle=node.title.replace(/^\d+\.\s*/,'');
    if(isFront){
-    wrap.insertAdjacentHTML('beforeend','<span class="dp-callout">'+(hasStartedFront?'تابع':'ابدأ')+'</span>');
+    const hasLessonProgress=hasStartedFront||ctx.nodes.some(n=>ctx.isCompleted(n.id));
+    const calloutLabel=hasLessonProgress?'تابع':'ابدأ';
+    const calloutBtn=document.createElement('button');
+    calloutBtn.type='button';
+    calloutBtn.className='dp-callout';
+    calloutBtn.dataset.frontierCta='true';
+    calloutBtn.textContent=calloutLabel;
+    calloutBtn.setAttribute('aria-label',calloutLabel+' — '+cleanTitle);
+    calloutBtn.addEventListener('click',e=>{
+     e.stopPropagation();
+     closeAllNodePopovers();
+     ctx.openNode(node.id,calloutBtn);
+    });
+    wrap.append(calloutBtn);
    }
    const btn=document.createElement('button');btn.type='button';
    btn.dataset.trackNodeId=String(node.id);
@@ -1424,7 +1438,6 @@ function renderUnifiedStageMapUnits(unitsRoot,ctx){
    const isGate=ctx.isGate(node);
    const stateCls=completed?'completed':(isFront?'current front':(unlocked?'available':'locked'));
    btn.className='dp-node '+stateCls+(isGate?' chest-node':'');
-   const cleanTitle=node.title.replace(/^\d+\.\s*/,'');
    const stateLabel=completed?'مكتملة':(isFront?'المحطة الحالية':(unlocked?'متاحة':'مقفلة'));
    btn.setAttribute('aria-label',cleanTitle+' — '+stateLabel);
    if(isFront)btn.setAttribute('aria-current','step');
@@ -1535,13 +1548,11 @@ function renderDuolingoMap(){
  const heroStartBtn=$('duo-hero-start');
  if(heroStartBtn&&isLessonMap){
   const activeCtx=getActiveMapLessonContext(sub);
-  const m=ov[sub]||ov.lesson1;
   if(activeCtx.allDone){
+   heroStartBtn.hidden=false;
    heroStartBtn.textContent='راجع الدرس';
-  }else if(m.statusKey==='not_started'){
-   heroStartBtn.textContent='ابدأ المحطة '+ar(activeCtx.frontier+1);
   }else{
-   heroStartBtn.textContent='تابع المحطة '+ar(activeCtx.frontier+1);
+   heroStartBtn.hidden=true;
   }
  }
  const bypassBanner=$('stage-overview-banner');

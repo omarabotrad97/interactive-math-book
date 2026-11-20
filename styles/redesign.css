@@ -29,48 +29,35 @@ body[data-view="map"] .ai-floating-fab {
   display: none !important;
 }
 
-/* Calm, non-sticky Test Mode bar so it never steals sticky mobile viewport budget */
+/* Hide Test Mode banner from student viewport (toggle moved cleanly into #more-sheet) */
 .test-mode-banner {
-  position: relative !important;
-  top: auto !important;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  padding: 6px var(--space-3);
-  background: var(--surface-muted) !important;
-  color: var(--ink-slate) !important;
-  border-bottom: 1px solid var(--border-muted) !important;
-  box-shadow: none !important;
-  font-size: var(--text-xs-plus);
-  font-weight: 600;
+  display: none !important;
 }
 
-.test-mode-banner svg {
-  width: 15px;
-  height: 15px;
-  color: var(--brand-primary);
-  flex-shrink: 0;
-}
-
-#test-mode-toggle {
-  min-height: 32px;
-  padding: 4px 10px;
-  border-radius: var(--radius-chip);
-  border: 1px solid var(--border-soft);
-  background: var(--surface-card);
-  color: var(--brand-primary-dark);
-  font-size: var(--text-xs);
-  font-weight: 700;
-  cursor: pointer;
+#more-sheet .more-item {
+  min-height: var(--touch-min);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-card);
   transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
 }
 
-#test-mode-toggle:hover {
+#more-sheet .more-item:hover {
+  background: var(--surface-muted);
+  border-color: var(--border-soft);
+}
+
+#more-sheet .more-item:focus-visible {
+  outline: 2.5px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+#more-sheet #more-test-mode[aria-pressed="true"] {
   background: var(--brand-primary-tint);
-  border-color: var(--brand-primary);
+  border-color: var(--brand-primary-border);
+}
+
+#more-sheet #more-test-mode[aria-pressed="true"] strong {
+  color: var(--brand-primary-dark);
 }
 
 /* Main container spacing on Map view */
