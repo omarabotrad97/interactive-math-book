@@ -2669,6 +2669,102 @@ bdi[dir="ltr"] {
   }
 }
 
+.l1-ai-tutor-btn {
+  border-color: #d9b45b;
+  background: linear-gradient(180deg, #fffdf4 0%, #f9efce 100%);
+  color: #6b4706;
+  box-shadow: 0 1px 3px rgba(180, 130, 24, 0.14);
+}
+
+.l1-ai-tutor-btn:hover {
+  background: #f6e7b8;
+  border-color: #c88d21;
+}
+
+.l1-slide-tutor-bar {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: var(--space-3);
+  padding: var(--space-2-5) var(--space-3);
+  border-radius: var(--radius-md);
+  border: var(--border-mid) solid #cfe1d4;
+  background: linear-gradient(135deg, #f3faf5 0%, #fffdf5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2-5);
+  flex-wrap: wrap;
+}
+
+.l1-slide-tutor-bar.is-slide {
+  border-color: #dec57d;
+  background: linear-gradient(135deg, #fffdf3 0%, #f1f9f4 100%);
+}
+
+.l1-slide-tutor-copy {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs-plus);
+  font-weight: 700;
+  color: #1c4a3d;
+  min-width: 0;
+  flex: 1 1 200px;
+}
+
+.l1-slide-tutor-ico {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: var(--brand-primary-tint);
+  color: var(--brand-primary);
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+}
+
+.l1-slide-tutor-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  flex-wrap: wrap;
+}
+
+.l1-slide-tutor-btn {
+  min-height: 38px;
+  padding: var(--space-1) var(--space-2-5);
+  border-radius: var(--radius-pill);
+  border: var(--border-mid) solid var(--brand-primary-border);
+  background: var(--surface-card);
+  color: var(--brand-primary);
+  font: 700 12px var(--body);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.12s;
+}
+
+.l1-slide-tutor-btn:hover {
+  background: var(--brand-primary-tint);
+}
+
+.l1-slide-tutor-btn.is-voice {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: #fffef9;
+}
+
+.l1-slide-tutor-btn.is-voice:hover {
+  background: #136f5a;
+}
+
+@media (min-width: 560px) {
+  .l1-ai-tutor-btn .l1-audio-text {
+    display: inline;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .l1-progress-fill,
   .l1-option-btn,

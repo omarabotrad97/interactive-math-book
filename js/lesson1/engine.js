@@ -17,6 +17,7 @@ function renderHUD(){
  updateLearningNav();
  renderMilestoneBadgesHUD();
  renderStreakIndicator();
+ if(typeof renderDuolingoStats==='function')renderDuolingoStats();
 }
 function updateLearningNav(){
  const playUnlocked=isNodeUnlocked(1),missionUnlocked=isNodeUnlocked(2),infUnlocked=state.completed.size===12||isNodeCompleted(19);
@@ -1445,86 +1446,48 @@ function evaluateLocalJustification(rawInput,targetDigit=9){
  return{status:'unclear',feedback:'وضّح إجابتك أكثر: اذكر اسم المنزلة التي يقع فيها الرقم 9 في كلا العددين.'};
 }
 async function evaluateSemanticWithGemini(prompt, systemInstruction){
- const key = ((typeof apiKey !== 'undefined' ? apiKey : '') || localStorage.getItem('gemini_api_key') || '').trim();
- if (!key) return null;
  try {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 6000);
-  const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + encodeURIComponent(key);
-  const resp = await fetch(endpoint, {
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
+  const resp = await fetch('/api/ai/evaluate-text', {
    method: 'POST',
    headers: { 'Content-Type': 'application/json' },
    signal: controller.signal,
-   body: JSON.stringify({
-    system_instruction: { parts: [{ text: systemInstruction }] },
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    generationConfig: { maxOutputTokens: 250, temperature: 0.2 }
-   })
+   body: JSON.stringify({ prompt, systemInstruction })
   });
   clearTimeout(timeoutId);
   if (!resp.ok) return null;
-  const data = await resp.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
-  const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-  return parsed;
+  return await resp.json();
  } catch (err) {
-  console.warn('Semantic Gemini eval error:', err);
+  console.warn('Semantic eval fallback:', err);
   return null;
  }
 }
 
 async function evaluateAudioWithGemini(audioBlob, targetVal, mode = 'reading'){
- const key = ((typeof apiKey !== 'undefined' ? apiKey : '') || localStorage.getItem('gemini_api_key') || '').trim();
- if (!key || !audioBlob) return null;
+ if (!audioBlob) return null;
  try {
   const base64Data = await blobToBase64(audioBlob);
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 7000);
-  const endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + encodeURIComponent(key);
-
-  const prompt = mode === 'reading'
-   ? `أنت معلم رياضيات ذكي للصف الخامس الابتدائي. استمع جيدًا لهذا التسجيل الصوتي للطفل.
-العدد المطلوب قراءته باللغة العربية الفصحى هو: ${targetVal} (${typeof words === 'function' ? words(targetVal) : ''}).
-1. استخرج النص الدقيق لما نطق به الطفل باللغة العربية الفصحى واكتبه في transcript.
-2. قيّم صحة القراءة الرياضية:
-   - status: "correct" (إذا كانت القراءة صحيحة ومطابقة للعدد)، أو "partial" (إذا أخطأ في دورة أو نطق جزءاً)، أو "error" (إذا كانت خاطئة تماماً).
-   - feedback: جملة مشجعة ومختصرة باللغة العربية الفصحى بدون أي رموز إيموجي نهائياً توضح للطفل ما نطقه وتقييمه.
-أجب بصيغة JSON فقط: {"transcript": "...", "status": "correct", "feedback": "..."}`
-   : `أنت معلم رياضيات ذكي للصف الخامس الابتدائي. استمع لتسجيل الطفل لتبرير مسألة السؤال 17: هل تتساوى القيمة المنزلية للرقم 9 في العددين 9,605 و 149,605 ولماذا؟
-1. استخرج النص الدقيق لما نطق به الطفل واكتبه في transcript.
-2. قيّم تبريره الرياضي:
-   - status: "correct" (إذا بيّن أنه في آحاد الألوف في العددين أو 3 خانات لليمين)، أو "incomplete" (إذا ذكر 9000 فقط دون بيان المنزلة)، أو "insufficient" (إذا قال فقط لأنه نفس الرقم)، أو "misconception" (إذا قال العددان متساويان).
-   - feedback: جملة عربية مشجعة وموجهة بدون أي رموز إيموجي نهائياً.
-أجب بصيغة JSON فقط: {"transcript": "...", "status": "correct", "feedback": "..."}`;
-
-  const resp = await fetch(endpoint, {
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  const expectedWords = mode === 'reading' && typeof words === 'function' ? words(targetVal) : '';
+  const resp = await fetch('/api/ai/evaluate-audio', {
    method: 'POST',
    headers: { 'Content-Type': 'application/json' },
    signal: controller.signal,
    body: JSON.stringify({
-    contents: [{
-     role: 'user',
-     parts: [
-      { inline_data: { mime_type: audioBlob.type || 'audio/webm', data: base64Data } },
-      { text: prompt }
-     ]
-    }],
-    generationConfig: { maxOutputTokens: 350, temperature: 0.1 }
+    audioBase64: base64Data,
+    mimeType: audioBlob.type || 'audio/webm',
+    targetVal,
+    expectedWords,
+    mode
    })
   });
   clearTimeout(timeoutId);
-
-  if (!resp.ok) {
-   console.warn('Gemini Audio API returned HTTP', resp.status);
-   return null;
-  }
-  const data = await resp.json();
-  const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  const cleanJson = rawText.replace(/```json|```/g, '').trim();
-  const parsed = JSON.parse(cleanJson);
-  return parsed;
+  if (!resp.ok) return null;
+  return await resp.json();
  } catch (err) {
-  console.warn('Audio Gemini eval error:', err);
+  console.warn('Audio eval fallback:', err);
   return null;
  }
 }
@@ -1603,15 +1566,7 @@ function renderProduceRead(s, root){
 
    if (!BookAudio.isRecording && !d.hasAudio) {
     vWrap.innerHTML = '<button type="button" class="produce-record-btn" id="produce-start-rec-btn">' + getIconSVG('mic') + ' ابدأ التسجيل</button>'
-     + '<p class="produce-mic-notice" id="produce-mic-notice" style="display:none"></p>'
-     + (!currentKey ? '<div class="produce-gemini-key-box">'
-         + '<div class="produce-gemini-key-label">مفتاح الذكاء الاصطناعي (Gemini) لتقييم الصوت تلقائيًا:</div>'
-         + '<div class="produce-gemini-key-row">'
-         + '<input type="password" class="produce-inline-key-input" id="produce-inline-key" placeholder="AIzaSy..." value="">'
-         + '<button type="button" class="produce-save-key-btn" id="produce-save-key-btn">حفظ وتفعيل</button>'
-         + '</div>'
-         + '<div style="font-size:11px;color:#716447">المفتاح اختياري. في حال عدم توفره، ستتمكن من تأكيد قراءتك أو إرسالها لمعلمك ومتابعة الدرس مباشرة.</div>'
-         + '</div>' : '');
+     + '<p class="produce-mic-notice" id="produce-mic-notice" style="display:none"></p>';
    } else if (BookAudio.isRecording) {
     vWrap.innerHTML = '<div class="produce-recording-box">'
      + '<div class="produce-rec-indicator"><span class="produce-rec-dot"></span><span id="produce-rec-timer">جاري التسجيل... (0 ثانية)</span></div>'
@@ -1657,17 +1612,6 @@ function renderProduceRead(s, root){
      + '<button type="button" class="produce-teacher-confirm-btn" id="produce-teacher-confirm-btn">' + getIconSVG('speaker') + ' إرسال للمعلم</button>'
      + '</div>'
      + '</div>';
-
-    if (!currentKey) {
-     recHtml += '<div class="produce-gemini-key-box">'
-      + '<div class="produce-gemini-key-label">مفتاح الذكاء الاصطناعي (Gemini) لتقييم الصوت تلقائيًا:</div>'
-      + '<div class="produce-gemini-key-row">'
-      + '<input type="password" class="produce-inline-key-input" id="produce-inline-key" placeholder="AIzaSy..." value="">'
-      + '<button type="button" class="produce-save-key-btn" id="produce-save-key-btn">حفظ وتفعيل</button>'
-      + '</div>'
-      + '<div style="font-size:11px;color:#716447">أدخل المفتاح ليقوم الذكاء الاصطناعي بفحص تسجيلك الصوتي وتفريغه بدقة.</div>'
-      + '</div>';
-    }
 
     recHtml += '</div>';
     vWrap.innerHTML = recHtml;
@@ -1744,19 +1688,7 @@ function renderProduceRead(s, root){
     });
    }
 
-   const keyInp = vWrap.querySelector('#produce-inline-key');
-   const keyBtn = vWrap.querySelector('#produce-save-key-btn');
-   if (keyBtn && keyInp) {
-    keyBtn.addEventListener('click', () => {
-     const val = keyInp.value.trim();
-     if (val) {
-      localStorage.setItem('gemini_api_key', val);
-      if (typeof apiKey !== 'undefined') apiKey = val;
-      alert('تم حفظ مفتاح Gemini وتفعيله بنجاح!');
-      renderModeBody();
-     }
-    });
-   }
+   // Server-side evaluation enabled without client API key UI
 
    const tInput = vWrap.querySelector('#produce-transcript-input');
    if (tInput) {
@@ -1898,7 +1830,7 @@ function renderProduceRead(s, root){
      submitBtn.textContent = 'جاري تقييم الصوت بالذكاء الاصطناعي...';
 
      let aiEvaluated = false;
-     if (gemKey && BookAudio.recordedBlob) {
+     if (BookAudio.recordedBlob) {
       try {
        const audioRes = await evaluateAudioWithGemini(BookAudio.recordedBlob, d.currentNumber, 'reading');
        if (audioRes && audioRes.status && audioRes.feedback) {
@@ -1936,7 +1868,7 @@ function renderProduceRead(s, root){
      // If text is available (from Web Speech or student typed):
      if (text && text.trim()) {
       let evalRes = evaluateLocalNumberReading(text, d.currentNumber);
-      if (gemKey && evalRes.status !== 'correct') {
+      if (evalRes.status !== 'correct') {
        const semanticRes = await evaluateSemanticWithGemini(
         text,
         `أنت معلم رياضيات. قيّم قراءة الطفل للعدد ${d.currentNumber}. النص: "${text}". أجب بصيغة JSON: {"status":"correct"|"partial"|"error","feedback":"تغذية راجعة مشجعة بدون إيموجي"}`
@@ -1984,7 +1916,7 @@ function renderProduceRead(s, root){
      submitBtn.disabled = true;
      submitBtn.textContent = 'جاري تقييم القراءة...';
      let evalRes = evaluateLocalNumberReading(text, d.currentNumber);
-     if (gemKey && evalRes.status !== 'correct') {
+     if (evalRes.status !== 'correct') {
       const aiRes = await evaluateSemanticWithGemini(
        text,
        `أنت معلم رياضيات. قيّم قراءة الطفل للعدد ${d.currentNumber}. النص: "${text}". أجب بصيغة JSON: {"status":"correct"|"partial"|"error","feedback":"تغذية راجعة مشجعة بدون إيموجي"}`
@@ -2147,15 +2079,7 @@ function renderProduceExplain(s, root){
 
    if (!BookAudio.isRecording && !d.hasAudio) {
     vWrap.innerHTML = '<button type="button" class="produce-record-btn" id="produce-explain-start-rec">' + getIconSVG('mic') + ' ابدأ تسجيل التبرير</button>'
-     + '<p class="produce-mic-notice" id="produce-explain-mic-notice" style="display:none"></p>'
-     + (!currentKey ? '<div class="produce-gemini-key-box">'
-         + '<div class="produce-gemini-key-label">مفتاح الذكاء الاصطناعي (Gemini) لتقييم الصوت تلقائيًا:</div>'
-         + '<div class="produce-gemini-key-row">'
-         + '<input type="password" class="produce-inline-key-input" id="produce-explain-inline-key" placeholder="AIzaSy..." value="">'
-         + '<button type="button" class="produce-save-key-btn" id="produce-explain-save-key">حفظ وتفعيل</button>'
-         + '</div>'
-         + '<div style="font-size:11px;color:#716447">المفتاح اختياري لتقييم صوتك مباشرة بالذكاء الاصطناعي.</div>'
-         + '</div>' : '');
+     + '<p class="produce-mic-notice" id="produce-explain-mic-notice" style="display:none"></p>';
    } else if (BookAudio.isRecording) {
     vWrap.innerHTML = '<div class="produce-recording-box">'
      + '<div class="produce-rec-indicator"><span class="produce-rec-dot"></span><span id="produce-explain-rec-timer">جاري تسجيل التبرير... (0 ثانية)</span></div>'
@@ -2199,17 +2123,6 @@ function renderProduceExplain(s, root){
      + '<button type="button" class="produce-teacher-confirm-btn" id="produce-explain-teacher-confirm">' + getIconSVG('speaker') + ' إرسال للمعلم</button>'
      + '</div>'
      + '</div>';
-
-    if (!currentKey) {
-     recHtml += '<div class="produce-gemini-key-box">'
-      + '<div class="produce-gemini-key-label">مفتاح الذكاء الاصطناعي (Gemini) لتقييم الصوت تلقائيًا:</div>'
-      + '<div class="produce-gemini-key-row">'
-      + '<input type="password" class="produce-inline-key-input" id="produce-explain-inline-key" placeholder="AIzaSy..." value="">'
-      + '<button type="button" class="produce-save-key-btn" id="produce-explain-save-key">حفظ وتفعيل</button>'
-      + '</div>'
-      + '<div style="font-size:11px;color:#716447">أدخل المفتاح ليقوم الذكاء الاصطناعي بتقييم صوتك بدقة.</div>'
-      + '</div>';
-    }
 
     recHtml += '</div>';
     vWrap.innerHTML = recHtml;
@@ -2286,19 +2199,7 @@ function renderProduceExplain(s, root){
     });
    }
 
-   const keyInp = vWrap.querySelector('#produce-explain-inline-key');
-   const keyBtn = vWrap.querySelector('#produce-explain-save-key');
-   if (keyBtn && keyInp) {
-    keyBtn.addEventListener('click', () => {
-     const val = keyInp.value.trim();
-     if (val) {
-      localStorage.setItem('gemini_api_key', val);
-      if (typeof apiKey !== 'undefined') apiKey = val;
-      alert('تم حفظ مفتاح Gemini وتفعيله بنجاح!');
-      renderModeBody();
-     }
-    });
-   }
+   // Server-side evaluation enabled without client API key UI
 
    const tInput = vWrap.querySelector('#produce-explain-transcript');
    if (tInput) {
@@ -2454,7 +2355,7 @@ function renderProduceExplain(s, root){
      submitBtn.textContent = 'جاري تقييم التبرير الصوتي بالذكاء الاصطناعي...';
 
      let aiEvaluated = false;
-     if (gemKey && BookAudio.recordedBlob) {
+     if (BookAudio.recordedBlob) {
       try {
        const audioRes = await evaluateAudioWithGemini(BookAudio.recordedBlob, d.targetDigit, 'explain');
        if (audioRes && audioRes.status && audioRes.feedback) {
@@ -2492,7 +2393,7 @@ function renderProduceExplain(s, root){
      // If text is available:
      if (text && text.trim()) {
       let evalRes = evaluateLocalJustification(text, d.targetDigit);
-      if (gemKey && evalRes.status !== 'correct') {
+      if (evalRes.status !== 'correct') {
        const aiRes = await evaluateSemanticWithGemini(
         text,
         'أنت معلم رياضيات. السؤال: قيمة الرقم 9 متساوية في العددين 9,605 و 149,605 لأن... صنّف الإجابة بصيغة JSON: {"status":"correct"|"incomplete"|"insufficient"|"misconception"|"incorrect","feedback":"تغذية راجعة مشجعة بدون إيموجي"}'
@@ -2541,7 +2442,7 @@ function renderProduceExplain(s, root){
      submitBtn.textContent = 'جاري تقييم التبرير...';
 
      let evalRes = evaluateLocalJustification(text, d.targetDigit);
-     if (gemKey && evalRes.status !== 'correct') {
+     if (evalRes.status !== 'correct') {
       const aiRes = await evaluateSemanticWithGemini(
        text,
        'أنت معلم رياضيات. السؤال: قيمة الرقم 9 متساوية في العددين 9,605 و 149,605 لأن... صنّف الإجابة بصيغة JSON: {"status":"correct"|"incomplete"|"insufficient"|"misconception"|"incorrect","feedback":"تغذية راجعة مشجعة بدون إيموجي"}'

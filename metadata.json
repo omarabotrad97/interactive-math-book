@@ -1,0 +1,10 @@
+{
+  "name": "كتاب الرياضيات التفاعلي - الصف الخامس",
+  "description": "كتاب الرياضيات التفاعلي للصف الخامس مع المعلم الذكي والمحادثة الصوتية المباشرة لشرح الشرائح والدروس والإجابة عن أسئلة الطلاب.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

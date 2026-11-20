@@ -1,52 +1,52 @@
-/* Design Tokens: Single Source of Truth — كتاب الرياضيات Visual Identity */
+/* Design Tokens: Single Source of Truth — كتاب الرياضيات التفاعلي (الصف الخامس) */
 :root {
   color-scheme: light;
 
   /* Educational Period / Place-Value Cycle Tokens (WCAG AA on wash & white) */
   --c-millions: #1b596b;
-  --c-millions-wash: #d0edf4;
+  --c-millions-wash: #d8f0f6;
   --c-millions-border: #8ec8d8;
   --c-thousands: #8a365d;
-  --c-thousands-wash: #f5d7e4;
+  --c-thousands-wash: #f7deea;
   --c-thousands-border: #d99ab7;
-  --c-ones: #3f5a1f;
-  --c-ones-wash: #e1edc3;
+  --c-ones: #36591d;
+  --c-ones-wash: #e4f0ca;
   --c-ones-border: #a8c67e;
   --c-billions: #581c87;
   --c-billions-wash: #f5edff;
   --c-billions-border: #c084fc;
 
-  /* Core Warm Textbook Brand & Canvas Surfaces */
-  --canvas-desk: #f6f1e4;
-  --canvas-desk-deep: #ede4d0;
+  /* Calm Educational Canvas & Surface Hierarchy (~#F8FAF7 canvas, crisp white cards) */
+  --canvas-desk: #f8faf7;
+  --canvas-desk-deep: #f0f4ef;
   --surface-card: #ffffff;
-  --surface-muted: #f4efe2;
-  --surface-subtle: #ebe4d2;
-  --surface-cream-soft: #fffdf7;
-  --border-muted: #dfd6c1;
-  --border-neutral: #d8cfba;
-  --border-soft: #bcae92;
-  --border-ui: #7c7463;
-  --border-sage: #b9c7b3;
+  --surface-muted: #f2f6f3;
+  --surface-subtle: #e8eeea;
+  --surface-cream-soft: #ffffff;
+  --border-muted: #dfe7e2;
+  --border-neutral: #d4dfd8;
+  --border-soft: #b7c7be;
+  --border-ui: #6e8279;
+  --border-sage: #c2d4ca;
 
-  /* Warm Deep Ink Hierarchy (off-black on warm white, >= 4.5:1 AA) */
-  --ink-dark: #102a24;
-  --ink: #1e3f35;
-  --ink-slate: #2c4a40;
-  --muted: #4b6157;
-  --ink-subtle: #50645b;
+  /* High-Contrast Readable Ink Hierarchy (>= 4.5:1 WCAG AA) */
+  --ink-dark: #102820;
+  --ink: #1c362d;
+  --ink-slate: #2b473d;
+  --muted: #4e665c;
+  --ink-subtle: #5a7167;
 
-  /* Semantic Brand Emerald & Brass Gold */
-  --brand-primary: #0f5c4b;
-  --brand-primary-dark: #0a4236;
-  --brand-primary-tint: #e6f2ee;
-  --brand-primary-tint-deep: #d2e8df;
-  --brand-primary-border: #7fb3a2;
+  /* Semantic Brand Emerald (#116B55) & Limited Gold strictly for Rewards */
+  --brand-primary: #116b55;
+  --brand-primary-dark: #0b4f3f;
+  --brand-primary-tint: #ebf5f1;
+  --brand-primary-tint-deep: #d6ebe3;
+  --brand-primary-border: #8ec4b4;
   --brand-gold: #c88d21;
-  --brand-gold-wash: #fbf3db;
-  --brand-gold-border: #d8b566;
+  --brand-gold-wash: #fcf5e3;
+  --brand-gold-border: #dfc07c;
   --brand-mascot-body: #18795b;
-  --brand-mascot-wing: #0f5c4b;
+  --brand-mascot-wing: #116b55;
   --brand-mascot-belly: #7bc49d;
   --brand-mascot-accent: #d99b26;
 
@@ -54,43 +54,43 @@
   --warn-ink: #854007;
   --warn-wash: #fef3c7;
   --warn-border: #e5c365;
-  --success-ink: #0f5c4b;
-  --success-wash: #e8f5ee;
+  --success-ink: #0f5c49;
+  --success-wash: #e8f5ef;
   --success-border: #78b99a;
-  --green: #0f5c4b;
-  --forest: #0a4236;
-  --lime: #729f3b;
-  --paper: #fffef4;
-  --cream: #f5efe0;
-  --line: #d4ddc6;
-  --pink: #f5d7e4;
-  --blue: #d0edf4;
-  --leaf: #e1edc3;
-  --red: #a82834;
+  --green: #116b55;
+  --forest: #0b4f3f;
+  --lime: #5a8f3d;
+  --paper: #ffffff;
+  --cream: #f2f6f3;
+  --line: #dbe4de;
+  --pink: #f7deea;
+  --blue: #d8f0f6;
+  --leaf: #e4f0ca;
+  --red: #b4232c;
   --gold: #b87e16;
-  --gold-ink: #7a4f04;
+  --gold-ink: #7a5006;
 
-  /* Accessible Action Tokens (WCAG AA >= 4.5:1 with #ffffff foreground & on cream) */
-  --action-primary: #0f6b4b;
-  --action-primary-hover: #0a5239;
-  --action-primary-shadow: #073b29;
-  --action-primary-border: #0a5239;
-  --action-primary-wash: #e5f4ed;
+  /* Accessible Action Tokens */
+  --action-primary: #116b55;
+  --action-primary-hover: #0d5644;
+  --action-primary-shadow: #093e31;
+  --action-primary-border: #0d5644;
+  --action-primary-wash: #eaf5f1;
   --action-info: #0f5d84;
   --action-info-hover: #0a4766;
   --action-info-shadow: #083750;
   --action-info-wash: #e6f1f6;
   --action-info-border: #8ab8ce;
-  --focus-ring: #0f5c4b;
+  --focus-ring: #116b55;
 
-  /* Typography, Radius & Touch Target Tokens */
+  /* Typography & Touch Target Tokens */
   --body: 'Book Arabic', Tahoma, sans-serif;
-  --heading: 'Book Head', Tahoma, sans-serif;
+  --heading: 'Book Head', 'Book Arabic', Tahoma, sans-serif;
   --touch-min: 44px;
   --control-md: 48px;
   --control-lg: 52px;
 
-  /* Spacing Scale (4px base unit) */
+  /* Regular Spacing Scale (4, 8, 12, 16, 20, 24, 32px + fine steps) */
   --space-0-5: 2px;
   --space-0-75: 3px;
   --space-1: 4px;
@@ -105,30 +105,32 @@
   --space-4-5: 18px;
   --space-5: 20px;
   --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
 
-  /* Type Size Scale */
-  --text-micro: 9px;
-  --text-2xs: 10px;
-  --text-2xs-plus: 10.5px;
-  --text-xs: 11px;
-  --text-xs-plus: 11.5px;
-  --text-sm: 12px;
-  --text-sm-plus: 12.5px;
-  --text-md: 13px;
-  --text-md-plus: 13.5px;
-  --text-base: 14px;
-  --text-lg: 15px;
-  --text-xl: 16px;
-  --text-2xl: 18px;
-  --text-3xl: 20px;
-  --text-display: 24px;
+  /* Readable Mobile-Friendly Type Scale */
+  --text-micro: 10px;
+  --text-2xs: 11px;
+  --text-2xs-plus: 11.5px;
+  --text-xs: 12px;
+  --text-xs-plus: 12.5px;
+  --text-sm: 13px;
+  --text-sm-plus: 13.5px;
+  --text-md: 14px;
+  --text-md-plus: 15px;
+  --text-base: 16px;
+  --text-lg: 17px;
+  --text-xl: 18px;
+  --text-2xl: 20px;
+  --text-3xl: 22px;
+  --text-display: 26px;
 
-  /* Border Radius Scale */
+  /* Medium Balanced Border Radius Scale (Cards 16-20px) */
   --radius-2xs: 4px;
   --radius-xs: 6px;
   --radius-chip: 8px;
   --radius-sm: 10px;
-  --radius-card: 12px;
+  --radius-card: 14px;
   --radius-md: 14px;
   --radius-panel: 16px;
   --radius-lg: 18px;
@@ -136,7 +138,15 @@
   --radius-2xl: 24px;
   --radius-pill: 999px;
 
-  /* Border Widths */
+  /* Crisp Borders, Subtle Elevations & Smooth Interaction Timing */
+  --border-hairline: 1px;
   --border-mid: 1.5px;
-  --border-thick: 2px;
+  --border-thick: 1.5px;
+  --shadow-xs: 0 1px 3px rgba(16, 40, 32, 0.05);
+  --shadow-sm: 0 4px 12px rgba(16, 40, 32, 0.06);
+  --shadow-md: 0 10px 28px rgba(16, 40, 32, 0.10);
+  --shadow-sheet: 0 -8px 32px rgba(16, 40, 32, 0.14);
+  --dur-fast: 160ms;
+  --dur-normal: 220ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }

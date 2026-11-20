@@ -1,0 +1,1505 @@
+/* ==========================================================================
+   Duolingo-Inspired Navigation, 3-Column Workspace & Tactile Path System
+   Arabic RTL · Calm Emerald Brand Identity + Per-Lesson Accent Themes
+   ========================================================================== */
+
+#duolingo-map {
+  --duo-accent: #116b55;
+  --duo-accent-shadow: #0a4637;
+  --duo-accent-border: #0d5644;
+  --duo-accent-tint: #e8f5f0;
+  --duo-accent-text: #0b4f3f;
+  --duo-surface: #ffffff;
+  --duo-line: #e2e8e4;
+  --duo-line-strong: #cdd8d1;
+  --duo-streak: #e67e22;
+  --duo-xp: #d49419;
+  --duo-heart: #e5484d;
+  padding-top: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   1. Slim Mobile Top Bar (Brand + Live Duolingo Stats + Quick Lesson Picker)
+   -------------------------------------------------------------------------- */
+body[data-view="map"] #duolingo-map > .book-brand-bar.app-compact-header {
+  position: relative !important;
+  top: auto !important;
+  z-index: 37 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 50px !important;
+  padding: 6px 10px !important;
+  margin: 0 0 10px !important;
+  background: var(--duo-surface) !important;
+  border: 1.5px solid var(--duo-line) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 0 rgba(16, 42, 36, 0.05) !important;
+}
+
+.duo-mobile-start,
+.duo-mobile-end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+body[data-view="map"] .app-compact-header .book-brand-id {
+  padding: 2px !important;
+  gap: 8px !important;
+  min-width: 0;
+}
+
+body[data-view="map"] .app-compact-header .book-brand-mark {
+  width: 34px !important;
+  height: 34px !important;
+  flex-shrink: 0;
+}
+
+body[data-view="map"] .app-compact-header .book-brand-name {
+  font-size: 0.94rem !important;
+  line-height: 1.2 !important;
+}
+
+body[data-view="map"] .app-compact-header .book-brand-sub {
+  font-size: 0.72rem !important;
+}
+
+/* Live Stats Strip (Streak / XP / Hearts) */
+.duo-live-stats,
+.duo-rail-stats-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.duo-stat-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--heading);
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.duo-stat-item svg {
+  flex-shrink: 0;
+}
+
+.duo-stat-item.is-streak {
+  color: var(--duo-streak);
+}
+
+.duo-stat-item.is-xp {
+  color: var(--duo-xp);
+}
+
+.duo-stat-item.is-hearts {
+  color: var(--duo-heart);
+}
+
+body[data-view="map"] .app-compact-header .lesson-picker-trigger {
+  min-height: 38px !important;
+  padding: 6px 11px !important;
+  border-radius: 12px !important;
+  border: 2px solid var(--duo-line-strong) !important;
+  border-bottom-width: 3px !important;
+  background: #f8fbf9 !important;
+  color: var(--ink-dark) !important;
+  font-size: 0.84rem !important;
+  font-weight: 800 !important;
+  gap: 5px !important;
+  box-shadow: none !important;
+  flex-shrink: 0;
+  transition: transform 0.12s ease, border-color 0.16s ease, background-color 0.16s ease;
+}
+
+body[data-view="map"] .app-compact-header .lesson-picker-trigger:hover {
+  border-color: var(--duo-accent) !important;
+  background: var(--duo-accent-tint) !important;
+}
+
+body[data-view="map"] .app-compact-header .lesson-picker-trigger:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 540px) {
+  body[data-view="map"] .app-compact-header .book-brand-copy {
+    display: none !important;
+  }
+  .duo-mobile-end {
+    flex: 1 1 auto;
+    justify-content: space-between;
+  }
+  .duo-mobile-stats {
+    gap: 12px;
+  }
+  .duo-mobile-stats .duo-stat-item {
+    font-size: 0.9rem;
+    gap: 4px;
+  }
+  .duo-mobile-stats .duo-stat-item svg {
+    width: 17px;
+    height: 17px;
+  }
+  body[data-view="map"] .app-compact-header .lp-trigger-ico {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Workspace Layout (1-Col Mobile -> 3-Col Duolingo Desktop)
+   -------------------------------------------------------------------------- */
+.duo-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  width: 100%;
+}
+
+.duo-main-col {
+  min-width: 0;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.duo-companion-rail {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   3. 1-Tap Horizontal Quick Lesson & Units Strip
+   -------------------------------------------------------------------------- */
+.duo-quick-strip {
+  position: relative;
+  z-index: 36;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 2px 2px 6px;
+  margin: 0 0 10px;
+}
+
+.duo-quick-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.duo-qchip {
+  --chip-accent: var(--duo-accent);
+  --chip-shadow: var(--duo-accent-shadow);
+  --chip-tint: var(--duo-accent-tint);
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 5px 11px 5px 12px;
+  border-radius: 13px;
+  border: 2px solid var(--duo-line);
+  border-bottom-width: 4px;
+  background: var(--duo-surface);
+  color: var(--ink-dark);
+  font-family: var(--font);
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.12s ease, border-color 0.16s ease, background-color 0.16s ease, color 0.16s ease;
+}
+
+.duo-qchip:hover {
+  border-color: var(--chip-accent);
+  background: var(--chip-tint);
+}
+
+.duo-qchip:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.duo-qchip-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--chip-tint);
+  color: var(--chip-accent);
+  font-family: var(--heading);
+  font-size: 0.78rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.duo-qchip.is-active {
+  background: var(--chip-accent);
+  border-color: var(--chip-accent);
+  border-bottom-color: var(--chip-shadow);
+  color: #ffffff;
+}
+
+.duo-qchip.is-active .duo-qchip-num {
+  background: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+}
+
+.duo-qchip.is-overview.is-active {
+  background: #116b55;
+  border-color: #116b55;
+  border-bottom-color: #0a4637;
+  color: #ffffff;
+}
+
+.duo-qchip.is-done:not(.is-active) .duo-qchip-num {
+  background: #16805c;
+  color: #ffffff;
+}
+
+.duo-qchip.is-locked:not(.is-active) {
+  color: #6b7d75;
+  background: #f6f8f7;
+  border-color: #e4eae6;
+}
+
+.duo-qchip.is-locked:not(.is-active) .duo-qchip-num {
+  background: #e9efec;
+  color: #6b7d75;
+}
+
+/* --------------------------------------------------------------------------
+   4. Duolingo Sticky Colored Unit / Lesson Header Banner
+   -------------------------------------------------------------------------- */
+body[data-view="map"] #duo-lesson-wrap {
+  width: 100%;
+  max-width: 100% !important;
+}
+
+body[data-view="map"] #duo-lesson-topbar.duo-lesson-topbar.duo-sticky-banner {
+  position: sticky !important;
+  top: 8px !important;
+  z-index: 35 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  padding: 14px 16px 13px !important;
+  margin: 0 0 18px !important;
+  border-radius: 18px !important;
+  background: var(--duo-accent) !important;
+  border: 2px solid var(--duo-accent-border) !important;
+  border-bottom: 5px solid var(--duo-accent-shadow) !important;
+  color: #ffffff !important;
+  box-shadow: 0 -18px 0 12px var(--surface-canvas, #f8faf7), 0 8px 20px rgba(10, 42, 34, 0.16) !important;
+}
+
+.duo-banner-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.duo-banner-main {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+body[data-view="map"] #duo-lesson-topbar .lesson-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 5px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+body[data-view="map"] #duo-lesson-topbar .bc-link {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  padding: 2px 8px !important;
+  min-height: 26px !important;
+  font-size: 0.76rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+body[data-view="map"] #duo-lesson-topbar .bc-link:hover {
+  background: rgba(255, 255, 255, 0.28) !important;
+}
+
+body[data-view="map"] #duo-lesson-topbar .bc-sep {
+  color: rgba(255, 255, 255, 0.58) !important;
+  font-weight: 600;
+}
+
+body[data-view="map"] #duo-lesson-topbar .bc-current {
+  color: #ffffff !important;
+  font-weight: 800;
+}
+
+.duo-sticky-kicker {
+  margin: 0 0 2px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.35;
+}
+
+body[data-view="map"] #duo-lesson-topbar .lesson-meta-title {
+  margin: 0 !important;
+  font-family: var(--heading);
+  font-size: clamp(1.1rem, 2.6vw, 1.32rem) !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  line-height: 1.3 !important;
+}
+
+body[data-view="map"] #duo-lesson-topbar .lesson-meta-unit {
+  margin: 3px 0 0 !important;
+  font-size: 0.8rem !important;
+  color: rgba(255, 255, 255, 0.86) !important;
+  font-weight: 600;
+}
+
+.duo-banner-controls {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+body[data-view="map"] #duo-lesson-topbar .duo-open-lab-btn.duo-guide-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px !important;
+  padding: 7px 13px !important;
+  border-radius: 13px !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  border: 2px solid rgba(255, 255, 255, 0.36) !important;
+  border-bottom-width: 4px !important;
+  border-bottom-color: rgba(0, 0, 0, 0.24) !important;
+  color: #ffffff !important;
+  font-family: var(--heading);
+  font-size: 0.84rem !important;
+  font-weight: 800 !important;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: none !important;
+  transition: transform 0.12s ease, background-color 0.16s ease;
+}
+
+body[data-view="map"] #duo-lesson-topbar .duo-open-lab-btn.duo-guide-btn:hover {
+  background: rgba(255, 255, 255, 0.26) !important;
+}
+
+body[data-view="map"] #duo-lesson-topbar .duo-open-lab-btn.duo-guide-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px !important;
+}
+
+.duo-banner-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+body[data-view="map"] #duo-lesson-topbar .lesson-topbar-prog {
+  flex: 1 1 auto;
+  min-width: 110px;
+}
+
+body[data-view="map"] #duo-lesson-topbar .duo-sec-prog-row {
+  gap: 8px;
+}
+
+body[data-view="map"] #duo-lesson-topbar .duo-sec-prog-track {
+  height: 11px !important;
+  background: rgba(0, 0, 0, 0.24) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+}
+
+body[data-view="map"] #duo-lesson-topbar .duo-sec-prog-fill {
+  background: #ffffff !important;
+  border-radius: 999px !important;
+}
+
+body[data-view="map"] #duo-lesson-topbar .duo-sec-prog-pct {
+  color: #ffffff !important;
+  font-size: 0.84rem !important;
+  font-weight: 800 !important;
+}
+
+.duo-banner-cta {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 6px 15px;
+  border-radius: 12px;
+  border: 2px solid #ffffff;
+  border-bottom: 4px solid rgba(0, 0, 0, 0.22);
+  background: #ffffff;
+  color: var(--duo-accent-text);
+  font-family: var(--heading);
+  font-size: 0.86rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.12s ease, background-color 0.16s ease;
+}
+
+.duo-banner-cta:hover {
+  background: #f4faf7;
+}
+
+.duo-banner-cta:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+@media (max-width: 600px) {
+  body[data-view="map"] #duo-lesson-topbar.duo-lesson-topbar.duo-sticky-banner {
+    top: 6px !important;
+    padding: 11px 13px 10px !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+    border-radius: 16px !important;
+    box-shadow: 0 -16px 0 10px var(--surface-canvas, #f8faf7), 0 8px 18px rgba(10, 42, 34, 0.16) !important;
+  }
+  /* Hide breadcrumb row on small phones since 1-tap quick strip is right above */
+  body[data-view="map"] #duo-lesson-topbar .lesson-breadcrumb {
+    display: none !important;
+  }
+  .duo-sticky-kicker {
+    font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  body[data-view="map"] #duo-lesson-topbar .lesson-meta-title {
+    font-size: 1.04rem !important;
+  }
+  body[data-view="map"] #duo-lesson-topbar .lesson-meta-unit {
+    display: none !important;
+  }
+  body[data-view="map"] #duo-lesson-topbar .duo-open-lab-btn.duo-guide-btn {
+    padding: 6px 10px !important;
+    min-height: 36px !important;
+    font-size: 0.78rem !important;
+    gap: 5px;
+  }
+  .duo-banner-bottom-row {
+    padding-top: 6px;
+  }
+  .duo-banner-cta {
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    min-height: 34px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Duolingo Stage Dividers & Winding S-Curve Tactile 3D Path Nodes
+   -------------------------------------------------------------------------- */
+#duo-units.duo-units,
+.duo-units {
+  position: relative;
+  z-index: 1 !important;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 16px;
+}
+
+.dp-unit {
+  position: relative;
+  z-index: 1;
+  padding: 2px 0 10px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Keep open-popover stage above sibling stages, strictly contained inside #duo-units */
+#duo-units .dp-unit.stage-unit.has-open-popover {
+  z-index: 12 !important;
+}
+
+#duo-units .dp-wrap.popover-open {
+  z-index: 15 !important;
+}
+
+/* Clean Duolingo Hairline Section Divider */
+.dp-head.duo-stage-divider {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  margin: 6px 0 16px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.duo-divider-line {
+  flex: 1 1 24px;
+  height: 2px;
+  background: var(--duo-line);
+  border-radius: 2px;
+}
+
+.dp-head.duo-stage-divider .dp-head-pill {
+  flex: 0 1 auto;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  padding: 4px 10px !important;
+  border-radius: 14px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  width: auto !important;
+}
+
+.dp-head.duo-stage-divider .stage-step-badge {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 9px !important;
+  font-size: 0.84rem !important;
+  font-weight: 800 !important;
+  background: var(--duo-accent-tint) !important;
+  color: var(--duo-accent-text) !important;
+  border: 1.5px solid rgba(17, 107, 85, 0.16);
+}
+
+.dp-unit.is-stage-current .dp-head.duo-stage-divider .stage-step-badge {
+  background: var(--duo-accent) !important;
+  color: #ffffff !important;
+  border-color: var(--duo-accent);
+}
+
+.dp-unit.is-stage-done .dp-head.duo-stage-divider .stage-step-badge {
+  background: #16805c !important;
+  color: #ffffff !important;
+  border-color: #16805c;
+}
+
+.dp-head.duo-stage-divider .dp-head-main {
+  text-align: center;
+}
+
+.dp-head.duo-stage-divider .dp-head-main h2 {
+  margin: 0 !important;
+  font-size: 0.96rem !important;
+  font-weight: 800 !important;
+  color: #465b53 !important;
+  line-height: 1.3 !important;
+}
+
+.dp-unit.is-stage-current .dp-head.duo-stage-divider .dp-head-main h2 {
+  color: var(--ink-dark) !important;
+}
+
+.dp-head.duo-stage-divider .dp-head-main small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  color: #748980 !important;
+}
+
+/* Winding Path Canvas */
+.dp-path {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px !important;
+  padding: 16px 12px 18px !important;
+}
+
+.dp-track-segment.inactive {
+  stroke: #dce5e0 !important;
+  stroke-width: 6 !important;
+  stroke-dasharray: 9 9 !important;
+  stroke-linecap: round;
+}
+
+.dp-track-segment.golden {
+  stroke: var(--duo-accent) !important;
+  stroke-width: 6 !important;
+  stroke-dasharray: none !important;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+
+/* Tactile 3D-Press Duolingo Circular Station Nodes */
+.dp-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateX(var(--x, 0px));
+}
+
+.dp-wrap.current-wrap {
+  padding-top: 0 !important;
+  margin-top: 2px !important;
+}
+
+/* Centered Floating Callout Above Current Node */
+#duolingo-map .dp-callout {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none;
+  z-index: 6;
+  margin: 0 auto 14px !important;
+  padding: 6px 18px !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  border: 2px solid var(--duo-line-strong) !important;
+  color: var(--duo-accent-text) !important;
+  font-family: var(--heading);
+  font-size: 0.92rem !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 10px rgba(15, 45, 36, 0.1) !important;
+  animation: duoCalloutFloatY 2s ease-in-out infinite !important;
+  white-space: nowrap;
+}
+
+#duolingo-map .dp-callout::after {
+  content: "";
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  background: #ffffff;
+  border: 0 !important;
+  border-right: 2px solid var(--duo-line-strong) !important;
+  border-bottom: 2px solid var(--duo-line-strong) !important;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+@keyframes duoCalloutFloatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+#duolingo-map .dp-node {
+  position: relative;
+  width: 74px !important;
+  height: 68px !important;
+  border-radius: 50% !important;
+  border: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease !important;
+}
+
+#duolingo-map .dp-node::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  inset: auto;
+  top: 8px;
+  left: 15px;
+  width: 22px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.24);
+  transform: rotate(-18deg);
+  pointer-events: none;
+}
+
+/* Front / Current Active Station */
+#duolingo-map .dp-node.front,
+#duolingo-map .dp-node.current {
+  background: var(--duo-accent) !important;
+  color: #ffffff !important;
+  box-shadow: 0 7px 0 var(--duo-accent-shadow), 0 12px 22px rgba(10, 50, 39, 0.2) !important;
+}
+
+#duolingo-map .dp-node.front:hover,
+#duolingo-map .dp-node.current:hover {
+  filter: brightness(1.06);
+}
+
+#duolingo-map .dp-node.front:active,
+#duolingo-map .dp-node.current:active {
+  transform: translateY(5px) !important;
+  box-shadow: 0 2px 0 var(--duo-accent-shadow) !important;
+}
+
+/* Completed Station (Duolingo Gold Mastered) */
+#duolingo-map .dp-node.completed {
+  background: #d99b26 !important;
+  color: #ffffff !important;
+  box-shadow: 0 7px 0 #a36f12, 0 10px 18px rgba(163, 111, 18, 0.2) !important;
+}
+
+#duolingo-map .dp-node.completed .dp-ico,
+#duolingo-map .dp-node.completed .dp-ico svg {
+  color: #ffffff !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+
+#duolingo-map .dp-node.completed:active {
+  transform: translateY(5px) !important;
+  box-shadow: 0 2px 0 #a36f12 !important;
+}
+
+/* Compact 3-Star Crown Badge perched cleanly at top edge of completed stations */
+body[data-view="map"] #duolingo-map .dp-stars-badge {
+  position: absolute !important;
+  inset: auto !important;
+  top: -11px !important;
+  bottom: auto !important;
+  left: 50% !important;
+  right: auto !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  transform: translateX(-50%) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  padding: 2px 7px !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  border: 1.5px solid #e0b34c !important;
+  box-shadow: 0 2px 0 #c89220, 0 4px 10px rgba(154, 102, 14, 0.16) !important;
+  line-height: 1 !important;
+  pointer-events: none;
+  z-index: 4 !important;
+}
+
+body[data-view="map"] #duolingo-map .dp-stars-badge svg.dp-star.star-side {
+  width: 11px !important;
+  height: 11px !important;
+}
+
+body[data-view="map"] #duolingo-map .dp-stars-badge svg.dp-star.star-center {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* Available (Unlocked, Not Yet Current) */
+#duolingo-map .dp-node.available {
+  background: var(--duo-accent) !important;
+  color: #ffffff !important;
+  opacity: 0.92;
+  box-shadow: 0 7px 0 var(--duo-accent-shadow) !important;
+}
+
+#duolingo-map .dp-node.available .dp-ico {
+  color: #ffffff !important;
+}
+
+#duolingo-map .dp-node.available:active {
+  transform: translateY(5px) !important;
+  box-shadow: 0 2px 0 var(--duo-accent-shadow) !important;
+}
+
+/* Locked Station (Authentic Duolingo Tactile Slate) */
+#duolingo-map .dp-node.locked {
+  background: #e5ebe8 !important;
+  color: #93a69e !important;
+  box-shadow: 0 7px 0 #c6d2cc !important;
+}
+
+#duolingo-map .dp-node.locked .dp-ico {
+  color: #8b9e96 !important;
+}
+
+#duolingo-map .dp-node.locked:active {
+  transform: translateY(4px) !important;
+  box-shadow: 0 3px 0 #c6d2cc !important;
+}
+
+/* Treasure Chest Gate Node */
+#duolingo-map .dp-node.chest-node {
+  width: 82px !important;
+  height: 74px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#duolingo-map .dp-node.chest-node::before {
+  display: none !important;
+}
+
+/* Concentric Progress Ring Perfectly Centered Around Current Node */
+#duolingo-map .dp-ring-svg {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 96px !important;
+  height: 96px !important;
+  transform: translate(-50%, calc(-50% + 3px)) !important;
+  pointer-events: none;
+}
+
+#duolingo-map .dp-ring-track {
+  fill: none;
+  stroke: #dfe9e4 !important;
+  stroke-width: 7 !important;
+}
+
+#duolingo-map .dp-ring-fill {
+  fill: none;
+  stroke: var(--duo-accent) !important;
+  stroke-width: 7 !important;
+  stroke-linecap: round;
+}
+
+/* Clean Unboxed Caption Below Each Station */
+.dp-node-caption {
+  margin-top: 13px !important;
+  max-width: 164px !important;
+  text-align: center;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+.dp-node-title {
+  display: block;
+  font-size: 0.86rem !important;
+  font-weight: 700 !important;
+  color: var(--ink-dark) !important;
+  line-height: 1.35 !important;
+}
+
+.dp-node-state {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  color: #6b7f77 !important;
+}
+
+.dp-wrap.done .dp-node-state {
+  color: #9e6b0f !important;
+}
+
+.dp-wrap.current-wrap .dp-node-state {
+  color: var(--duo-accent-text) !important;
+}
+
+/* Duolingo Colored Tactile Node Popover */
+#duolingo-map .dp-popover {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(296px, calc(100vw - 32px)) !important;
+  padding: 16px 16px 15px !important;
+  border-radius: 18px !important;
+  background: var(--duo-accent) !important;
+  border: 2px solid var(--duo-accent-border) !important;
+  border-bottom: 5px solid var(--duo-accent-shadow) !important;
+  color: #ffffff !important;
+  box-shadow: 0 14px 32px rgba(10, 42, 34, 0.24) !important;
+  z-index: 20 !important;
+  text-align: right;
+}
+
+/* Floating Jump-to-Current Pill: strictly opaque and above all path content */
+body[data-view="map"] #duo-jump-current.duo-jump-current {
+  z-index: 40 !important;
+  background: #ffffff !important;
+  opacity: 1 !important;
+  border: 2px solid var(--duo-accent, #116b55) !important;
+  border-bottom-width: 4px !important;
+  color: var(--duo-accent-text, #0b4f3f) !important;
+  box-shadow: 0 6px 20px rgba(10, 42, 34, 0.18) !important;
+}
+
+#duolingo-map .dp-popover.open-above {
+  top: auto !important;
+  bottom: calc(100% + 16px) !important;
+}
+
+#duolingo-map .dp-popover-arrow {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  background: var(--duo-accent);
+  border-top: 2px solid var(--duo-accent-border);
+  border-left: 2px solid var(--duo-accent-border);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+#duolingo-map .dp-popover.open-above .dp-popover-arrow {
+  top: auto;
+  bottom: -9px;
+  border-top: 0;
+  border-left: 0;
+  border-right: 2px solid var(--duo-accent-shadow);
+  border-bottom: 2px solid var(--duo-accent-shadow);
+}
+
+#duolingo-map .dp-popover h3 {
+  margin: 0 0 4px !important;
+  font-family: var(--heading);
+  font-size: 1.04rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  line-height: 1.35 !important;
+}
+
+#duolingo-map .dp-popover p {
+  margin: 0 0 13px !important;
+  font-size: 0.86rem !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  line-height: 1.45 !important;
+}
+
+#duolingo-map .dp-popover-btn {
+  width: 100%;
+  min-height: 44px !important;
+  padding: 10px 14px !important;
+  border-radius: 14px !important;
+  border: 0 !important;
+  border-bottom: 4px solid rgba(0, 0, 0, 0.18) !important;
+  background: #ffffff !important;
+  color: var(--duo-accent-text) !important;
+  font-family: var(--heading);
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.15s ease;
+}
+
+#duolingo-map .dp-popover-btn:hover {
+  background: #f5fbf8 !important;
+}
+
+#duolingo-map .dp-popover-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px !important;
+}
+
+/* Locked Popover Variant */
+#duolingo-map .dp-popover.locked-pop {
+  background: #f4f7f5 !important;
+  border-color: #d6e0db !important;
+  border-bottom-color: #bcc9c2 !important;
+  color: var(--ink-dark) !important;
+}
+
+#duolingo-map .dp-popover.locked-pop .dp-popover-arrow {
+  background: #f4f7f5;
+  border-color: #d6e0db;
+}
+
+#duolingo-map .dp-popover.locked-pop h3 {
+  color: var(--ink-dark) !important;
+}
+
+#duolingo-map .dp-popover.locked-pop p {
+  color: #536860 !important;
+}
+
+#duolingo-map .dp-popover.locked-pop .dp-popover-btn.is-locked {
+  background: #e1e9e5 !important;
+  color: #6b7d75 !important;
+  border-bottom-color: #c7d2cc !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. End-of-Path Next Lesson Jump Card
+   -------------------------------------------------------------------------- */
+.duo-next-lesson-card {
+  --next-accent: #0e6b74;
+  --next-shadow: #08484f;
+  --next-tint: #e5f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 18px 0 24px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: var(--next-tint);
+  border: 2px solid color-mix(in srgb, var(--next-accent) 26%, #ffffff);
+}
+
+.duo-next-copy {
+  min-width: 0;
+  flex: 1 1 200px;
+}
+
+.duo-next-kicker {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--next-accent);
+  margin-bottom: 3px;
+}
+
+.duo-next-title {
+  margin: 0;
+  font-family: var(--heading);
+  font-size: 1.06rem;
+  font-weight: 800;
+  color: var(--ink-dark);
+}
+
+.duo-next-cta {
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 14px;
+  border: 0;
+  border-bottom: 4px solid var(--next-shadow);
+  background: var(--next-accent);
+  color: #ffffff;
+  font-family: var(--heading);
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+
+.duo-next-cta:hover {
+  filter: brightness(1.06);
+}
+
+.duo-next-cta:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   7. Duolingo Units & Sections Cards Polish
+   -------------------------------------------------------------------------- */
+.duo-sections-root .continue-learning-card {
+  border: 2px solid #116b55 !important;
+  border-bottom: 5px solid #0a4637 !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+}
+
+.duo-sections-root .clc-cta-btn,
+.duo-sections-root .duo-sec-card.is-current .duo-sec-cta-btn {
+  border-radius: 14px !important;
+  border-bottom: 4px solid #0a4637 !important;
+  background: #116b55 !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+
+.duo-sections-root .clc-cta-btn:active,
+.duo-sections-root .duo-sec-card .duo-sec-cta-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px !important;
+}
+
+.duo-sections-root .duo-sec-card {
+  border: 2px solid var(--duo-line) !important;
+  border-bottom: 4px solid var(--duo-line-strong) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+}
+
+.duo-sections-root .duo-sec-card.is-current {
+  border-color: #116b55 !important;
+  border-bottom-color: #0a4637 !important;
+}
+
+.duo-sections-root .duo-sec-cta-btn {
+  border-radius: 13px !important;
+  border: 2px solid var(--duo-line-strong) !important;
+  border-bottom-width: 4px !important;
+  font-weight: 800 !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. Desktop Right Nav Rail (>= 1024px) & Left Companion Rail (>= 1160px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 1024px) {
+  body[data-view="map"] #bottom-tabs.bottom-tabs {
+    width: 236px !important;
+    border-left: 2px solid var(--duo-line) !important;
+    gap: 8px !important;
+    padding: 20px 14px !important;
+  }
+
+  body[data-view="map"] {
+    padding-right: 236px !important;
+  }
+
+  body[data-view="map"] #bottom-tabs .bt-rail-head {
+    cursor: pointer;
+    border-radius: 14px;
+    padding: 8px 10px 14px !important;
+    margin-bottom: 8px !important;
+    transition: background-color 0.15s ease;
+  }
+
+  body[data-view="map"] #bottom-tabs .bt-rail-head:hover {
+    background: #f2f7f5;
+  }
+
+  body[data-view="map"] #bottom-tabs.bottom-tabs .bt {
+    flex: 0 0 auto !important;
+    height: auto !important;
+    min-height: 48px !important;
+    width: 100% !important;
+    padding: 10px 14px !important;
+    border-radius: 14px !important;
+    border: 2px solid transparent !important;
+    font-weight: 800 !important;
+    font-size: 0.96rem !important;
+    color: #4b6159 !important;
+    background: transparent !important;
+    transition: background-color 0.14s ease, border-color 0.14s ease, color 0.14s ease;
+  }
+
+  body[data-view="map"] #bottom-tabs.bottom-tabs .bt:hover {
+    background: #f3f7f5 !important;
+    color: var(--ink-dark) !important;
+  }
+
+  body[data-view="map"] #bottom-tabs.bottom-tabs .bt.on {
+    background: #e8f5f0 !important;
+    border-color: #7cc0a8 !important;
+    color: #0b4f3f !important;
+  }
+}
+
+@media (min-width: 1160px) {
+  body[data-view="map"] .desk {
+    max-width: 1040px !important;
+    padding: 18px 24px 40px !important;
+  }
+
+  /* Hide mobile top header on wide desktop: Brand is in Right Rail, Stats & Lessons are in Left Rail */
+  body[data-view="map"] #duolingo-map > .book-brand-bar.app-compact-header {
+    display: none !important;
+  }
+
+  .duo-workspace {
+    grid-template-columns: minmax(0, 620px) 296px;
+    justify-content: center;
+    gap: 26px;
+  }
+
+  .duo-main-col {
+    margin: 0;
+  }
+
+  .duo-companion-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: sticky;
+    top: 18px;
+    width: 296px;
+  }
+
+  .duo-rail-stats-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 2px solid var(--duo-line);
+  }
+
+  .duo-rail-stats-bar .duo-stat-item {
+    font-size: 0.98rem;
+    gap: 6px;
+  }
+
+  .duo-rail-card {
+    padding: 15px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 2px solid var(--duo-line);
+  }
+
+  .duo-rail-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 11px;
+  }
+
+  .duo-rail-card-head h2 {
+    margin: 0;
+    font-family: var(--heading);
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--ink-dark);
+  }
+
+  .duo-rail-link-btn {
+    background: transparent;
+    border: 0;
+    padding: 4px 6px;
+    border-radius: 8px;
+    color: var(--duo-accent);
+    font-family: var(--heading);
+    font-size: 0.82rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .duo-rail-link-btn:hover {
+    background: var(--duo-accent-tint);
+  }
+
+  .duo-rail-lessons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .duo-rail-lesson-btn {
+    --row-accent: #116b55;
+    --row-tint: #e8f5f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 14px;
+    border: 2px solid transparent;
+    background: #f9fbfa;
+    text-align: right;
+    cursor: pointer;
+    transition: border-color 0.14s ease, background-color 0.14s ease;
+  }
+
+  .duo-rail-lesson-btn:hover {
+    background: var(--row-tint);
+    border-color: color-mix(in srgb, var(--row-accent) 30%, #ffffff);
+  }
+
+  .duo-rail-lesson-btn.is-active {
+    background: var(--row-tint);
+    border-color: var(--row-accent);
+  }
+
+  .duo-rl-badge {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: var(--row-accent);
+    color: #ffffff;
+    font-family: var(--heading);
+    font-size: 0.86rem;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .duo-rail-lesson-btn.is-locked .duo-rl-badge {
+    background: #dce4e0;
+    color: #6b7d75;
+  }
+
+  .duo-rl-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .duo-rl-title {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--ink-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .duo-rl-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .duo-rl-track {
+    flex: 1 1 auto;
+    height: 7px;
+    border-radius: 999px;
+    background: #e3ebe7;
+    overflow: hidden;
+  }
+
+  .duo-rl-track i {
+    display: block;
+    height: 100%;
+    background: var(--row-accent);
+    border-radius: 999px;
+  }
+
+  .duo-rl-bar-row small {
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: #5e736b;
+    min-width: 30px;
+    text-align: left;
+  }
+
+  .duo-rail-pct {
+    font-family: var(--heading);
+    font-size: 0.94rem;
+    font-weight: 800;
+    color: var(--duo-accent);
+  }
+
+  .duo-rail-unit-track {
+    width: 100%;
+    height: 11px;
+    border-radius: 999px;
+    background: #e5ede9;
+    overflow: hidden;
+    margin-bottom: 9px;
+  }
+
+  .duo-rail-unit-track i {
+    display: block;
+    height: 100%;
+    background: var(--duo-accent);
+    border-radius: 999px;
+  }
+
+  .duo-rail-prog-caption {
+    margin: 0 0 12px;
+    font-size: 0.83rem;
+    color: #52675f;
+    line-height: 1.45;
+  }
+
+  .duo-rail-quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .duo-rail-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 42px;
+    padding: 8px 12px;
+    border-radius: 13px;
+    border: 2px solid var(--duo-line-strong);
+    border-bottom-width: 4px;
+    background: #ffffff;
+    color: var(--ink-dark);
+    font-family: var(--heading);
+    font-size: 0.86rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.1s ease, background-color 0.14s ease, border-color 0.14s ease;
+  }
+
+  .duo-rail-action-btn:hover {
+    background: #f5f9f7;
+    border-color: var(--duo-accent);
+  }
+
+  .duo-rail-action-btn:active {
+    transform: translateY(2px);
+    border-bottom-width: 2px;
+  }
+
+  .duo-rail-action-btn.is-primary {
+    background: var(--duo-accent);
+    border-color: var(--duo-accent);
+    border-bottom-color: var(--duo-accent-shadow);
+    color: #ffffff;
+  }
+
+  .duo-rail-action-btn.is-primary:hover {
+    filter: brightness(1.06);
+  }
+}
+
+/* Smart Tutor Desktop Coexistence: Hide Companion Rail & Reserve Full Side Panel Space */
+@media (min-width: 1024px) {
+  body[data-ai-open="true"][data-view="map"] .desk {
+    max-width: 100% !important;
+    padding-right: 16px !important;
+    padding-left: calc(var(--ai-panel-width, 448px) + 20px) !important;
+  }
+
+  body[data-ai-open="true"][data-view="map"] .duo-companion-rail {
+    display: none !important;
+  }
+
+  body[data-ai-open="true"][data-view="map"] .duo-workspace {
+    grid-template-columns: minmax(0, 560px) !important;
+    justify-content: center !important;
+  }
+}
+
+/* Focus-Visible Accessibility */
+.duo-quick-strip button:focus-visible,
+.duo-companion-rail button:focus-visible,
+.duo-next-lesson-card button:focus-visible,
+.duo-sticky-banner button:focus-visible,
+.bt-rail-head:focus-visible {
+  outline: 2.5px solid var(--focus-ring) !important;
+  outline-offset: 2px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #duolingo-map .dp-callout {
+    animation: none !important;
+  }
+  .duo-qchip,
+  #duolingo-map .dp-node,
+  .duo-banner-cta,
+  .duo-next-cta,
+  .duo-rail-action-btn {
+    transition: none !important;
+  }
+}

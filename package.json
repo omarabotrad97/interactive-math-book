@@ -2,17 +2,25 @@
   "name": "interactive-math-book",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js",
-    "build": "node --check server.js",
-    "lint": "node --check server.js"
+    "dev": "node server.ts",
+    "start": "node server.ts",
+    "build": "npx tsc --noEmit",
+    "lint": "npx tsc --noEmit"
   },
   "devDependencies": {
     "axe-core": "^4.14.0",
     "playwright": "^1.65.0"
   },
   "dependencies": {
-    "express": "^5.3.0"
+    "@google/genai": "^3.4.0",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.6",
+    "@types/ws": "^8.18.2",
+    "express": "^5.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "ws": "^8.23.0"
   }
 }

@@ -77,13 +77,73 @@ if($('duo-open-lab-btn'))$('duo-open-lab-btn').addEventListener('click',()=>{
  if(state.mapSubView==='lesson5'&&typeof openTableStrategyLab==='function'){ openTableStrategyLab(); return; }
  if(state.mapSubView==='lesson4'&&typeof openNegativeNumbersLab==='function'){ openNegativeNumbersLab(); return; }
  if(state.mapSubView==='lesson3'&&typeof openOperationsLab==='function'){ openOperationsLab(); return; }
- if(state.mapSubView==='lesson2'&&typeof openComparisonLab==='function'){ openComparisonLab(); }
+ if(state.mapSubView==='lesson2'&&typeof openComparisonLab==='function'){ openComparisonLab(); return; }
+ if(typeof showCurriculumSheet==='function'){ showCurriculumSheet('lesson1'); }
 });
 setupComparisonLabEvents();
 if(typeof setupOperationsLabEvents === 'function') setupOperationsLabEvents();
 if(typeof setupNegLineLabEvents === 'function') setupNegLineLabEvents();
 if(typeof setupTableLabEvents === 'function') setupTableLabEvents();
 if($('duo-back-sections'))$('duo-back-sections').addEventListener('click',()=>setMapSubView('sections',true));
+if($('bc-to-units'))$('bc-to-units').addEventListener('click',()=>setMapSubView('units',true));
+if($('compact-brand-home'))$('compact-brand-home').addEventListener('click',()=>{
+ if(state.mapSubView==='sections')setMapSubView('units',true);
+ else setMapSubView('sections',true);
+});
+if($('bt-rail-brand')){
+ const goSections=()=>{
+  if(state.viewMode!=='map')showDuolingoMap(false);
+  if(state.mapSubView==='sections')setMapSubView('units',true);
+  else setMapSubView('sections',true);
+ };
+ $('bt-rail-brand').addEventListener('click',goSections);
+ $('bt-rail-brand').addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();goSections();}
+ });
+}
+if($('duo-rail-all-units'))$('duo-rail-all-units').addEventListener('click',()=>{
+ if(state.mapSubView==='units')setMapSubView('sections',true);
+ else setMapSubView('units',true);
+});
+if($('duo-rail-open-tutor'))$('duo-rail-open-tutor').addEventListener('click',()=>{
+ if(typeof openAiTutor==='function')openAiTutor();
+});
+if($('duo-rail-open-report'))$('duo-rail-open-report').addEventListener('click',()=>{
+ $('report-open')?.click();
+});
+if($('lesson-picker-btn'))$('lesson-picker-btn').addEventListener('click',()=>{
+ if(typeof openLessonPickerSheet==='function')openLessonPickerSheet();
+});
+if($('lesson-picker-close'))$('lesson-picker-close').addEventListener('click',()=>{
+ if(typeof closeLessonPickerSheet==='function')closeLessonPickerSheet(true);
+});
+if($('lesson-picker-sheet')){
+ const lpSheet=$('lesson-picker-sheet');
+ lpSheet.addEventListener('click',e=>{
+  if(e.target===lpSheet&&typeof closeLessonPickerSheet==='function')closeLessonPickerSheet(true);
+ });
+ lpSheet.addEventListener('close',()=>{
+  const trigger=$('lesson-picker-btn');
+  if(trigger)trigger.setAttribute('aria-expanded','false');
+  if(typeof lessonPickerReturnFocus==='undefined'||lessonPickerReturnFocus){
+   requestAnimationFrame(()=>trigger?.focus());
+  }
+ });
+ lpSheet.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'||e.key==='Home'||e.key==='End'){
+   const items=[...lpSheet.querySelectorAll('.lp-switch-btn, .lp-item-btn')];
+   if(!items.length)return;
+   const idx=items.indexOf(document.activeElement);
+   let nextIdx=0;
+   if(e.key==='Home')nextIdx=0;
+   else if(e.key==='End')nextIdx=items.length-1;
+   else if(e.key==='ArrowDown')nextIdx=idx<0?0:(idx+1)%items.length;
+   else if(e.key==='ArrowUp')nextIdx=idx<=0?items.length-1:idx-1;
+   e.preventDefault();
+   items[nextIdx]?.focus();
+  }
+ });
+}
 if($('duo-hero-start'))$('duo-hero-start').addEventListener('click',()=>{
  if(state.mapSubView==='lesson2'&&typeof openLesson2Node==='function'){
   openLesson2Node(currentLesson2Frontier());
@@ -112,6 +172,7 @@ window.addEventListener('scroll',()=>{
   scrollTicking=true;
   requestAnimationFrame(()=>{
    updateJumpButton();
+   if(typeof updateStickyStageBanner==='function')updateStickyStageBanner();
    scrollTicking=false;
   });
  }
@@ -119,6 +180,7 @@ window.addEventListener('scroll',()=>{
 window.addEventListener('resize',()=>{
  if(state.viewMode==='map'){
   updateJumpButton();
+  if(typeof updateStickyStageBanner==='function')updateStickyStageBanner();
   updatePathTrackSVGs();
  }
 },{passive:true});
@@ -154,6 +216,11 @@ if($('st-sheet-start-btn')){
     if(l4) l4.unlocked = true;
     saveState();
     setMapSubView('lesson4',true);
+   }else if(curItem==='lesson5'){
+    const l5 = typeof getLesson5State === 'function' ? getLesson5State() : null;
+    if(l5) l5.unlocked = true;
+    saveState();
+    setMapSubView('lesson5',true);
    }else{
     setMapSubView('lesson1',true);
    }

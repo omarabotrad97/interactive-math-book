@@ -446,6 +446,9 @@
       if (resultView) resultView.hidden = true;
       setBackgroundIsolated(false);
     }
+    if (typeof window.notifyAiTutorContextChanged === 'function') {
+      window.notifyAiTutorContextChanged();
+    }
   }
 
   /* =========================================================
@@ -2131,8 +2134,52 @@
         setPrimaryButtonState('explanation', 'متابعة');
     }
 
+    if (bodyEl && cur.kind !== 'recharge_quiz' && cur.kind !== 'rapid_round') {
+      const isTeachingSlide = Boolean(
+        cur.kind === 'story_slide' ||
+        cur.kind === 's1_worked_model' ||
+        cur.kind === 's1_bridge' ||
+        cur.kind === 'l3_teach' ||
+        cur.kind === 'l4_teach' ||
+        cur.kind === 'l5_teach' ||
+        cur.kind === 'rapid_intro'
+      );
+      const tutorBar = document.createElement('div');
+      tutorBar.className = 'l1-slide-tutor-bar' + (isTeachingSlide ? ' is-slide' : ' is-question');
+      tutorBar.innerHTML =
+        '<div class="l1-slide-tutor-copy">' +
+        '<span class="l1-slide-tutor-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z"/></svg></span>' +
+        '<span>' +
+        (isTeachingSlide
+          ? 'هل لديك أي سؤال في هذه الشريحة؟ المعلم الذكي جاهز لتوضيحها.'
+          : 'تحتاج توضيحاً لفكرة الدرس أو تلميحاً ذكياً لهذه الخطوة؟') +
+        '</span>' +
+        '</div>' +
+        '<div class="l1-slide-tutor-actions">' +
+        '<button type="button" class="l1-slide-tutor-btn" data-tutor-act="' +
+        (isTeachingSlide ? 'explain' : 'hint') +
+        '">' +
+        (isTeachingSlide ? 'اشرح الشريحة' : 'تلميح ذكي') +
+        '</button>' +
+        '<button type="button" class="l1-slide-tutor-btn is-voice" data-tutor-act="live">' +
+        '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>' +
+        '<span>اسأل صوتياً</span>' +
+        '</button>' +
+        '</div>';
+      tutorBar.querySelectorAll('[data-tutor-act]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const act = btn.getAttribute('data-tutor-act');
+          if (typeof openAiTutor === 'function') openAiTutor(act);
+        });
+      });
+      bodyEl.append(tutorBar);
+    }
+
     const stage = byId('l1-stage');
     if (stage) stage.scrollTop = 0;
+    if (typeof window.notifyAiTutorContextChanged === 'function') {
+      window.notifyAiTutorContextChanged();
+    }
   }
 
   function getActiveStepData(cur) {
@@ -4396,7 +4443,7 @@
         ? evaluateLocalNumberReading(txt, d.currentNumber)
         : { status: 'correct', feedback: 'ممتاز!' };
 
-      if (res.status !== 'correct' && typeof getGeminiApiKey === 'function' && getGeminiApiKey()) {
+      if (res.status !== 'correct' && typeof evaluateSemanticWithGemini === 'function') {
         setPrimaryButtonState('loading', 'جارٍ التقييم...');
         const gem = await evaluateSemanticWithGemini(
           'قراءة الطالب للعدد ' + fmt(d.currentNumber) + ': "' + txt + '"',
@@ -4574,7 +4621,7 @@
         ? evaluateLocalJustification(txt, d.targetDigit)
         : { status: 'correct', feedback: modelText };
 
-      if (res.status !== 'correct' && typeof getGeminiApiKey === 'function' && getGeminiApiKey()) {
+      if (res.status !== 'correct' && typeof evaluateSemanticWithGemini === 'function') {
         setPrimaryButtonState('loading', 'جارٍ التقييم...');
         const gem = await evaluateSemanticWithGemini(
           'تبرير الطالب لتساوي قيمة 9 في 9,605 و 149,605: "' + txt + '"',
@@ -12202,6 +12249,17 @@
     byId('l1-audio-btn')?.addEventListener('click', () => {
       const cur = session?.steps?.[session.index];
       if (cur && typeof cur.audioFn === 'function') cur.audioFn();
+    });
+
+    byId('l1-ai-tutor-btn')?.addEventListener('click', () => {
+      if (typeof openAiTutor === 'function') {
+        const dlg = byId('ai-tutor-sheet');
+        if (dlg) {
+          dlg.removeAttribute('inert');
+          dlg.removeAttribute('aria-hidden');
+        }
+        openAiTutor();
+      }
     });
 
     byId('l2-shell-lab-btn')?.addEventListener('click', () => {
