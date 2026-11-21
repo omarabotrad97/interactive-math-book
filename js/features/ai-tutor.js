@@ -2772,7 +2772,10 @@
         }
         return;
       }
-      if (err && err.code === 'BACKEND_UNAVAILABLE') {
+      const isNetworkFailureOnUnverifiedBackend =
+        (!backendAvailable || !healthChecked || isStaticHostingEnv()) &&
+        (err instanceof TypeError || (err && err.code === 'BACKEND_UNAVAILABLE'));
+      if (isNetworkFailureOnUnverifiedBackend || (err && err.code === 'BACKEND_UNAVAILABLE')) {
         backendAvailable = false;
         staticTutorMode = true;
         serverConfigured = false;
@@ -3133,10 +3136,15 @@
       liveOutputCtx = null;
     }
     if (liveWs) {
-      try {
-        liveWs.close();
-      } catch {}
+      const oldWs = liveWs;
       liveWs = null;
+      try {
+        oldWs.onopen = null;
+        oldWs.onmessage = null;
+        oldWs.onerror = null;
+        oldWs.onclose = null;
+        oldWs.close();
+      } catch {}
     }
 
     if (errorStatusMsg) {
@@ -3166,9 +3174,14 @@
       if (arV) u.voice = arV;
       setLiveUiState('speaking', 'المعلم يشرح لك صوتياً الآن…');
       let finished = false;
+      const maxWaitMs = Math.min(20000, Math.max(3500, clean.length * 95));
+      const guardTimer = setTimeout(() => {
+        doneOnce();
+      }, maxWaitMs);
       const doneOnce = () => {
         if (finished) return;
         finished = true;
+        clearTimeout(guardTimer);
         if (typeof onDone === 'function') onDone();
       };
       u.onend = doneOnce;
@@ -3179,8 +3192,9 @@
     }
   }
 
-  function startBrowserVoiceListening(sessionToken) {
+  function startBrowserVoiceListening(sessionToken, restartCount) {
     if (!liveActive || !liveBrowserMode || sessionToken !== liveBrowserToken) return;
+    const attempts = Number(restartCount) || 0;
     const RecCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!RecCtor) {
       setLiveUiState(
@@ -3191,6 +3205,9 @@
     }
     if (liveRecognition) {
       try {
+        liveRecognition.onresult = null;
+        liveRecognition.onerror = null;
+        liveRecognition.onend = null;
         liveRecognition.stop();
       } catch {}
       liveRecognition = null;
@@ -3201,25 +3218,44 @@
       rec.interimResults = false;
       rec.maxAlternatives = 1;
       liveRecognition = rec;
+      let gotResult = false;
+      let micBlocked = false;
       setLiveUiState('listening', 'تحدّث الآن بالعربية واسأل عن أي خطوة في الدرس');
 
       rec.onresult = ev => {
         if (!liveActive || !liveBrowserMode || sessionToken !== liveBrowserToken) return;
         const spoken = String(ev.results?.[0]?.[0]?.transcript || '').trim();
         if (!spoken) return;
+        gotResult = true;
         handleBrowserVoiceTurn(spoken, sessionToken);
       };
       rec.onerror = ev => {
         if (!liveActive || !liveBrowserMode || sessionToken !== liveBrowserToken) return;
-        if (ev && (ev.error === 'not-allowed' || ev.error === 'service-not-allowed')) {
+        const errCode = ev && ev.error ? String(ev.error) : '';
+        if (errCode === 'not-allowed' || errCode === 'service-not-allowed' || errCode === 'audio-capture') {
+          micBlocked = true;
           setLiveUiState(
             'listening',
-            'المايكروفون غير متاح — يمكنك كتابة سؤالك ليجيبك المعلم صوتياً'
+            'المايكروفون غير متاح — يمكنك كتابة سؤالك في الحقل أدناه ليجيبك المعلم صوتياً'
           );
         }
       };
       rec.onend = () => {
         if (liveRecognition === rec) liveRecognition = null;
+        if (
+          liveActive &&
+          liveBrowserMode &&
+          sessionToken === liveBrowserToken &&
+          !gotResult &&
+          !micBlocked &&
+          attempts < 12
+        ) {
+          setTimeout(() => {
+            if (liveActive && liveBrowserMode && sessionToken === liveBrowserToken && !liveRecognition) {
+              startBrowserVoiceListening(sessionToken, attempts + 1);
+            }
+          }, 350);
+        }
       };
       rec.start();
     } catch {
@@ -3234,6 +3270,9 @@
     if (!liveActive || !liveBrowserMode || sessionToken !== liveBrowserToken) return;
     if (liveRecognition) {
       try {
+        liveRecognition.onresult = null;
+        liveRecognition.onerror = null;
+        liveRecognition.onend = null;
         liveRecognition.stop();
       } catch {}
       liveRecognition = null;
@@ -3250,7 +3289,7 @@
 
     speakInBrowserVoiceSession(reply, sessionToken, () => {
       if (liveActive && liveBrowserMode && sessionToken === liveBrowserToken) {
-        startBrowserVoiceListening(sessionToken);
+        startBrowserVoiceListening(sessionToken, 0);
       }
     });
   }
@@ -3260,7 +3299,7 @@
     liveBrowserMode = true;
     liveReady = true;
     const sessionToken = ++liveBrowserToken;
-    const slideLabel = ctx.slideTitle || ctx.questionPrompt || ctx.stationTitle;
+    const slideLabel = cleanStationTitle(ctx.slideTitle || ctx.questionPrompt || ctx.stationTitle) || ctx.lessonTitle;
     const openingText = autoExplainSlide
       ? buildSlideAwareFallback('explain', slideLabel, ctx)
       : 'أهلاً بك يا ' +
@@ -3279,7 +3318,7 @@
 
     speakInBrowserVoiceSession(openingText, sessionToken, () => {
       if (liveActive && liveBrowserMode && sessionToken === liveBrowserToken) {
-        startBrowserVoiceListening(sessionToken);
+        startBrowserVoiceListening(sessionToken, 0);
       }
     });
   }
@@ -3463,6 +3502,7 @@
       };
 
       ws.onerror = () => {
+        if (liveWs !== ws) return;
         if (liveActive && !liveReady) {
           backendAvailable = false;
           staticTutorMode = true;
@@ -3478,6 +3518,16 @@
       };
 
       ws.onclose = () => {
+        if (liveWs !== ws) return;
+        if (liveActive && !liveReady) {
+          backendAvailable = false;
+          staticTutorMode = true;
+          serverConfigured = false;
+          updateContextUI();
+          stopLiveVoiceSession();
+          startBrowserVoiceSession(ctx, autoExplainSlide);
+          return;
+        }
         if (liveActive) {
           stopLiveVoiceSession();
         }
