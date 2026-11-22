@@ -1352,8 +1352,9 @@ function updateViewDom(){
  if($('l3-open-lab-btn')) $('l3-open-lab-btn').hidden = !(state.viewMode === 'lesson3' || (state.viewMode === 'map' && state.mapSubView === 'lesson3'));
  if($('l4-open-lab-btn')) $('l4-open-lab-btn').hidden = !(state.viewMode === 'lesson4' || (state.viewMode === 'map' && state.mapSubView === 'lesson4'));
  if($('l5-open-lab-btn')) $('l5-open-lab-btn').hidden = !(state.viewMode === 'lesson5' || (state.viewMode === 'map' && state.mapSubView === 'lesson5'));
- if($('station-topbar'))$('station-topbar').hidden=(state.viewMode==='map'||state.viewMode==='exit_ticket'||state.viewMode==='lesson2'||state.viewMode==='lesson3'||state.viewMode==='lesson4'||state.viewMode==='lesson5');
+ if($('station-topbar'))$('station-topbar').hidden=(state.viewMode==='map'||state.viewMode==='exit_ticket'||state.viewMode==='lesson2'||state.viewMode==='lesson3'||state.viewMode==='lesson4'||state.viewMode==='lesson5'||state.viewMode==='unit1_exam');
  if($('exit-ticket-view'))$('exit-ticket-view').hidden=state.viewMode!=='exit_ticket';
+ if($('unit1-exam-view'))$('unit1-exam-view').hidden=state.viewMode!=='unit1_exam';
 
 
  if($('duolingo-map'))$('duolingo-map').hidden=state.viewMode!=='map';

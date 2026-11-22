@@ -200,7 +200,10 @@ function getCurriculumOverviewData(){
 
  const project=computeItemProgressMetrics(state.unitProjectDone?1:0,1,true,false);
  const allLessonsDone=lesson1.pct===100&&lesson2.pct===100&&lesson3.pct===100&&lesson4.pct===100&&lesson5.pct===100;
- const unit1_exam=computeItemProgressMetrics(0,20,allLessonsDone,false);
+ const examDone=typeof getUnit1ExamMasteredCount==='function'?getUnit1ExamMasteredCount():0;
+ const examUnlocked=typeof isUnit1ExamUnlocked==='function'?isUnit1ExamUnlocked():allLessonsDone;
+ const examPartial=typeof hasUnit1ExamPartialProgress==='function'?hasUnit1ExamPartialProgress():false;
+ const unit1_exam=computeItemProgressMetrics(examDone,21,examUnlocked,examPartial);
 
  const totalDone=project.done+lesson1.done+lesson2.done+lesson3.done+lesson4.done+lesson5.done;
  const totalCount=project.total+lesson1.total+lesson2.total+lesson3.total+lesson4.total+lesson5.total;
@@ -322,15 +325,16 @@ const UNIT1_CURRICULUM=[
  },
  {
   id:'unit1_exam',
+  isUnit1Exam:true,
   kicker:'تقويم ختامي',
   kickerCls:'exam',
   title:'اختبار نهاية الوحدة',
-  sub:'اختبار شامل لقياس إتقان مهارات الوحدة الأولى: الأعداد جمعها وطرحها',
-  desc:'يقيّم هذا الاختبار الشامل إتقانك لجميع مهارات الوحدة الأولى: القيمة المنزلية ضمن الملايين، مقارنة الأعداد وترتيبها، جمع الأعداد الكلية وطرحها، الأعداد السالبة، وخطة حل المسألة.',
-  duration:'20 سؤالاً',
+  sub:'اختبار شامل تفاعلي (21 سؤالاً) لقياس إتقان مهارات الوحدة الأولى: الأعداد جمعها وطرحها',
+  desc:'يقيّم هذا الاختبار الشامل إتقانك لجميع مهارات الوحدة الأولى (ص 26–27) عبر 3 أقسام تدريبية تفاعلية واختبار شامل متواصل مع تقرير تشخيصي وشهادة الوحدة.',
+  duration:'21 سؤالاً',
   points:'400 نقطة + شهادة الوحدة',
   kind:'اختبار نهاية الوحدة الأولى',
-  unlockReq:'يفتح «اختبار نهاية الوحدة» بعد إتمام الدروس الخمسة في الوحدة الأولى (الأعداد: جمعها وطرحها).'
+  unlockReq:'يفتح «اختبار نهاية الوحدة» بعد إتمام الدروس الخمسة في الوحدة الأولى (أو بتفعيل وضع الاختبار للمعلّم).'
  }
 ];
 const DUO_LESSON_THEMES={
@@ -338,7 +342,8 @@ const DUO_LESSON_THEMES={
  lesson2:{key:'lesson2',num:2,shortLabel:'مقارنة الأعداد',title:'مقارنة الأعداد وترتيبها',pages:'12 – 15',bannerBg:'#0e6b74',bannerShadow:'#08484f',bannerBorder:'#0b575f',tintBg:'#e5f4f6',accentText:'#094b52',labLabel:'مختبر المقارنة'},
  lesson3:{key:'lesson3',num:3,shortLabel:'الجمع والطرح',title:'جمع الأعداد الكلية وطرحها',pages:'16 – 19',bannerBg:'#276e43',bannerShadow:'#184a2c',bannerBorder:'#1f5a36',tintBg:'#e8f5ec',accentText:'#1a4f2f',labLabel:'مختبر العمليات'},
  lesson4:{key:'lesson4',num:4,shortLabel:'الأعداد السالبة',title:'الأعداد السالبة وخط الأعداد',pages:'20 – 23',bannerBg:'#255c82',bannerShadow:'#173d57',bannerBorder:'#1d4a69',tintBg:'#e7f1f8',accentText:'#19425e',labLabel:'مختبر السالبة'},
- lesson5:{key:'lesson5',num:5,shortLabel:'أنشئ جدولاً',title:'خطة حل المسألة: أنشئ جدولاً',pages:'24 – 25',bannerBg:'#7a4b8c',bannerShadow:'#512e5e',bannerBorder:'#643c73',tintBg:'#f3ebf7',accentText:'#553063',labLabel:'مختبر الجداول'}
+ lesson5:{key:'lesson5',num:5,shortLabel:'أنشئ جدولاً',title:'خطة حل المسألة: أنشئ جدولاً',pages:'24 – 25',bannerBg:'#7a4b8c',bannerShadow:'#512e5e',bannerBorder:'#643c73',tintBg:'#f3ebf7',accentText:'#553063',labLabel:'مختبر الجداول'},
+ unit1_exam:{key:'unit1_exam',num:6,isExam:true,shortLabel:'اختبار الوحدة',title:'اختبار نهاية الوحدة الأولى',pages:'26 – 27',bannerBg:'#9a6814',bannerShadow:'#6b460a',bannerBorder:'#7d530e',tintBg:'#fbf3e1',accentText:'#6b460a',labLabel:'بوابة الاختبار'}
 };
 const DUO_LESSON_ORDER=['lesson1','lesson2','lesson3','lesson4','lesson5'];
 function getDuoLessonTheme(key){
@@ -418,6 +423,32 @@ function renderQuickLessonStrip(sub,ovData){
   strip.append(btn);
  });
 
+ /* Append Unit 1 End-of-Unit Exam chip */
+ {
+  const theme=DUO_LESSON_THEMES.unit1_exam;
+  const m=ov.unit1_exam||computeItemProgressMetrics(0,21,false,false);
+  const isActive=sub==='unit1_exam';
+  const isDone=m.statusKey==='completed';
+  const isLocked=m.statusKey==='locked';
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='duo-qchip'+(isActive?' is-active':'')+(isDone?' is-done':'')+(isLocked?' is-locked':'');
+  btn.dataset.lessonTarget='unit1_exam';
+  btn.style.setProperty('--chip-accent',theme.bannerBg);
+  btn.style.setProperty('--chip-shadow',theme.bannerShadow);
+  btn.style.setProperty('--chip-tint',theme.tintBg);
+  if(isActive)btn.setAttribute('aria-current','page');
+  const icoHTML=isDone
+   ?'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>'
+   :(isLocked
+    ?'<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'
+    :'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>');
+  btn.innerHTML='<span class="duo-qchip-num" aria-hidden="true">'+icoHTML+'</span>'
+   +'<span class="duo-qchip-lbl">'+theme.shortLabel+'</span>';
+  btn.addEventListener('click',()=>activateCurriculumItem('unit1_exam'));
+  strip.append(btn);
+ }
+
  requestAnimationFrame(()=>{
   const activeChip=strip.querySelector('.duo-qchip.is-active');
   if(activeChip&&typeof activeChip.scrollIntoView==='function'){
@@ -454,6 +485,33 @@ function renderCompanionRail(sub,ovData){
   btn.addEventListener('click',()=>activateCurriculumItem(key));
   list.append(btn);
  });
+
+ /* Append Unit 1 End-of-Unit Exam row in companion rail */
+ {
+  const theme=DUO_LESSON_THEMES.unit1_exam;
+  const m=ov.unit1_exam||computeItemProgressMetrics(0,21,false,false);
+  const isActive=sub==='unit1_exam';
+  const isDone=m.statusKey==='completed';
+  const isLocked=m.statusKey==='locked';
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='duo-rail-lesson-btn'+(isActive?' is-active':'')+(isDone?' is-done':'')+(isLocked?' is-locked':'');
+  btn.style.setProperty('--row-accent',theme.bannerBg);
+  btn.style.setProperty('--row-tint',theme.tintBg);
+  if(isActive)btn.setAttribute('aria-current','page');
+  const badgeInner=isDone
+   ?'<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>'
+   :(isLocked
+    ?'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'
+    :'<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>');
+  btn.innerHTML='<span class="duo-rl-badge" aria-hidden="true">'+badgeInner+'</span>'
+   +'<span class="duo-rl-body">'
+   +'<strong class="duo-rl-title">'+theme.shortLabel+'</strong>'
+   +'<span class="duo-rl-bar-row"><span class="duo-rl-track"><i style="width:'+m.pct+'%"></i></span><small><bdi>'+ar(m.pct)+'%</bdi></small></span>'
+   +'</span>';
+  btn.addEventListener('click',()=>activateCurriculumItem('unit1_exam'));
+  list.append(btn);
+ }
 
  const allUnitsBtn=$('duo-rail-all-units');
  if(allUnitsBtn){
@@ -492,14 +550,15 @@ function renderNextLessonCard(sub){
    +'<button type="button" class="duo-next-cta" data-next-target="'+nextKey+'">انتقل إلى الدرس <bdi>'+ar(nextTheme.num)+'</bdi> ←</button>';
   box.querySelector('[data-next-target]').addEventListener('click',()=>activateCurriculumItem(nextKey));
  }else{
-  box.style.setProperty('--next-accent','#b8821c');
-  box.style.setProperty('--next-shadow','#835b10');
+  const examOpen=typeof isUnit1ExamUnlocked==='function'&&isUnit1ExamUnlocked();
+  box.style.setProperty('--next-accent','#9a6814');
+  box.style.setProperty('--next-shadow','#6b460a');
   box.style.setProperty('--next-tint','#fbf3e1');
   box.innerHTML='<div class="duo-next-copy">'
-   +'<span class="duo-next-kicker">ختام الوحدة الأولى</span>'
-   +'<h3 class="duo-next-title">اختبار نهاية الوحدة الأولى</h3>'
+   +'<span class="duo-next-kicker">ختام الوحدة الأولى · ص <bdi>26 – 27</bdi></span>'
+   +'<h3 class="duo-next-title">اختبار نهاية الوحدة الأولى (21 سؤالاً)</h3>'
    +'</div>'
-   +'<button type="button" class="duo-next-cta" data-next-target="unit1_exam">عرض تفاصيل الاختبار ←</button>';
+   +'<button type="button" class="duo-next-cta" data-next-target="unit1_exam">'+(examOpen?'افتح اختبار نهاية الوحدة ←':'عرض شروط فتح الاختبار ←')+'</button>';
   box.querySelector('[data-next-target]').addEventListener('click',()=>activateCurriculumItem('unit1_exam'));
  }
 }
@@ -510,6 +569,10 @@ function updateStickyStageBanner(){
  const kickerEl=$('duo-sticky-kicker');
  const bannerEl=$('duo-lesson-topbar');
  if(!kickerEl||!bannerEl)return;
+ if(sub==='unit1_exam'){
+  kickerEl.textContent='القسم 1 · التقويم الختامي للوحدة الأولى';
+  return;
+ }
  const theme=getDuoLessonTheme(sub);
  const stages=Array.from(document.querySelectorAll('#duo-units .dp-unit[data-stage-num]'));
  if(!stages.length){
@@ -553,7 +616,10 @@ const UPCOMING_SECTIONS=[
  }
 ];
 function setMapSubView(sub,autoScroll=true){
- state.mapSubView=(sub==='lesson1'||sub==='lesson2'||sub==='lesson3'||sub==='lesson4'||sub==='lesson5'||sub==='units')?sub:'sections';
+ state.mapSubView=(sub==='lesson1'||sub==='lesson2'||sub==='lesson3'||sub==='lesson4'||sub==='lesson5'||sub==='unit1_exam'||sub==='units')?sub:'sections';
+ if(state.mapSubView==='unit1_exam'&&typeof isUnit1ExamUnlocked==='function'&&!isUnit1ExamUnlocked()){
+  state.mapSubView='sections';
+ }
  if(state.mapSubView.startsWith('lesson')){
   state.lastActiveLesson=state.mapSubView;
  }
@@ -594,6 +660,9 @@ function activateCurriculumItem(itemId){
  }else if(itemId==='lesson5'){
   if(typeof isLesson5Unlocked==='function'&&isLesson5Unlocked())setMapSubView('lesson5',true);
   else showCurriculumSheet('lesson5');
+ }else if(itemId==='unit1_exam'){
+  if(typeof isUnit1ExamUnlocked==='function'&&isUnit1ExamUnlocked())setMapSubView('unit1_exam',true);
+  else showCurriculumSheet('unit1_exam');
  }else{
   showCurriculumSheet(itemId);
  }
@@ -787,7 +856,8 @@ function renderLessonPickerSheet(){
     ||(item.id==='lesson2'&&typeof isLesson2Unlocked==='function'&&isLesson2Unlocked())
     ||(item.id==='lesson3'&&typeof isLesson3Unlocked==='function'&&isLesson3Unlocked())
     ||(item.id==='lesson4'&&typeof isLesson4Unlocked==='function'&&isLesson4Unlocked())
-    ||(item.id==='lesson5'&&typeof isLesson5Unlocked==='function'&&isLesson5Unlocked());
+    ||(item.id==='lesson5'&&typeof isLesson5Unlocked==='function'&&isLesson5Unlocked())
+    ||(item.id==='unit1_exam'&&typeof isUnit1ExamUnlocked==='function'&&isUnit1ExamUnlocked());
    closeLessonPickerSheet(opensDirect);
    activateCurriculumItem(item.id);
   });
@@ -976,6 +1046,39 @@ function showCurriculumSheet(itemId){
     l5.unlocked = true;
     saveState();
     setMapSubView('lesson5', true);
+   };
+   sheet.showModal();
+   return;
+  }
+ }
+ if(itemId==='unit1_exam'){
+  const isExamOpen = typeof isUnit1ExamUnlocked === 'function' && isUnit1ExamUnlocked();
+  const remLessons = typeof getUnit1ExamRemainingLessons === 'function' ? getUnit1ExamRemainingLessons() : [];
+  const mastered = typeof getUnit1ExamMasteredCount === 'function' ? getUnit1ExamMasteredCount() : 0;
+  if(isExamOpen){
+   statusEl.textContent = mastered >= 21 ? 'مكتمل 100%' : 'متاح الآن';
+   statusEl.className = 'st-sheet-status ' + (mastered >= 21 ? 'done' : 'ready');
+   lockSection.hidden = true;
+   startBtn.textContent = 'افتح بوابة اختبار نهاية الوحدة';
+   startBtn.className = 'primary st-sheet-action-btn';
+   startBtn.onclick = () => { sheet.close(); setMapSubView('unit1_exam', true); };
+   sheet.showModal();
+   return;
+  } else {
+   statusEl.textContent = 'مقفل حتى إتمام الدروس الخمسة';
+   statusEl.className = 'st-sheet-status locked';
+   lockSection.hidden = false;
+   const names = remLessons.map(r => r.title).join('، ');
+   $('st-sheet-lock-text').textContent = remLessons.length
+    ? ('لفتح اختبار نهاية الوحدة، أكمل الدروس المتبقية أولاً: ' + names + ' (أو فعّل «وضع الاختبار للمعلّم» من قائمة المزيد).')
+    : item.unlockReq;
+   const firstRem = remLessons[0];
+   startBtn.textContent = firstRem ? ('انتقل إلى ' + firstRem.title) : 'العودة إلى دروس الوحدة';
+   startBtn.className = 'primary st-sheet-action-btn';
+   startBtn.onclick = () => {
+    sheet.close();
+    if(firstRem) setMapSubView(firstRem.key, true);
+    else setMapSubView('sections', true);
    };
    sheet.showModal();
    return;
@@ -1490,9 +1593,10 @@ function renderStageMapUnits(unitsRoot){
 function renderDuolingoMap(){
  const unitsRoot=$('duo-units');if(!unitsRoot)return;
  closeAllNodePopovers();
- const sub=(state.mapSubView==='lesson1'||state.mapSubView==='lesson2'||state.mapSubView==='lesson3'||state.mapSubView==='lesson4'||state.mapSubView==='lesson5'||state.mapSubView==='units')?state.mapSubView:'sections';
+ const sub=(state.mapSubView==='lesson1'||state.mapSubView==='lesson2'||state.mapSubView==='lesson3'||state.mapSubView==='lesson4'||state.mapSubView==='lesson5'||state.mapSubView==='unit1_exam'||state.mapSubView==='units')?state.mapSubView:'sections';
  const secRoot=$('duo-sections-root'),lesWrap=$('duo-lesson-wrap');
- const isLessonMap=(sub==='lesson1'||sub==='lesson2'||sub==='lesson3'||sub==='lesson4'||sub==='lesson5');
+ const isExamHub=(sub==='unit1_exam');
+ const isLessonMap=(sub==='lesson1'||sub==='lesson2'||sub==='lesson3'||sub==='lesson4'||sub==='lesson5'||isExamHub);
  if(secRoot)secRoot.hidden=isLessonMap;
  if(lesWrap)lesWrap.hidden=!isLessonMap;
 
@@ -1515,23 +1619,23 @@ function renderDuolingoMap(){
  if(isLessonMap){
   const theme=getDuoLessonTheme(sub);
   const m=ov[sub]||ov.lesson1;
-  if(pickerLbl)pickerLbl.innerHTML='الدرس <bdi>'+ar(theme.num)+'</bdi>';
+  if(pickerLbl)pickerLbl.innerHTML=isExamHub?'اختبار الوحدة':('الدرس <bdi>'+ar(theme.num)+'</bdi>');
   if(unitCtxEl)unitCtxEl.innerHTML='الوحدة <bdi>1</bdi> · القسم <bdi>1</bdi>';
   const bcCur=$('bc-cur-lesson');
-  if(bcCur)bcCur.innerHTML='الدرس <bdi>'+ar(theme.num)+'</bdi>';
+  if(bcCur)bcCur.innerHTML=isExamHub?'اختبار الوحدة':('الدرس <bdi>'+ar(theme.num)+'</bdi>');
   const kickerEl=$('duo-sticky-kicker');
-  if(kickerEl)kickerEl.textContent='القسم 1 · الدرس '+ar(theme.num)+' من 5';
+  if(kickerEl)kickerEl.textContent=isExamHub?'القسم 1 · التقويم الختامي للوحدة الأولى':('القسم 1 · الدرس '+ar(theme.num)+' من 5');
   const metaTitle=$('lesson-meta-title');
   if(metaTitle)metaTitle.textContent=theme.title;
   const metaPages=$('lesson-meta-pages');
-  if(metaPages)metaPages.innerHTML='الصفحات <bdi>'+theme.pages+'</bdi>';
+  if(metaPages)metaPages.innerHTML=(isExamHub?'الصفحتان ':'الصفحات ')+'<bdi>'+theme.pages+'</bdi>';
   const metaStatus=$('lesson-meta-status');
-  if(metaStatus)metaStatus.textContent=m.statusLabel+' ('+ar(m.done)+' من '+ar(m.total)+' محطة)';
+  if(metaStatus)metaStatus.textContent=m.statusLabel+' ('+ar(m.done)+' من '+ar(m.total)+(isExamHub?' سؤالاً)':' محطة)');
   const topProg=$('lesson-topbar-prog');
   if(topProg)topProg.innerHTML=renderDuoProgBarHTML(m.pct);
   const duoLabBtn=$('duo-open-lab-btn');
   const duoLabLbl=$('duo-open-lab-label');
-  if(duoLabBtn)duoLabBtn.hidden=false;
+  if(duoLabBtn)duoLabBtn.hidden=isExamHub;
   if(duoLabLbl)duoLabLbl.textContent=theme.labLabel;
  }else{
   if(pickerLbl)pickerLbl.textContent=sub==='units'?'الوحدات':'الدروس';
@@ -1547,19 +1651,25 @@ function renderDuolingoMap(){
 
  const heroStartBtn=$('duo-hero-start');
  if(heroStartBtn&&isLessonMap){
-  const activeCtx=getActiveMapLessonContext(sub);
-  if(activeCtx.allDone){
-   heroStartBtn.hidden=false;
-   heroStartBtn.textContent='راجع الدرس';
-  }else{
+  if(isExamHub){
    heroStartBtn.hidden=true;
+  }else{
+   const activeCtx=getActiveMapLessonContext(sub);
+   if(activeCtx.allDone){
+    heroStartBtn.hidden=false;
+    heroStartBtn.textContent='راجع الدرس';
+   }else{
+    heroStartBtn.hidden=true;
+   }
   }
  }
  const bypassBanner=$('stage-overview-banner');
- if(bypassBanner)bypassBanner.hidden=(sub==='lesson2'||sub==='lesson3'||sub==='lesson4'||sub==='lesson5');
+ if(bypassBanner)bypassBanner.hidden=(sub==='lesson2'||sub==='lesson3'||sub==='lesson4'||sub==='lesson5'||isExamHub);
  unitsRoot.replaceChildren();
  if(isLessonMap){
-  if(sub==='lesson5'){
+  if(isExamHub){
+   if(typeof renderUnit1ExamHub==='function')renderUnit1ExamHub(unitsRoot);
+  }else if(sub==='lesson5'){
    if(typeof renderLesson5StageMapUnits==='function')renderLesson5StageMapUnits(unitsRoot);
   }else if(sub==='lesson4'){
    if(typeof renderLesson4StageMapUnits==='function')renderLesson4StageMapUnits(unitsRoot);
@@ -1570,8 +1680,13 @@ function renderDuolingoMap(){
   }else{
    renderStageMapUnits(unitsRoot);
   }
-  renderNextLessonCard(sub);
-  requestAnimationFrame(()=>updateStickyStageBanner());
+  if(isExamHub){
+   const nextBox=$('duo-next-lesson-card');
+   if(nextBox){nextBox.hidden=true;nextBox.replaceChildren();}
+  }else{
+   renderNextLessonCard(sub);
+   requestAnimationFrame(()=>updateStickyStageBanner());
+  }
  }else{
   const nextBox=$('duo-next-lesson-card');
   if(nextBox){nextBox.hidden=true;nextBox.replaceChildren();}
@@ -1798,8 +1913,10 @@ function updateJumpButton(){
  }
 }
 function showDuolingoMap(autoScroll=true){
+ const prevSub=state.mapSubView;
  pauseRapid();stopStory();stopSpeech();cancelDigitGestures();dragController?.cancel();
  if(typeof L1Runner!=='undefined'&&L1Runner.closeToMap){L1Runner.closeToMap();}
+ if(prevSub==='unit1_exam'||prevSub==='sections'||prevSub==='units')state.mapSubView=prevSub;
  state.infiniteMode=false;
  state.viewMode='map';
  renderDuolingoMap();
@@ -1914,4 +2031,4 @@ function previousTask(){
  if(r.index>0){r.index--;renderMission();saveState();jumpToPart('action-coach');}
  else showDuolingoMap();
 }
-function resetAll(){pauseRapid();stopStory();stopSpeech();if(typeof L1Runner!=='undefined'&&L1Runner.closeToMap)L1Runner.closeToMap();[guideTimer,heartTimer,flipTimer,flipEndTimer,finishTimer,confettiTimer].forEach(clearTimeout);heartTimer=null;counterToken++;resetTaskInteractions();cancelDigitGestures();playgroundState.questIndex=0;playgroundState.questsDone.clear();resetPlayground();state.scene=0;state.cursors=[0,0];state.completed.clear();state.nodesCompleted.clear();state.nodeStars={};state.unitProjectDone=false;state.mapSubView='lesson1';state.lastActiveLesson='lesson1';state.viewedSlides=[new Set(),new Set()];state.activeNode=0;state.viewMode='map';state.runnerStep=null;state.onboarding=createDefaultOnboarding();state.expandedStages=new Set([0]);state.returnNode=null;state.rechargeSolved=false;state.hearts=3;state.errors=0;state.streak=0;state.maxSessionStreak=0;if(state.badges)state.badges.clear();renderStreakIndicator();state.story=[0,0];state.flipping=false;state.finished=false;state.infiniteMode=false;state.skillStats={place:{ok:0,err:0},verbal:{ok:0,err:0},standard:{ok:0,err:0},expanded:{ok:0,err:0}};state.infiniteStats={solved:0,streak:0,maxStreak:0,bonusPoints:0};state.aiQuiz={day:getLocalDateString(),rewarded:0,seen:[]};state.exitTicket=typeof createDefaultExitTicketState==='function'?createDefaultExitTicketState():null;state.lesson2=typeof createDefaultLesson2State==='function'?createDefaultLesson2State():null;state.lesson3=typeof createDefaultLesson3State==='function'?createDefaultLesson3State():null;state.lesson4=typeof createDefaultLesson4State==='function'?createDefaultLesson4State():null;state.lesson5=typeof createDefaultLesson5State==='function'?createDefaultLesson5State():null;makeRecords();try{localStorage.removeItem(STORAGE_KEY);}catch{}$('book').classList.remove('flipping','backwards');$('guide').classList.remove('show');$('confetti').replaceChildren();['finish-dialog','reset-dialog'].forEach(id=>{if($(id)?.open)$(id).close();});$('experiments').open=false;$('experiment-answer').textContent='أي رقم تريد أن تستكشف؟';applyScene();showDuolingoMap(false);guide('تمت إعادة ضبط التقدم. اختر المحطة الأولى من الخريطة لتبدأ!',4800);}
+function resetAll(){pauseRapid();stopStory();stopSpeech();if(typeof L1Runner!=='undefined'&&L1Runner.closeToMap)L1Runner.closeToMap();[guideTimer,heartTimer,flipTimer,flipEndTimer,finishTimer,confettiTimer].forEach(clearTimeout);heartTimer=null;counterToken++;resetTaskInteractions();cancelDigitGestures();playgroundState.questIndex=0;playgroundState.questsDone.clear();resetPlayground();state.scene=0;state.cursors=[0,0];state.completed.clear();state.nodesCompleted.clear();state.nodeStars={};state.unitProjectDone=false;state.mapSubView='lesson1';state.lastActiveLesson='lesson1';state.viewedSlides=[new Set(),new Set()];state.activeNode=0;state.viewMode='map';state.runnerStep=null;state.onboarding=createDefaultOnboarding();state.expandedStages=new Set([0]);state.returnNode=null;state.rechargeSolved=false;state.hearts=3;state.errors=0;state.streak=0;state.maxSessionStreak=0;if(state.badges)state.badges.clear();renderStreakIndicator();state.story=[0,0];state.flipping=false;state.finished=false;state.infiniteMode=false;state.skillStats={place:{ok:0,err:0},verbal:{ok:0,err:0},standard:{ok:0,err:0},expanded:{ok:0,err:0}};state.infiniteStats={solved:0,streak:0,maxStreak:0,bonusPoints:0};state.aiQuiz={day:getLocalDateString(),rewarded:0,seen:[]};state.exitTicket=typeof createDefaultExitTicketState==='function'?createDefaultExitTicketState():null;state.lesson2=typeof createDefaultLesson2State==='function'?createDefaultLesson2State():null;state.lesson3=typeof createDefaultLesson3State==='function'?createDefaultLesson3State():null;state.lesson4=typeof createDefaultLesson4State==='function'?createDefaultLesson4State():null;state.lesson5=typeof createDefaultLesson5State==='function'?createDefaultLesson5State():null;state.unit1Exam=typeof createDefaultUnit1ExamState==='function'?createDefaultUnit1ExamState():null;if($('unit1-exam-view')){$('unit1-exam-view').hidden=true;$('unit1-exam-view').replaceChildren();}makeRecords();try{localStorage.removeItem(STORAGE_KEY);}catch{}$('book').classList.remove('flipping','backwards');$('guide').classList.remove('show');$('confetti').replaceChildren();['finish-dialog','reset-dialog'].forEach(id=>{if($(id)?.open)$(id).close();});$('experiments').open=false;$('experiment-answer').textContent='أي رقم تريد أن تستكشف؟';applyScene();showDuolingoMap(false);guide('تمت إعادة ضبط التقدم. اختر المحطة الأولى من الخريطة لتبدأ!',4800);}

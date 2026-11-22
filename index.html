@@ -25,6 +25,7 @@
 <link rel="stylesheet" href="styles/redesign.css?v=20261120a">
 <link rel="stylesheet" href="styles/duolingo-nav.css?v=20261120a">
 <link rel="stylesheet" href="styles/ai-tutor.css?v=20261118d">
+<link rel="stylesheet" href="styles/unit1-exam.css?v=20261121d">
 </head>
 <body data-view="map">
 <a class="skip" href="#main-content">انتقل إلى المحتوى الرئيسي</a>
@@ -379,6 +380,8 @@
   <div class="l1-result-card" id="l1-result-card"></div>
  </section>
 
+ <section id="unit1-exam-view" class="u1e-shell" hidden aria-label="اختبار نهاية الوحدة الأولى"></section>
+
  <footer class="desk-footer"><span>صُمّم للتعلّم بالمحاولة والاكتشاف · يُحفظ التقدم تلقائيًا</span><span>12 مهمة <i>·</i> تحدٍّ متجدد <i>·</i> شهادة وتقرير مهارات</span></footer>
 </main>
 <aside class="guide" id="guide" aria-live="polite" aria-atomic="true"><span class="guide-owl-ico" aria-hidden="true"><svg viewBox="0 0 32 32" class="svg-ico"><ellipse cx="16" cy="18" rx="12" ry="11" fill="#18795b"/><ellipse cx="12" cy="15" rx="4.5" ry="5" fill="#ffffff"/><ellipse cx="20" cy="15" rx="4.5" ry="5" fill="#ffffff"/><circle cx="12" cy="15" r="2" fill="#102a24"/><circle cx="20" cy="15" r="2" fill="#102a24"/><polygon points="16,18 18,22 14,22" fill="#d99b26"/></svg></span><p id="guide-message"></p><button id="guide-read" type="button" aria-label="اقرأ الرسالة بصوت عالٍ"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button><button id="guide-close" type="button" aria-label="إغلاق رسالة المرشد"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></aside><div class="confetti" id="confetti" aria-hidden="true"></div>
@@ -561,6 +564,7 @@
    <p class="ai-ctx-detail-reward" id="ai-ctx-reward">مكافآت اليوم: <bdi dir="ltr">0</bdi> من <bdi dir="ltr">3</bdi></p>
   </div>
  </section>
+ <div id="ai-exam-socratic-banner" class="ai-exam-socratic-banner" role="status" hidden>وضع الاختبار الرسمي: يقدّم المعلم الذكي تلميحات توجيهية فقط دون كشف الإجابة النهائية حتى تسليم الاختبار.</div>
 
  <div class="ai-chat-viewport">
   <div class="ai-chat-log" id="ai-chat-log" role="log" aria-live="polite" aria-label="رسائل المحادثة"></div>
@@ -804,6 +808,16 @@
   </div>
 </dialog>
 
+<dialog id="u1e-submit-dialog" class="modal u1e-submit-dialog" aria-labelledby="u1e-submit-title">
+ <h2 id="u1e-submit-title">تسليم اختبار نهاية الوحدة الأولى</h2>
+ <p id="u1e-submit-summary"></p>
+ <div id="u1e-submit-jumps" hidden></div>
+ <div class="u1e-submit-actions">
+  <button type="button" id="u1e-submit-confirm" class="u1e-btn u1e-btn-primary">اعتماد وتسليم الاختبار</button>
+  <button type="button" id="u1e-submit-cancel" class="u1e-btn u1e-btn-secondary">متابعة المراجعة</button>
+ </div>
+</dialog>
+
 <script defer src="js/core/utils.js?v=20261114g"></script>
 <script defer src="js/core/state.js?v=20261120a"></script>
 <script defer src="js/core/audio-feedback.js?v=20261114g"></script>
@@ -826,7 +840,10 @@
 <script defer src="js/lesson5/state-and-map.js?v=20261116a"></script>
 <script defer src="js/lesson5/stations.js?v=20261117a3"></script>
 <script defer src="js/lesson5/table-lab.js?v=20261116b"></script>
-<script defer src="js/main.js?v=20261118e"></script>
+<script defer src="js/unit1-exam/questions.js?v=20261121b"></script>
+<script defer src="js/unit1-exam/state-and-map.js?v=20261121a"></script>
+<script defer src="js/unit1-exam/engine.js?v=20261121c"></script>
+<script defer src="js/main.js?v=20261121a"></script>
 <script defer src="js/features/display-prefs.js?v=20261116a"></script>
 <script defer src="js/features/bottom-tabs.js?v=20261120a"></script>
 <script defer src="js/features/ai-tutor.js?v=20261121c"></script>

@@ -236,7 +236,8 @@ function totalPoints(){
  const l3Pts = typeof getLesson3Points==='function'?getLesson3Points():0;
  const l4Pts = typeof getLesson4Points==='function'?getLesson4Points():0;
  const l5Pts = typeof getLesson5Points==='function'?getLesson5Points():0;
- return l2Pts + l3Pts + l4Pts + l5Pts + state.completed.size*20+(state.infiniteStats?.bonusPoints||0)+(playgroundState?.questsDone?.size||0)*5+state.nodesCompleted.size*5+starBonus+(state.unitProjectDone?25:0);
+ const u1ExamPts = typeof getUnit1ExamPoints==='function'?getUnit1ExamPoints():0;
+ return l2Pts + l3Pts + l4Pts + l5Pts + u1ExamPts + state.completed.size*20+(state.infiniteStats?.bonusPoints||0)+(playgroundState?.questsDone?.size||0)*5+state.nodesCompleted.size*5+starBonus+(state.unitProjectDone?25:0);
 }
 function serializeLessonRecordMap(recs){
  return Object.fromEntries(Object.entries(recs||{}).map(([k,r])=>[k,{index:Number(r?.index)||0,passed:[...(r?.passed||[])],assistedSteps:[...(r?.assistedSteps||[])],independentSteps:[...(r?.independentSteps||[])],errors:Number(r?.errors)||0,data:r?.data&&typeof r.data==='object'?r.data:{}}]));
@@ -247,7 +248,7 @@ function saveState(){
    scene:state.scene,cursors:state.cursors,completed:[...state.completed],hearts:state.hearts,errors:state.errors,
    muted:state.muted,story:state.story,finished:state.finished,studentName:state.studentName||'',streak:state.streak||0,maxSessionStreak:state.maxSessionStreak||0,badges:[...(state.badges||[])],
    skillStats:state.skillStats,infiniteStats:state.infiniteStats,exitTicket:state.exitTicket,lesson2:state.lesson2?{activeNode:state.lesson2.activeNode,completedNodes:[...(state.lesson2.completedNodes||[])],nodeStars:state.lesson2.nodeStars||{},expandedStages:[...(state.lesson2.expandedStages||[0])],records:serializeLessonRecordMap(state.lesson2.records),stats:state.lesson2.stats||null,exitTicket:state.lesson2.exitTicket,unlocked:!!state.lesson2.unlocked}:null,lesson3:state.lesson3?{activeNode:state.lesson3.activeNode,completedNodes:[...(state.lesson3.completedNodes||[])],nodeStars:state.lesson3.nodeStars||{},expandedStages:[...(state.lesson3.expandedStages||[0])],records:serializeLessonRecordMap(state.lesson3.records),stats:state.lesson3.stats||null,exitTicket:state.lesson3.exitTicket,unlocked:state.lesson3.unlocked!==false}:null,lesson4:state.lesson4?{activeNode:state.lesson4.activeNode,completedNodes:[...(state.lesson4.completedNodes||[])],nodeStars:state.lesson4.nodeStars||{},expandedStages:[...(state.lesson4.expandedStages||[0])],records:serializeLessonRecordMap(state.lesson4.records),stats:state.lesson4.stats||null,exitTicket:state.lesson4.exitTicket||null,exitResults:state.lesson4.exitResults||{},unlocked:state.lesson4.unlocked!==false}:null,lesson5:state.lesson5?{activeNode:state.lesson5.activeNode,completedNodes:[...(state.lesson5.completedNodes||[])],nodeStars:state.lesson5.nodeStars||{},expandedStages:[...(state.lesson5.expandedStages||[0])],records:serializeLessonRecordMap(state.lesson5.records),stats:state.lesson5.stats||null,exitTicket:state.lesson5.exitTicket||null,exitResults:state.lesson5.exitResults||{},unlocked:state.lesson5.unlocked!==false}:null,aiQuiz:state.aiQuiz?{day:state.aiQuiz.day,rewarded:state.aiQuiz.rewarded,seen:Array.isArray(state.aiQuiz.seen)?state.aiQuiz.seen.slice(-100):[]}:{day:getLocalDateString(),rewarded:0,seen:[]},
-   viewMode:state.viewMode,runnerStep:state.runnerStep||null,mapSubView:state.mapSubView||'sections',lastActiveLesson:state.lastActiveLesson||'lesson1',unitProjectDone:!!state.unitProjectDone,
+   viewMode:state.viewMode,runnerStep:state.runnerStep||null,mapSubView:state.mapSubView||'sections',lastActiveLesson:state.lastActiveLesson||'lesson1',unitProjectDone:!!state.unitProjectDone,unit1Exam:(state.unit1Exam&&typeof serializeUnit1ExamState==='function')?serializeUnit1ExamState(state.unit1Exam):null,
    activeNode:state.activeNode,nodesCompleted:[...state.nodesCompleted],
    nodeStars:state.nodeStars||{},
    viewedSlides:[...(state.viewedSlides||[])].map(s=>[...s]),
@@ -278,12 +279,15 @@ function loadState(){
   if(Array.isArray(data.nodesCompleted))state.nodesCompleted=new Set(data.nodesCompleted.filter(x=>Number.isInteger(x)&&x>=0&&x<PATH_NODES.length));
   if(data.nodeStars&&typeof data.nodeStars==='object')state.nodeStars=data.nodeStars;
   if(typeof data.unitProjectDone==='boolean')state.unitProjectDone=data.unitProjectDone;
-  if(typeof data.mapSubView==='string'&&['units','sections','lesson1','lesson2','lesson3','lesson4','lesson5'].includes(data.mapSubView))state.mapSubView=data.mapSubView;
+  if(typeof data.mapSubView==='string'&&['units','sections','lesson1','lesson2','lesson3','lesson4','lesson5','unit1_exam'].includes(data.mapSubView))state.mapSubView=data.mapSubView;
   if(typeof data.lastActiveLesson==='string'&&['lesson1','lesson2','lesson3','lesson4','lesson5'].includes(data.lastActiveLesson))state.lastActiveLesson=data.lastActiveLesson;
   else if(['lesson1','lesson2','lesson3','lesson4','lesson5'].includes(state.mapSubView))state.lastActiveLesson=state.mapSubView;
   if(Array.isArray(data.viewedSlides)&&data.viewedSlides.length===2)state.viewedSlides=data.viewedSlides.map(arr=>new Set(Array.isArray(arr)?arr:[0]));
   if(typeof data.activeNode==='number')state.activeNode=Math.max(0,Math.min(PATH_NODES.length-1,data.activeNode));
-  if(typeof data.viewMode==='string'&&['map','story','playground','mission','exit_ticket','lesson2','lesson3','lesson4','lesson5','recharge','scratchpad','result'].includes(data.viewMode))state.viewMode=data.viewMode;
+  if(typeof data.viewMode==='string'&&['map','story','playground','mission','exit_ticket','lesson2','lesson3','lesson4','lesson5','unit1_exam','recharge','scratchpad','result'].includes(data.viewMode))state.viewMode=data.viewMode;
+  if(data.unit1Exam&&typeof data.unit1Exam==='object'&&typeof hydrateUnit1ExamState==='function'){
+   state.unit1Exam=hydrateUnit1ExamState(data.unit1Exam);
+  }
   if(data.lesson5&&typeof data.lesson5==='object'){
    const l5d=data.lesson5;
    state.lesson5={
@@ -417,7 +421,8 @@ function loadState(){
    const l5Done=state.lesson5?.completedNodes;
    const l5DoneCount=l5Done instanceof Set?l5Done.size:(Array.isArray(l5Done)?l5Done.length:0);
    const hasL5Progress=Boolean(state.lesson5&&(l5DoneCount>0||Object.keys(state.lesson5.records||{}).length>0||state.mapSubView==='lesson5'));
+   const hasU1ExamProgress=Boolean(state.unit1Exam&&(typeof hasUnit1ExamPartialProgress==='function'?hasUnit1ExamPartialProgress():false));
    const hasRunnerProgress=Boolean(state.runnerStep&&Number.isInteger(state.runnerStep.nodeId));
-   return hasLegacyProgress||hasObProgress||hasL2Progress||hasL3Progress||hasL4Progress||hasL5Progress||hasRunnerProgress;
+   return hasLegacyProgress||hasObProgress||hasL2Progress||hasL3Progress||hasL4Progress||hasL5Progress||hasU1ExamProgress||hasRunnerProgress;
  }catch{return false;}
 }

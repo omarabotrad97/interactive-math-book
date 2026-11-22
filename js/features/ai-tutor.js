@@ -13,7 +13,8 @@
     2: 'مقارنة الأعداد وترتيبها',
     3: 'جمع الأعداد الكلية وطرحها',
     4: 'الأعداد السالبة',
-    5: 'خطة حل المسألة: أنشئ جدولاً'
+    5: 'خطة حل المسألة: أنشئ جدولاً',
+    6: 'اختبار نهاية الوحدة الأولى'
   };
 
   const SKILL_LABELS = {
@@ -486,8 +487,16 @@
       document.body.dataset.l1Mode === 'learning' && runnerSess && Array.isArray(runnerSess.steps);
 
     let lesson = 1;
+    const examActiveCtx =
+      typeof Unit1ExamEngine !== 'undefined' && typeof Unit1ExamEngine.getActiveAiContext === 'function'
+        ? Unit1ExamEngine.getActiveAiContext()
+        : null;
     if (openLab) {
       lesson = openLab.lesson;
+    } else if (examActiveCtx) {
+      lesson = 6;
+    } else if (state.viewMode === 'map' && state.mapSubView === 'unit1_exam') {
+      lesson = 6;
     } else if (inLearningShell && runnerSess.lesson) {
       lesson = runnerSess.lesson;
     } else if (state.viewMode === 'lesson5' || (state.viewMode === 'map' && state.mapSubView === 'lesson5')) {
@@ -505,7 +514,8 @@
       2: 'مقارنة الأعداد بعدّ المنازل ثم الفحص من أقصى اليسار والترتيب',
       3: 'الجمع والطرح العمودي مع إعادة التجميع والتحقق بالتقدير',
       4: 'الأعداد السالبة وتمثيلها على خط الأعداد وميزان الحرارة وتفسير الصفر',
-      5: 'تنظيم المعطيات في جدول واستخلاص النمط والتحقق بالضرب'
+      5: 'تنظيم المعطيات في جدول واستخلاص النمط والتحقق بالضرب',
+      6: 'مراجعة شاملة لمهارات الوحدة الأولى (القيمة المنزلية، المقارنة، الجمع والطرح، الأعداد السالبة، الجداول)'
     };
 
     let stationTitle = LESSON_TITLES[lesson] || LESSON_TITLES[1];
@@ -628,8 +638,34 @@
       } catch {}
     }
 
+    let examSocraticMode = false;
+    let linkedLesson = lesson;
+    if (examActiveCtx) {
+      stationTitle = examActiveCtx.stationTitle || LESSON_TITLES[6];
+      stepKind = examActiveCtx.stepKind || 'unit1_exam';
+      stepIndex = examActiveCtx.stepIndex;
+      totalSteps = examActiveCtx.totalSteps || 21;
+      isTeachingSlide = false;
+      slideTitle = examActiveCtx.slideTitle || stationTitle;
+      slideBody = examActiveCtx.slideBody || '';
+      questionPrompt = examActiveCtx.questionPrompt || '';
+      numbersInvolved = examActiveCtx.numbersInvolved || '';
+      options = Array.isArray(examActiveCtx.options) ? examActiveCtx.options : [];
+      hintText = examActiveCtx.hintText || '';
+      examSocraticMode = Boolean(examActiveCtx.examSocraticMode);
+      linkedLesson = examActiveCtx.linkedLesson || 1;
+      completedCount = typeof getUnit1ExamMasteredCount === 'function' ? getUnit1ExamMasteredCount() : 0;
+      totalCount = 21;
+    } else if (lesson === 6) {
+      stationTitle = 'بوابة اختبار نهاية الوحدة الأولى';
+      completedCount = typeof getUnit1ExamMasteredCount === 'function' ? getUnit1ExamMasteredCount() : 0;
+      totalCount = 21;
+    }
+
     return {
       lesson,
+      linkedLesson,
+      examSocraticMode,
       lessonTitle: LESSON_TITLES[lesson] || LESSON_TITLES[1],
       stationTitle,
       stepKind,
@@ -682,6 +718,8 @@
 
   function updateContextUI() {
     const ctx = extractActiveSlideAndLessonContext();
+    const socraticBanner = $('ai-exam-socratic-banner');
+    if (socraticBanner) socraticBanner.hidden = !ctx.examSocraticMode;
     if (ctxStation) ctxStation.textContent = formatContextHeadline(ctx);
     if (ctxSkill) {
       const sub = formatContextSubline(ctx);
@@ -882,6 +920,24 @@
     const q = String(userText || '').trim().toLowerCase();
     const slideSnippet = ctx.slideTitle || ctx.questionPrompt || ctx.stationTitle;
     const numNote = ctx.numbersInvolved ? ' (الأعداد في الشريحة: ' + ctx.numbersInvolved + ')' : '';
+
+    if (ctx.examSocraticMode) {
+      const targetLesson = Number(ctx.linkedLesson) || 1;
+      const socraticRules = {
+        1: 'قسّم العدد من اليمين إلى دورات ثلاثية (الآحاد، الألوف، الملايين)، ثم عدّ المنازل عن يمين الرقم لتحديد قيمته دون نسيان الأصفار الحافظة للمنازل.',
+        2: 'ابدأ بعدّ منازل كل عدد أولاً؛ فالأكثر منازل هو الأكبر، وإذا تساوت المنازل قارن من أقصى اليسار منزلة بمنزلة.',
+        3: 'في التقدير قرّب العددين إلى المنزلة المناسبة (أقرب مئة ألف أو أقرب مليون) قبل الجمع أو الطرح، وفي الجمع العمودي حاذِ المنازل من اليمين.',
+        4: 'تذكّر موقع الصفر 0 على خط الأعداد: الأعداد السالبة تقع عن يساره وتنقص خطوة واحدة كلما اتجهنا يساراً (-1، -2، -3...).',
+        5: 'اقرأ صفوف الجدول وأعمدته بعناية، احسب مجموع كل صف على حدة، ثم قارن بين المجاميع النهائية بدقة.'
+      };
+      const baseHint = ctx.hintText ? ('تلميح موجّه (دون كشف الجواب):\n1. ' + stripEmojisClean(ctx.hintText)) : 'تلميح موجّه (دون كشف الجواب):';
+      return (
+        baseHint +
+        '\n2. القاعدة المساعدة: ' +
+        (socraticRules[targetLesson] || socraticRules[1]) +
+        '\nجرّب تطبيق هذه الخطوة بنفسك ثم اختر إجابتك، وبعد تسليم الاختبار سأشرح لك الحل الكامل بالتفصيل.'
+      );
+    }
 
     if (kind === 'example' || q.includes('مثال')) {
       const examplesByLesson = {

@@ -39,6 +39,12 @@ if($('back-to-map'))$('back-to-map').addEventListener('click',()=>{
   if(typeof showDuolingoMap==='function')showDuolingoMap(false);
   return;
  }
+ if(state.viewMode==='unit1_exam'){
+  if(typeof Unit1ExamEngine!=='undefined'&&Unit1ExamEngine.closeToHub){Unit1ExamEngine.closeToHub();return;}
+  setMapSubView('unit1_exam',true);
+  if(typeof showDuolingoMap==='function')showDuolingoMap(false);
+  return;
+ }
  state.mapSubView='lesson1';
  showDuolingoMap(true);
 });
@@ -332,7 +338,9 @@ window.addEventListener('blur',()=>{cancelDigitGestures();dragController?.cancel
 const resumed=loadState();
 updateSoundButton();
 renderExperiments();initPlayground();applyScene();
-if(typeof L1Runner!=='undefined'&&(state.viewMode!=='map'||(state.runnerStep&&Number.isInteger(state.runnerStep.nodeId)))){
+if(state.viewMode==='unit1_exam'&&typeof Unit1ExamEngine!=='undefined'&&Unit1ExamEngine.resumeFromSavedState){
+ Unit1ExamEngine.resumeFromSavedState();
+}else if(typeof L1Runner!=='undefined'&&(state.viewMode!=='map'||(state.runnerStep&&Number.isInteger(state.runnerStep.nodeId)))){
  L1Runner.resumeFromSavedState();
 }else if(resumed){
  guide('مرحبًا بعودتك! استعدنا تقدّمك ومحطتك المحفوظة تلقائيًا.',4800);
