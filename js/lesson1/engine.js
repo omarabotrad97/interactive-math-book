@@ -245,6 +245,7 @@ function computeSkillReport(){
 let activeReportLesson=null;
 function detectActiveLessonForReport(){
  if(typeof state==='object'&&state){
+  if(state.viewMode==='u2_lesson1'||(state.viewMode==='map'&&(state.mapSubView==='u2_lesson1'||state.mapSubView==='u2_sections')))return 'u2_lesson1';
   if(state.viewMode==='lesson5'||(state.viewMode==='map'&&state.mapSubView==='lesson5'))return 'lesson5';
   if(state.viewMode==='lesson4'||(state.viewMode==='map'&&state.mapSubView==='lesson4'))return 'lesson4';
   if(state.viewMode==='lesson3'||(state.viewMode==='map'&&state.mapSubView==='lesson3'))return 'lesson3';
@@ -253,9 +254,10 @@ function detectActiveLessonForReport(){
  return 'lesson1';
 }
 function getReportLessonTarget(lessonOverride){
- let target=(lessonOverride==='lesson1'||lessonOverride==='lesson2'||lessonOverride==='lesson3'||lessonOverride==='lesson4'||lessonOverride==='lesson5')
+ let target=(lessonOverride==='lesson1'||lessonOverride==='lesson2'||lessonOverride==='lesson3'||lessonOverride==='lesson4'||lessonOverride==='lesson5'||lessonOverride==='u2_lesson1')
   ?lessonOverride
   :(activeReportLesson||detectActiveLessonForReport());
+ if(target==='u2_lesson1'&&(typeof U2L1_NODES==='undefined'||typeof getU2L1State!=='function'))target='lesson1';
  if(target==='lesson5'&&(typeof L5_NODES==='undefined'||typeof getLesson5State!=='function'))target='lesson1';
  if(target==='lesson4'&&(typeof L4_NODES==='undefined'||typeof getLesson4State!=='function'))target='lesson1';
  if(target==='lesson3'&&(typeof L3_NODES==='undefined'||typeof getLesson3State!=='function'))target='lesson1';
@@ -320,6 +322,22 @@ function buildMultiLessonReportItems(groups,cfg){
    status,
    needsReview:assessed&&verifiedScore<100
   };
+ });
+}
+function computeU2L1SkillReport(){
+ const groups=[
+  {key:'u2l1_concept',name:'فهم المضاعفة والتنصيف وتجزئة العدد',nodeIds:[0],exitSkills:['u2l1_concept_split']},
+  {key:'u2l1_double',name:'مضاعفة الأعداد الكلية ذهنيًا (× 2)',nodeIds:[1,5],exitSkills:['u2l1_doubling']},
+  {key:'u2l1_half',name:'تنصيف الأعداد الكلية ذهنيًا (÷ 2)',nodeIds:[2,6],exitSkills:['u2l1_halving']},
+  {key:'u2l1_mul',name:'الضرب بالمضاعفة والتنصيف المتتالي',nodeIds:[3,4,7,8],exitSkills:['u2l1_dh_multiply']},
+  {key:'u2l1_reason',name:'اكتشاف المختلف والتبرير والمسائل الحياتية',nodeIds:[9],exitSkills:['u2l1_reasoning']}
+ ];
+ return buildMultiLessonReportItems(groups,{
+  exitNodeId:10,
+  isCompleted:id=>isU2L1NodeCompleted(id),
+  isUnlocked:id=>typeof isU2L1NodeUnlocked==='function'?isU2L1NodeUnlocked(id):false,
+  getRecord:id=>getU2L1NodeRecord(id),
+  getStepCount:id=>(typeof U2Lesson1RunnerDefs!=='undefined'&&typeof U2Lesson1RunnerDefs.getStepCount==='function')?U2Lesson1RunnerDefs.getStepCount(id):2
  });
 }
 function computeLesson5SkillReport(){
@@ -392,6 +410,14 @@ function computeLesson2SkillReport(){
 }
 function trainWeakestFromReport(){
  const target=getReportLessonTarget();
+ if(target==='u2_lesson1'){
+  const items=computeU2L1SkillReport().sort((a,b)=>(a.assessed?a.verifiedScore:a.progressPct)-(b.assessed?b.verifiedScore:b.progressPct));
+  const unlockedItem=items.find(it=>typeof isU2L1NodeUnlocked==='function'&&isU2L1NodeUnlocked(it.targetNodeId));
+  const nodeId=unlockedItem?unlockedItem.targetNodeId:(typeof currentU2L1Frontier==='function'?currentU2L1Frontier():0);
+  $('finish-dialog').close();
+  if(typeof openU2L1Node==='function')openU2L1Node(nodeId);
+  return;
+ }
  if(target==='lesson5'){
   const items=computeLesson5SkillReport().sort((a,b)=>(a.assessed?a.verifiedScore:a.progressPct)-(b.assessed?b.verifiedScore:b.progressPct));
   const unlockedItem=items.find(it=>typeof isLesson5NodeUnlocked==='function'&&isLesson5NodeUnlocked(it.targetNodeId));
@@ -447,7 +473,8 @@ function ensureReportLessonTabs(targetLesson){
   {id:'lesson2',label:'الدرس 2: المقارنة والترتيب'},
   {id:'lesson3',label:'الدرس 3: الجمع والطرح'},
   {id:'lesson4',label:'الدرس 4: الأعداد السالبة'},
-  {id:'lesson5',label:'الدرس 5: أنشئ جدولاً'}
+  {id:'lesson5',label:'الدرس 5: أنشئ جدولاً'},
+  {id:'u2_lesson1',label:'و2 · الدرس 1: الضرب الذهني'}
  ];
  tabs.replaceChildren();
  defs.forEach(def=>{
@@ -480,7 +507,43 @@ function renderReportModal(lessonOverride){
  let report=[],hasET=false,verifiedScore=null,exitTargetNodeId=20,exitQCount=5;
  const names=['مبتدئ','مستكشف','خبير','بطل','أسطورة'];
 
- if(targetLesson==='lesson5'){
+ if(targetLesson==='u2_lesson1'){
+  totalStations=typeof U2L1_NODES!=='undefined'?U2L1_NODES.length:11;
+  done=typeof getU2L1DoneCount==='function'?getU2L1DoneCount():0;
+  pts=typeof getU2L1Points==='function'?getU2L1Points():0;
+  report=computeU2L1SkillReport();
+  for(let i=0;i<totalStations;i++){
+   const rec=getU2L1NodeRecord(i);
+   errorsCount+=Number(rec&&rec.errors?rec.errors:0);
+  }
+  report.forEach(item=>{thirdStatVal+=item.passedSteps;});
+  const etDone=isU2L1NodeCompleted(10);
+  const etRec=getU2L1NodeRecord(10);
+  const etSkills=(etRec&&etRec.data&&etRec.data.skills)?etRec.data.skills:{};
+  const qList=(typeof U2Lesson1RunnerDefs!=='undefined'&&Array.isArray(U2Lesson1RunnerDefs.U2L1_MASTERY_QUESTIONS))?U2Lesson1RunnerDefs.U2L1_MASTERY_QUESTIONS:[];
+  exitQCount=qList.length||5;
+  exitTargetNodeId=10;
+  if(etDone){
+   hasET=true;
+   verifiedScore=100;
+  }else if(Object.keys(etSkills).length>0&&qList.length>0){
+   hasET=true;
+   const rightCnt=qList.filter(q=>etSkills[q.skill]===true).length;
+   verifiedScore=Math.round((rightCnt/qList.length)*100);
+  }
+  if(statSmalls.length>=4){
+   statSmalls[0].textContent='نقاط الضرب الذهني';
+   statSmalls[1].textContent='محطات الدرس';
+   statSmalls[2].textContent='تمارين منجزة';
+   statSmalls[3].textContent='محاولات تعلّمت منها';
+  }
+  if($('finish-eyebrow'))$('finish-eyebrow').textContent='تقرير الإنجاز وتشخيص مهارات الوحدة 2 · الدرس 1';
+  $('finish-title').textContent=(hasET&&verifiedScore===100)?'أنت بطل الضرب الذهني (إتقان تام معتمد)!':done===totalStations?'أكملت مسار الضرب الذهني (بانتظار التحقق المستقل)':'تقرير الوحدة 2 · الدرس 1: الضرب الذهني';
+  $('finish-subtitle').textContent=(hasET&&verifiedScore===100)?'أثبتت إتقان جميع أهداف الضرب الذهني (المضاعفة والتنصيف) بنتيجة 100% في بطاقة الخروج المستقلة.':'تعرّف على تقدّمك في محطات الضرب الذهني وتشخيص مهارات المضاعفة والتنصيف والتبرير.';
+  if(skillDiagTitleSpan)skillDiagTitleSpan.textContent='بطاقة تشخيص مهارات الضرب الذهني';
+  if(skillDiagSection)skillDiagSection.setAttribute('aria-label','تشخيص مهارات الوحدة 2 الدرس 1');
+  if(certTitle)certTitle.textContent='شهادة إتقان الضرب الذهني (المضاعفة والتنصيف)';
+ }else if(targetLesson==='lesson5'){
   totalStations=typeof L5_NODES!=='undefined'?L5_NODES.length:10;
   done=typeof getLesson5DoneCount==='function'?getLesson5DoneCount():0;
   pts=typeof getLesson5Points==='function'?getLesson5Points():0;
@@ -673,7 +736,8 @@ function renderReportModal(lessonOverride){
   if(openEtBtn){
    openEtBtn.onclick=()=>{
     $('finish-dialog').close();
-    if(targetLesson==='lesson5'&&typeof openLesson5Node==='function')openLesson5Node(exitTargetNodeId);
+    if(targetLesson==='u2_lesson1'&&typeof openU2L1Node==='function')openU2L1Node(exitTargetNodeId);
+    else if(targetLesson==='lesson5'&&typeof openLesson5Node==='function')openLesson5Node(exitTargetNodeId);
     else if(targetLesson==='lesson4'&&typeof openLesson4Node==='function')openLesson4Node(exitTargetNodeId);
     else if(targetLesson==='lesson3'&&typeof openLesson3Node==='function')openLesson3Node(exitTargetNodeId);
     else if(targetLesson==='lesson2'&&typeof openLesson2Node==='function')openLesson2Node(exitTargetNodeId);
@@ -764,7 +828,8 @@ function renderReportModal(lessonOverride){
    '<button type="button" class="skill-train-btn" data-train-skill="'+item.key+'"><span class="btn-svg">'+getIconSVG(isL1?'infinity':'target')+'</span><span>تدريب</span></button>';
   row.querySelector('[data-train-skill]').addEventListener('click',()=>{
    $('finish-dialog').close();
-   if(targetLesson==='lesson5'&&typeof openLesson5Node==='function')openLesson5Node(item.targetNodeId);
+   if(targetLesson==='u2_lesson1'&&typeof openU2L1Node==='function')openU2L1Node(item.targetNodeId);
+   else if(targetLesson==='lesson5'&&typeof openLesson5Node==='function')openLesson5Node(item.targetNodeId);
    else if(targetLesson==='lesson4'&&typeof openLesson4Node==='function')openLesson4Node(item.targetNodeId);
    else if(targetLesson==='lesson3'&&typeof openLesson3Node==='function')openLesson3Node(item.targetNodeId);
    else if(targetLesson==='lesson2'&&typeof openLesson2Node==='function')openLesson2Node(item.targetNodeId);
@@ -778,11 +843,13 @@ function renderReportModal(lessonOverride){
  $('cert-level-badge').textContent='المستوى: '+names[level];
  const certAch=$('cert-achievement');
  if(certAch){
-  const lessonScope=targetLesson==='lesson5'
+  const lessonScope=targetLesson==='u2_lesson1'
+   ?'للضرب الذهني باستعمال المضاعفة والتنصيف'
+   :(targetLesson==='lesson5'
    ?'لخطة حل المسألة: أنشئ جدولاً'
    :(targetLesson==='lesson4'
    ?'للأعداد السالبة وتمثيلها على خط الأعداد'
-   :(targetLesson==='lesson3'?'لجمع الأعداد الكلية وطرحها':(targetLesson==='lesson2'?'لمقارنة الأعداد وترتيبها':'للأعداد ضمن الملايين')));
+   :(targetLesson==='lesson3'?'لجمع الأعداد الكلية وطرحها':(targetLesson==='lesson2'?'لمقارنة الأعداد وترتيبها':'للأعداد ضمن الملايين'))));
   if(hasET&&verifiedScore===100){
    certAch.textContent='أثبت إتقانه التام لجميع أهداف الدرس ('+lessonScope+') بنسبة 100% في بطاقة خروج الدرس المعتمدة.';
   }else if(hasET){
@@ -794,11 +861,13 @@ function renderReportModal(lessonOverride){
  try{$('cert-date').textContent='التاريخ: '+new Intl.DateTimeFormat('ar-JO-u-nu-latn',{year:'numeric',month:'short',day:'numeric'}).format(new Date());}catch{$('cert-date').textContent='';}
 }
 function showFinish(lessonOverride){
- activeReportLesson=(lessonOverride==='lesson1'||lessonOverride==='lesson2'||lessonOverride==='lesson3'||lessonOverride==='lesson4'||lessonOverride==='lesson5')?lessonOverride:detectActiveLessonForReport();
+ activeReportLesson=(lessonOverride==='lesson1'||lessonOverride==='lesson2'||lessonOverride==='lesson3'||lessonOverride==='lesson4'||lessonOverride==='lesson5'||lessonOverride==='u2_lesson1')?lessonOverride:detectActiveLessonForReport();
  renderReportModal(activeReportLesson);
  if(!$('finish-dialog').open)$('finish-dialog').showModal();
  const target=getReportLessonTarget();
- const allDone=(target==='lesson5'&&typeof getLesson5DoneCount==='function'&&typeof L5_NODES!=='undefined')
+ const allDone=(target==='u2_lesson1'&&typeof getU2L1DoneCount==='function'&&typeof U2L1_NODES!=='undefined')
+  ?(getU2L1DoneCount()>=U2L1_NODES.length)
+  :(target==='lesson5'&&typeof getLesson5DoneCount==='function'&&typeof L5_NODES!=='undefined')
   ?(getLesson5DoneCount()>=L5_NODES.length)
   :(target==='lesson4'&&typeof getLesson4DoneCount==='function'&&typeof L4_NODES!=='undefined')
   ?(getLesson4DoneCount()>=L4_NODES.length)

@@ -1,0 +1,1366 @@
+/* Unit 2 Lesson 1: الضرب الذهني (المضاعفة والتنصيف) + Unit 2 Project & Lab
+   Mobile-First 320px+, Token-Driven, RTL-Strict, Zero One-Sided Borders, 8 Interactive States */
+
+:root {
+  --u2l1-gap-xs: var(--space-1);
+  --u2l1-gap-sm: var(--space-2);
+  --u2l1-gap-md: var(--space-3);
+  --u2l1-gap-lg: var(--space-4);
+  --u2l1-dialog-max: calc(var(--space-8) * 18);
+  --u2l1-dialog-max-h: 94dvh;
+  --u2l1-backdrop: color-mix(in srgb, var(--ink-dark) 56%, transparent);
+  --u2l1-red-wash: color-mix(in srgb, var(--red) 10%, var(--surface-card));
+  --u2l1-red-border: color-mix(in srgb, var(--red) 44%, var(--surface-card));
+  --u2l1-line-body: 1.55;
+  --u2l1-line-tight: 1.3;
+  --u2l1-shake-pos: var(--space-1);
+  --u2l1-shake-neg: calc(var(--space-1) * -1);
+}
+
+/* --------------------------------------------------------------------------
+   1. Shell Header Lab Shortcut & Runner Compact Rhythm (Lesson 7 = Unit 2 L1)
+   -------------------------------------------------------------------------- */
+.u2l1-shell-lab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1-5);
+  min-height: var(--touch-min);
+  min-width: var(--touch-min);
+  padding: var(--space-1-5) var(--space-2-5);
+  border-radius: var(--radius-sm);
+  border: var(--border-mid) solid var(--u2-primary-border);
+  background: var(--u2-primary-tint);
+  color: var(--u2-ink);
+  font-family: var(--body);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
+}
+
+.u2l1-shell-lab-btn[hidden] {
+  display: none;
+}
+
+.u2l1-shell-lab-btn:hover {
+  background: var(--u2-primary-tint-deep);
+  border-color: var(--u2-primary);
+}
+
+.u2l1-shell-lab-btn:active {
+  transform: translateY(var(--space-0-5));
+}
+
+.u2l1-shell-lab-btn:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
+}
+
+.u2l1-shell-lab-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+#l1-shell[data-l1-lesson="7"] .l1-stage {
+  padding: var(--space-2) var(--space-2-5);
+}
+
+#l1-shell[data-l1-lesson="7"] .l1-context-row {
+  margin-bottom: var(--space-1-5);
+}
+
+#l1-shell[data-l1-lesson="7"] .l1-prompt {
+  font-size: var(--text-md-plus);
+  line-height: var(--u2l1-line-body);
+  margin-bottom: var(--space-2);
+}
+
+#l1-shell[data-l1-lesson="7"] .l1-feedback {
+  margin-top: var(--space-1-5);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+}
+
+/* --------------------------------------------------------------------------
+   2. Shared Interactive Cards, Rule Pills & Bidi Number Displays
+   -------------------------------------------------------------------------- */
+.u2-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2-5);
+  padding: var(--space-3);
+  border-radius: var(--radius-panel);
+  border: var(--border-mid) solid var(--border-neutral);
+  background: var(--surface-card);
+  box-shadow: var(--shadow-xs);
+  min-width: 0;
+}
+
+.u2-card.is-tint {
+  background: var(--u2-primary-tint);
+  border-color: var(--u2-primary-border);
+}
+
+.u2-card.is-info {
+  background: var(--action-info-wash);
+  border-color: var(--action-info-border);
+}
+
+.u2-card.is-gold {
+  background: var(--brand-gold-wash);
+  border-color: var(--brand-gold-border);
+}
+
+.u2-rule-bar {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: var(--border-hairline) solid var(--u2-primary-border);
+  background: var(--u2-primary-tint);
+  color: var(--u2-ink);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: var(--u2l1-line-body);
+}
+
+.u2-rule-bar.has-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.u2-rule-bar.is-info {
+  border-color: var(--action-info-border);
+  background: var(--action-info-wash);
+  color: var(--action-info-hover);
+}
+
+.u2-rule-bar.is-gold {
+  border-color: var(--brand-gold-border);
+  background: var(--brand-gold-wash);
+  color: var(--gold-ink);
+}
+
+.u2-num {
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+  direction: ltr;
+  display: inline-block;
+}
+
+.u2-op-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2-5);
+  border-radius: var(--radius-pill);
+  border: var(--border-hairline) solid var(--u2-primary-border);
+  background: var(--u2-primary-tint);
+  color: var(--u2-ink);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.u2-op-badge.is-half {
+  border-color: var(--action-info-border);
+  background: var(--action-info-wash);
+  color: var(--action-info-hover);
+}
+
+.u2-op-badge.is-gold {
+  border-color: var(--brand-gold-border);
+  background: var(--brand-gold-wash);
+  color: var(--gold-ink);
+}
+
+/* Teach Slide Layout */
+.u2-teach-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2-5);
+}
+
+.u2-teach-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2-5);
+}
+
+.u2-teach-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-card);
+  border: var(--border-mid) solid var(--border-neutral);
+  background: var(--surface-card);
+  min-width: 0;
+}
+
+.u2-teach-panel.is-double {
+  border-color: var(--u2-primary-border);
+  background: var(--u2-primary-tint);
+}
+
+.u2-teach-panel.is-half {
+  border-color: var(--action-info-border);
+  background: var(--action-info-wash);
+}
+
+.u2-teach-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.u2-teach-panel-title {
+  font-family: var(--heading);
+  font-size: var(--text-base);
+  font-weight: 800;
+  color: var(--ink-dark);
+  margin: 0;
+}
+
+.u2-teach-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.u2-teach-step-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-1-5) var(--space-2-5);
+  border-radius: var(--radius-sm);
+  border: var(--border-hairline) solid var(--border-muted);
+  background: var(--surface-card);
+  font-size: var(--text-sm);
+  color: var(--ink);
+  min-width: 0;
+}
+
+.u2-teach-step-eq {
+  font-weight: 800;
+  color: var(--ink-dark);
+  font-size: var(--text-md-plus);
+}
+
+.u2-teach-summary {
+  padding: var(--space-2-5) var(--space-3);
+  border-radius: var(--radius-md);
+  border: var(--border-mid) solid var(--brand-gold-border);
+  background: var(--brand-gold-wash);
+  color: var(--ink-dark);
+  font-size: var(--text-sm);
+  line-height: var(--u2l1-line-body);
+}
+
+/* --------------------------------------------------------------------------
+   3. Interactive Split-Tree Widget (شجرة التجزئة للمضاعفة والتنصيف)
+   -------------------------------------------------------------------------- */
+.u2-tree-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2-5);
+}
+
+.u2-tree-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-panel);
+  border: var(--border-mid) solid var(--border-neutral);
+  background: var(--surface-muted);
+}
+
+.u2-tree-root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  border: var(--border-mid) solid var(--u2-primary);
+  background: var(--surface-card);
+  color: var(--ink-dark);
+  font-family: var(--heading);
+  font-size: var(--text-xl);
+  font-weight: 800;
+}
+
+.u2-tree-root.is-half {
+  border-color: var(--action-info);
+}
+
+.u2-tree-connectors {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-weight: 700;
+}
+
+.u2-tree-branches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.u2-tree-branches.is-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.u2-tree-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1-5);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  border: var(--border-hairline) solid var(--border-neutral);
+  background: var(--surface-card);
+  min-width: 0;
+  text-align: center;
+}
+
+.u2-tree-part-lbl {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.u2-tree-part-val {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--ink-dark);
+}
+
+.u2-tree-op-tag {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  padding: var(--space-0-5) var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--u2-primary-tint);
+  color: var(--u2-ink);
+}
+
+.u2-tree-op-tag.is-half {
+  background: var(--action-info-wash);
+  color: var(--action-info-hover);
+}
+
+.u2-slot-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: calc(var(--touch-min) + var(--space-6));
+  min-height: var(--touch-min);
+  padding: var(--space-1-5) var(--space-3);
+  border-radius: var(--radius-sm);
+  border: var(--border-mid) dashed var(--border-ui);
+  background: var(--surface-card);
+  color: var(--ink-dark);
+  font-family: var(--body);
+  font-size: var(--text-lg);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out),
+              background-color var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.u2-slot-btn:hover:not(:disabled) {
+  border-color: var(--u2-primary);
+  background: var(--u2-primary-tint);
+}
+
+.u2-slot-btn:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
+}
+
+.u2-slot-btn.is-selected {
+  border-style: solid;
+  border-color: var(--u2-primary);
+  background: var(--u2-primary-tint);
+  box-shadow: 0 0 0 var(--space-0-5) var(--u2-primary-border);
+}
+
+.u2-slot-btn.is-filled {
+  border-style: solid;
+  border-color: var(--u2-primary-border);
+  background: var(--u2-primary-tint);
+  color: var(--u2-ink);
+}
+
+.u2-slot-btn.is-correct {
+  border-style: solid;
+  border-color: var(--success-border);
+  background: var(--success-wash);
+  color: var(--success-ink);
+}
+
+.u2-slot-btn.is-error {
+  border-style: solid;
+  border-color: var(--u2l1-red-border);
+  background: var(--u2l1-red-wash);
+  color: var(--red);
+  animation: u2Shake var(--dur-normal) ease;
+}
+
+.u2-slot-btn:disabled {
+  cursor: default;
+}
+
+.u2-tree-sum-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: var(--border-hairline) solid var(--u2-primary-border);
+  background: var(--surface-card);
+  font-size: var(--text-md-plus);
+  font-weight: 800;
+  color: var(--ink-dark);
+}
+
+.u2-tree-sum-eq {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Choice Bank & Inline Numpad */
+.u2-bank-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--muted);
+  margin: 0;
+}
+
+.u2-choice-bank {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.u2-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: calc(var(--touch-min) + var(--space-4));
+  min-height: var(--touch-min);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: var(--border-mid) solid var(--border-neutral);
+  background: var(--surface-card);
+  color: var(--ink-dark);
+  font-family: var(--body);
+  font-size: var(--text-base);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
+}
+
+.u2-chip-btn:hover:not(:disabled) {
+  border-color: var(--u2-primary);
+  background: var(--u2-primary-tint);
+}
+
+.u2-chip-btn:active:not(:disabled) {
+  transform: translateY(var(--space-0-5));
+}
+
+.u2-chip-btn:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
+}
+
+.u2-chip-btn.is-selected {
+  border-color: var(--u2-primary);
+  background: var(--u2-primary);
+  color: var(--surface-card);
+}
+
+.u2-chip-btn.is-used {
+  opacity: 0.48;
+  border-style: dashed;
+}
+
+.u2-chip-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   4. Interactive Doubling & Halving Chain Machine (آلة سلسلة ÷2 / ×2 الحيّة)
+   -------------------------------------------------------------------------- */
+.u2-chain-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2-5);
+}
+
+.u2-chain-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.u2-chain-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2-5);
+  border-radius: var(--radius-md);
+  border: var(--border-mid) solid var(--border-neutral);
+  background: var(--surface-card);
+  direction: ltr;
+}
+
+.u2-chain-row.is-active {
+  border-color: var(--u2-primary);
+  background: var(--u2-primary-tint);
+}
+
+.u2-chain-row.is-done {
+  border-color: var(--success-border);
+  background: var(--success-wash);
+}
+
+.u2-chain-factor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  border: var(--border-hairline) solid var(--border-muted);
+  background: var(--surface-card);
+  min-width: 0;
+}
+
+.u2-chain-factor.is-even-choice {
+  border-color: var(--action-info-border);
+  background: var(--action-info-wash);
+}
+
+.u2-chain-factor.is-double-choice {
+  border-color: var(--u2-primary-border);
+  background: var(--u2-primary-tint);
+}
+
+.u2-chain-val {
+  font-family: var(--heading);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--ink-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.u2-chain-mul-sign {
+  font-family: var(--heading);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.u2-chain-connector {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: var(--space-2);
+  padding-inline: var(--space-4);
+  direction: ltr;
+}
+
+.u2-chain-step-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.u2-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1-5);
+  min-height: var(--control-md);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: var(--border-mid) solid var(--border-neutral);
+  background: var(--surface-card);
+  color: var(--ink-dark);
+  font-family: var(--body);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
+}
+
+.u2-action-btn.is-primary {
+  border-color: var(--u2-primary);
+  background: var(--u2-primary);
+  color: var(--surface-card);
+}
+
+.u2-action-btn.is-primary:hover:not(:disabled) {
+  background: var(--u2-primary-hover);
+  border-color: var(--u2-primary-hover);
+}
+
+.u2-action-btn.is-info {
+  border-color: var(--action-info);
+  background: var(--action-info-wash);
+  color: var(--action-info-hover);
+}
+
+.u2-action-btn.is-info:hover:not(:disabled) {
+  background: var(--action-info);
+  color: var(--surface-card);
+}
+
+.u2-action-btn:hover:not(:disabled):not(.is-primary):not(.is-info) {
+  border-color: var(--u2-primary);
+  background: var(--u2-primary-tint);
+}
+
+.u2-action-btn:active:not(:disabled) {
+  transform: translateY(var(--space-0-5));
+}
+
+.u2-action-btn:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
+}
+
+.u2-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.u2-chain-final-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: var(--border-mid) solid var(--u2-primary-border);
+  background: var(--surface-card);
+}
+
+.u2-chain-final-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  direction: ltr;
+}
+
+.u2-num-input {
+  min-height: var(--control-md);
+  width: calc(var(--space-8) * 4.5);
+  max-width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: var(--border-mid) solid var(--border-ui);
+  background: var(--surface-card);
+  color: var(--ink-dark);
+  font-family: var(--heading);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  text-align: center;
+  direction: ltr;
+  font-variant-numeric: tabular-nums;
+}
+
+.u2-num-input:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
+  border-color: var(--u2-primary);
+}
+
+.u2-num-input.is-error {
+  border-color: var(--red);
+  background: var(--u2l1-red-wash);
+}
+
+.u2-num-input.is-correct {
+  border-color: var(--success-ink);
+  background: var(--success-wash);
+  color: var(--success-ink);
+}
+
+.u2-num-input:disabled {
+  opacity: 0.85;
+  background: var(--surface-muted);
+}
+
+/* --------------------------------------------------------------------------
+   5. Mental Drill Grid (أتدرب 1-12: إيجاد الضعف والنصف ذهنيًا)
+   -------------------------------------------------------------------------- */
+.u2-drill-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2-5);
+}
+
+.u2-drill-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2);
+}
+
+.u2-drill-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2-5) var(--space-3);
+  border-radius: var(--radius-card);
+  border: var(--border-mid) solid var(--border-neutral);
+  background: var(--surface-card);
+  min-width: 0;
+}
+
+.u2-drill-card.is-active {
+  border-color: var(--u2-primary);
+  background: var(--u2-primary-tint);
+}
+
+.u2-drill-card.is-correct {
+  border-color: var(--success-border);
+  background: var(--success-wash);
+}
+
+.u2-drill-card.is-error {
+  border-color: var(--u2l1-red-border);
+  background: var(--u2l1-red-wash);
+}
+
+.u2-drill-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.u2-drill-qnum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--space-7);
+  min-height: var(--space-7);
+  padding: 0 var(--space-1-5);
+  border-radius: var(--radius-xs);
+  background: var(--u2-primary);
+  color: var(--surface-card);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.u2-drill-qnum.is-half {
+  background: var(--action-info);
+}
+
+.u2-drill-expr {
+  font-family: var(--heading);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--ink-dark);
+}
+
+.u2-drill-input-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.u2-drill-split-hint {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   6. Higher-Order Thinking: Balloons (Q17), Train Story (Q18), Reason Builder
+   -------------------------------------------------------------------------- */
+.u2-balloons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2-5);
+}
+
+.u2-balloon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1-5);
+  min-height: calc(var(--control-lg) * 1.9);
+  padding: var(--space-3) var(--space-2);
+  border-radius: var(--radius-2xl);
+  border: var(--border-mid) solid var(--u2-primary-border);
+  background: var(--u2-primary-tint);
+  color: var(--ink-dark);
+  font-family: var(--heading);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out),
+              background-color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.u2-balloon-btn:hover:not(:disabled) {
+  background: var(--u2-primary-tint-deep);
+  border-color: var(--u2-primary);
+  transform: translateY(var(--u2l1-shake-neg));
+}
+
+.u2-balloon-btn:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
+}
+
+.u2-balloon-btn.is-selected {
+  border-color: var(--u2-primary);
+  background: var(--u2-primary);
+  color: var(--surface-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.u2-balloon-btn.is-correct {
+  border-color: var(--success-ink);
+  background: var(--success-wash);
+  color: var(--success-ink);
+}
+
+.u2-balloon-btn.is-error {
+  border-color: var(--red);
+  background: var(--u2l1-red-wash);
+  color: var(--red);
+  animation: u2Shake var(--dur-normal) ease;
+}
+
+.u2-balloon-parity {
+  font-family: var(--body);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+/* Train Story Simulation (Q18) */
+.u2-train-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2-5);
+}
+
+.u2-train-track {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2);
+}
+
+.u2-train-stop {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  padding: var(--space-2-5) var(--space-3);
+  border-radius: var(--radius-card);
+  border: var(--border-mid) solid var(--border-neutral);
+  background: var(--surface-card);
+}
+
+.u2-train-stop.is-current {
+  border-color: var(--u2-primary);
+  background: var(--u2-primary-tint);
+}
+
+.u2-train-stop.is-done {
+  border-color: var(--success-border);
+  background: var(--success-wash);
+}
+
+.u2-train-stop-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.u2-train-stop-title {
+  font-size: var(--text-sm);
+  font-weight: 800;
+  color: var(--ink-dark);
+}
+
+.u2-train-stop-desc {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--ink);
+  line-height: var(--u2l1-line-body);
+}
+
+.u2-train-calc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* Reason Builder (أبرّر إجابتي وأتحدث) */
+.u2-reason-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2-5);
+}
+
+.u2-reason-sentence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1-5);
+  padding: var(--space-3);
+  border-radius: var(--radius-card);
+  border: var(--border-mid) solid var(--u2-primary-border);
+  background: var(--surface-card);
+  font-size: var(--text-md-plus);
+  font-weight: 700;
+  line-height: 1.9;
+  color: var(--ink-dark);
+}
+
+.u2-reason-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  min-width: calc(var(--space-8) * 3);
+  padding: var(--space-1) var(--space-2-5);
+  border-radius: var(--radius-sm);
+  border: var(--border-mid) dashed var(--border-ui);
+  background: var(--surface-muted);
+  color: var(--u2-ink);
+  font-family: var(--body);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.u2-reason-slot.is-selected {
+  border-style: solid;
+  border-color: var(--u2-primary);
+  background: var(--u2-primary-tint);
+}
+
+.u2-reason-slot.is-filled {
+  border-style: solid;
+  border-color: var(--u2-primary-border);
+  background: var(--u2-primary-tint);
+}
+
+.u2-reason-slot.is-correct {
+  border-style: solid;
+  border-color: var(--success-border);
+  background: var(--success-wash);
+  color: var(--success-ink);
+}
+
+.u2-reason-slot.is-error {
+  border-style: solid;
+  border-color: var(--red);
+  background: var(--u2l1-red-wash);
+  color: var(--red);
+}
+
+.u2-reason-slot:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
+}
+
+.u2-reason-note-area {
+  width: 100%;
+  min-height: calc(var(--control-lg) * 1.5);
+  padding: var(--space-2-5);
+  border-radius: var(--radius-md);
+  border: var(--border-mid) solid var(--border-neutral);
+  background: var(--surface-card);
+  color: var(--ink-dark);
+  font-family: var(--body);
+  font-size: var(--text-sm);
+  line-height: var(--u2l1-line-body);
+  resize: vertical;
+}
+
+.u2-reason-note-area:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
+  border-color: var(--u2-primary);
+}
+
+/* --------------------------------------------------------------------------
+   7. Mental Multiplication Lab Dialog (#mental-mul-lab-dialog) & Unit 2 Project Dialog (#u2-project-dialog)
+   -------------------------------------------------------------------------- */
+.u2-lab-dialog {
+  width: min(calc(100vw - var(--space-4)), var(--u2l1-dialog-max));
+  max-height: var(--u2l1-dialog-max-h);
+  margin: auto;
+  padding: 0;
+  border: var(--border-mid) solid var(--u2-primary-border);
+  border-radius: var(--radius-xl);
+  background: var(--surface-card);
+  color: var(--ink);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.u2-lab-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.u2-lab-dialog::backdrop {
+  background: var(--u2l1-backdrop);
+}
+
+.u2-lab-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--u2-primary);
+  color: var(--surface-card);
+}
+
+.u2-lab-head h2 {
+  margin: 0;
+  font-family: var(--heading);
+  font-size: var(--text-lg);
+  font-weight: 800;
+  line-height: var(--u2l1-line-tight);
+}
+
+.u2-lab-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-sm);
+  border: var(--border-hairline) solid color-mix(in srgb, var(--surface-card) 42%, transparent);
+  background: color-mix(in srgb, var(--surface-card) 16%, transparent);
+  color: var(--surface-card);
+  font-family: var(--body);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.u2-lab-close:hover {
+  background: color-mix(in srgb, var(--surface-card) 28%, transparent);
+}
+
+.u2-lab-close:focus-visible {
+  outline: var(--border-thick) solid var(--surface-card);
+  outline-offset: var(--space-0-5);
+}
+
+.u2-lab-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.u2-lab-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.u2-lab-tabs.is-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.u2-lab-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  padding: var(--space-1-5) var(--space-2);
+  border-radius: var(--radius-md);
+  border: var(--border-mid) solid var(--border-neutral);
+  background: var(--surface-muted);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  text-align: center;
+  cursor: pointer;
+}
+
+.u2-lab-tab.is-active {
+  border-color: var(--u2-primary);
+  background: var(--u2-primary);
+  color: var(--surface-card);
+}
+
+.u2-lab-tab:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
+}
+
+.u2-lab-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1-5);
+}
+
+.u2-lab-preset-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: var(--touch-min);
+  padding: var(--space-1-5) var(--space-2-5);
+  border-radius: var(--radius-pill);
+  border: var(--border-hairline) solid var(--border-soft);
+  background: var(--surface-card);
+  color: var(--ink-dark);
+  font-family: var(--body);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.u2-lab-preset-btn.is-active {
+  border-color: var(--u2-primary);
+  background: var(--u2-primary-tint);
+  color: var(--u2-ink);
+}
+
+.u2-lab-preset-btn:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
+}
+
+.u2-lab-custom-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-2-5);
+  border-radius: var(--radius-md);
+  border: var(--border-hairline) solid var(--border-neutral);
+  background: var(--surface-muted);
+}
+
+.u2-lab-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1 1 calc(var(--space-8) * 3);
+  min-width: 0;
+}
+
+.u2-lab-field label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.u2-lab-field input {
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: var(--space-1-5) var(--space-2-5);
+  border-radius: var(--radius-sm);
+  border: var(--border-mid) solid var(--border-soft);
+  background: var(--surface-card);
+  color: var(--ink-dark);
+  font-family: var(--heading);
+  font-size: var(--text-base);
+  font-weight: 800;
+  text-align: center;
+  direction: ltr;
+  font-variant-numeric: tabular-nums;
+}
+
+.u2-lab-field input:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
+}
+
+.u2-lab-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.u2-lab-controls .u2-action-btn {
+  flex: 1 1 auto;
+}
+
+.u2-lab-summary {
+  padding: var(--space-2-5) var(--space-3);
+  border-radius: var(--radius-md);
+  border: var(--border-hairline) solid var(--u2-primary-border);
+  background: var(--u2-primary-tint);
+  color: var(--u2-ink);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: var(--u2l1-line-body);
+}
+
+.u2-lab-summary.is-warn {
+  border-color: var(--warn-border);
+  background: var(--warn-wash);
+  color: var(--warn-ink);
+}
+
+/* Unit 2 Project Interactive Visuals (Line Multiplication & Lattice Grid) */
+.u2-proj-svg-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-card);
+  border: var(--border-mid) solid var(--border-neutral);
+  background: var(--surface-card);
+}
+
+.u2-proj-svg {
+  width: 100%;
+  max-width: calc(var(--space-8) * 11);
+  height: auto;
+  display: block;
+}
+
+.u2-proj-overview-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2-5);
+}
+
+.u2-proj-list {
+  margin: 0;
+  padding-inline-start: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  font-size: var(--text-sm);
+  color: var(--ink);
+  line-height: var(--u2l1-line-body);
+}
+
+.u2-proj-complete-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: var(--border-mid) solid var(--brand-gold-border);
+  background: var(--brand-gold-wash);
+}
+
+.u2-proj-check-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1-5);
+}
+
+/* --------------------------------------------------------------------------
+   8. Keyframes & Reduced Motion + Progressive Min-Width Enhancements
+   -------------------------------------------------------------------------- */
+@keyframes u2Shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(var(--u2l1-shake-pos)); }
+  75% { transform: translateX(var(--u2l1-shake-neg)); }
+}
+
+@media (min-width: 480px) {
+  .u2-drill-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .u2-lab-tab {
+    font-size: var(--text-sm);
+  }
+}
+
+@media (min-width: 640px) {
+  .u2-teach-grid,
+  .u2-proj-overview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .u2-balloons-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .u2-train-track {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .u2-drill-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .u2-slot-btn,
+  .u2-chip-btn,
+  .u2-action-btn,
+  .u2-balloon-btn,
+  .u2l1-shell-lab-btn {
+    transition: none;
+    animation: none;
+  }
+}

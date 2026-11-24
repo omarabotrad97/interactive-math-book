@@ -8,75 +8,101 @@
   const LAB_PRESETS = {
     marbles: {
       title: 'كرات مهند (ص 24)',
-      ruleChip: 'المجموع المطلوب: 24 كرة · كل 1 خضراء يقابلها 3 حمراء',
-      kind: 'grid',
-      colHeads: ['١', '٢', '٣', '٤', '٥', '٦'],
+      ruleChip: 'المجموع المطلوب: 24 كرة · كل 1 خضراء يقابلها 3 حمراء (+4 كل صف)',
+      kind: 'vgrid',
+      columns: [
+        { label: 'أخضر', tone: 'green' },
+        { label: 'أحمر (× 3)', tone: 'red' },
+        { label: 'المجموع', tone: 'sum' }
+      ],
       rows: [
-        { label: 'أخضر', tone: 'green', vals: ['1', '2', '3', '4', '5', '6'] },
-        { label: 'أحمر', tone: 'red', vals: ['3', '6', '9', '12', '15', '18'] },
-        { label: 'المجموع', tone: 'sum', vals: ['4', '8', '12', '16', '20', '24'] }
+        { vals: ['1', '3', '4'] },
+        { vals: ['2', '6', '8'] },
+        { vals: ['3', '9', '12'] },
+        { vals: ['4', '12', '16'] },
+        { vals: ['5', '15', '20'] },
+        { vals: ['6', '18', '24'], isGoal: true }
       ],
       notes: [
-        'العمود 1: 1 خضراء + 3 حمراء = 4 كرات.',
-        'العمود 2: 2 خضراء + 6 حمراء = 8 كرات.',
-        'العمود 3: 3 خضراء + 9 حمراء = 12 كرة.',
-        'العمود 4: 4 خضراء + 12 حمراء = 16 كرة.',
-        'العمود 5: 5 خضراء + 15 حمراء = 20 كرة.',
-        'الحل (عمود 6): 6 خضراء و18 حمراء = 24 كرة · التحقق: <bdi dir="ltr">6 × 3 = 18</bdi>.'
+        'الصف 1: <bdi dir="ltr">1 + 3 = 4</bdi> كرات (لم نصل بعد إلى 24).',
+        'الصف 2: <bdi dir="ltr">2 + 6 = 8</bdi> كرات.',
+        'الصف 3: <bdi dir="ltr">3 + 9 = 12</bdi> كرة.',
+        'الصف 4: <bdi dir="ltr">4 + 12 = 16</bdi> كرة.',
+        'الصف 5: <bdi dir="ltr">5 + 15 = 20</bdi> كرة.',
+        'وصلنا للهدف (الصف 6): 6 خضراء و18 حمراء · التحقق: <bdi dir="ltr">6 × 3 = 18</bdi> و <bdi dir="ltr">6 + 18 = 24</bdi>.'
       ]
     },
     flowers: {
       title: 'زهور لمياء (ص 25)',
-      ruleChip: 'المجموع المطلوب: 36 زهرة · مقابل كل 1 صفراء 8 حمراء',
-      kind: 'grid',
-      colHeads: ['١', '٢', '٣', '٤'],
+      ruleChip: 'المجموع المطلوب: 36 زهرة · مقابل كل 1 صفراء 8 حمراء (+9 كل صف)',
+      kind: 'vgrid',
+      columns: [
+        { label: 'صفراء', tone: 'gold' },
+        { label: 'حمراء (× 8)', tone: 'red' },
+        { label: 'المجموع', tone: 'sum' }
+      ],
       rows: [
-        { label: 'صفراء', tone: 'sum', vals: ['1', '2', '3', '4'] },
-        { label: 'حمراء', tone: 'red', vals: ['8', '16', '24', '32'] },
-        { label: 'المجموع', tone: 'green', vals: ['9', '18', '27', '36'] }
+        { vals: ['1', '8', '9'] },
+        { vals: ['2', '16', '18'] },
+        { vals: ['3', '24', '27'] },
+        { vals: ['4', '32', '36'], isGoal: true }
       ],
       notes: [
-        'العمود 1: 1 صفراء + 8 حمراء = 9 زهرات.',
-        'العمود 2: 2 صفراء + 16 حمراء = 18 زهرة.',
-        'العمود 3: 3 صفراء + 24 حمراء = 27 زهرة.',
-        'الحل (عمود 4): 4 صفراء و32 حمراء = 36 زهرة · التحقق: <bdi dir="ltr">4 × 8 = 32</bdi>.'
+        'الصف 1: <bdi dir="ltr">1 + 8 = 9</bdi> زهرات.',
+        'الصف 2: <bdi dir="ltr">2 + 16 = 18</bdi> زهرة.',
+        'الصف 3: <bdi dir="ltr">3 + 24 = 27</bdi> زهرة.',
+        'وصلنا للهدف (الصف 4): 4 صفراء و32 حمراء · التحقق: <bdi dir="ltr">4 × 8 = 32</bdi> و <bdi dir="ltr">4 + 32 = 36</bdi>.'
       ]
     },
     outfits: {
       title: 'ملابس مازن (ص 25)',
       ruleChip: '3 قمصان (أزرق، رمادي، أبيض) مع 4 ربطات عنق لكل قميص',
-      kind: 'grid',
-      colHeads: ['أزرق', 'رمادي', 'أبيض'],
+      kind: 'vgrid',
+      columns: [
+        { label: 'القميص', tone: 'neutral' },
+        { label: 'عدد الربطات', tone: 'green' },
+        { label: 'التراكمي', tone: 'sum' }
+      ],
       rows: [
-        { label: 'ربطات العنق', tone: 'green', vals: ['4', '4', '4'] },
-        { label: 'المجموع التراكمي', tone: 'sum', vals: ['4', '8', '12'] }
+        { vals: ['أزرق', '4', '4'], textCols: [0] },
+        { vals: ['رمادي', '4', '8'], textCols: [0] },
+        { vals: ['أبيض', '4', '12'], textCols: [0], isGoal: true }
       ],
       notes: [
-        'القميص الأزرق: 4 ربطات عنق مختلفة (المجموع: 4 طرق).',
-        'إضافة القميص الرمادي: 4 طرق جديدة (المجموع: 8 طرق).',
-        'الحل: 12 طريقة مختلفة · التحقق: <bdi dir="ltr">3 × 4 = 12</bdi>.'
+        'القميص الأزرق مع 4 ربطات مختلفة = 4 طرق.',
+        'نضيف القميص الرمادي (4 طرق جديدة): <bdi dir="ltr">4 + 4 = 8</bdi> طرق.',
+        'نضيف القميص الأبيض: <bdi dir="ltr">8 + 4 = 12</bdi> طريقة · التحقق: <bdi dir="ltr">3 × 4 = 12</bdi>.'
       ]
     },
     coffee: {
       title: 'آلة القهوة (ص 25)',
-      ruleChip: 'ثمن الكوب 50 قرشًا من فئتي 10 قروش و5 قروش',
-      kind: 'grid',
-      colHeads: ['١', '٢', '٣', '٤'],
+      ruleChip: 'ثمن الكوب 50 قرشًا · كلما نقصت عشرة نزيد خمستين',
+      kind: 'vgrid',
+      columns: [
+        { label: 'فئة 10 قروش', tone: 'green' },
+        { label: 'فئة 5 قروش', tone: 'red' },
+        { label: 'القيمة', tone: 'sum' }
+      ],
       rows: [
-        { label: 'فئة 10 قروش', tone: 'green', vals: ['4', '3', '2', '1'] },
-        { label: 'فئة 5 قروش', tone: 'red', vals: ['2', '4', '6', '8'] },
-        { label: 'المبلغ', tone: 'sum', vals: ['50', '50', '50', '50'] }
+        { vals: ['5 (50 ق)', '0', '50'], textCols: [0] },
+        { vals: ['4 (40 ق)', '2 (10 ق)', '50'], textCols: [0, 1] },
+        { vals: ['3 (30 ق)', '4 (20 ق)', '50'], textCols: [0, 1] },
+        { vals: ['2 (20 ق)', '6 (30 ق)', '50'], textCols: [0, 1] },
+        { vals: ['1 (10 ق)', '8 (40 ق)', '50'], textCols: [0, 1] },
+        { vals: ['0', '10 (50 ق)', '50'], textCols: [1], isGoal: true }
       ],
       notes: [
-        'مجموعة 1: 4 عشرات (40) + 2 خمسات (10) = 50 قرشًا.',
-        'مجموعة 2: 3 عشرات (30) + 4 خمسات (20) = 50 قرشًا.',
-        'مجموعة 3: 2 عشرات (20) + 6 خمسات (30) = 50 قرشًا.',
-        'مجموعة 4: 1 عشرة + 8 خمسات = 50 قرشًا (وتُضاف حالتا الفئة الواحدة).'
+        'فئة واحدة: 5 عشرات + 0 خمسات = <bdi dir="ltr">50</bdi> قرشًا.',
+        'الفئتان معًا (1): <bdi dir="ltr">40 + 10 = 50</bdi> قرشًا (4 عشرات وقطعتان من فئة 5).',
+        'الفئتان معًا (2): <bdi dir="ltr">30 + 20 = 50</bdi> قرشًا (3 عشرات و4 خمسات).',
+        'الفئتان معًا (3): <bdi dir="ltr">20 + 30 = 50</bdi> قرشًا (عشرتان و6 خمسات).',
+        'الفئتان معًا (4): <bdi dir="ltr">10 + 40 = 50</bdi> قرشًا (عشرة واحدة و8 خمسات).',
+        'فئة واحدة: 0 عشرات + 10 خمسات = <bdi dir="ltr">50</bdi> قرشًا (إجمالاً 6 طرق: 4 بالفئتين + 2 بفئة واحدة).'
       ]
     },
     rope: {
       title: 'القفز بالحبل (ص 25)',
-      ruleChip: 'ريما ولانا وسحر وديمة: 2 تمسكان و2 تقفزان بلا تكرار',
+      ruleChip: 'ريما ولانا وسحر وديمة: 2 تمسكان و2 تقفزان بلا تكرار · المجموع <bdi dir="ltr">3 + 2 + 1 = 6</bdi>',
       kind: 'pairs',
       pairs: [
         { num: 1, hold: 'ريما ولانا', jump: 'سحر وديمة' },
@@ -87,11 +113,11 @@
         { num: 6, hold: 'سحر وديمة', jump: 'ريما ولانا' }
       ],
       notes: [
-        'البديل 1: تمسك (ريما ولانا) وتقفز (سحر وديمة).',
-        'البديل 2: تمسك (ريما وسحر) وتقفز (لانا وديمة).',
-        'البديل 3: تمسك (ريما وديمة) وتقفز (لانا وسحر).',
-        'البديل 4: تمسك (لانا وسحر) وتقفز (ريما وديمة).',
-        'البديل 5: تمسك (لانا وديمة) وتقفز (ريما وسحر).',
+        'البديل 1 (مع ريما): تمسك (ريما ولانا) وتقفز (سحر وديمة).',
+        'البديل 2 (مع ريما): تمسك (ريما وسحر) وتقفز (لانا وديمة).',
+        'البديل 3 (مع ريما): تمسك (ريما وديمة) وتقفز (لانا وسحر).',
+        'البديل 4 (مع لانا بلا تكرار): تمسك (لانا وسحر) وتقفز (ريما وديمة).',
+        'البديل 5 (مع لانا بلا تكرار): تمسك (لانا وديمة) وتقفز (ريما وسحر).',
         'البديل 6 (اكتمل الحصر): تمسك (سحر وديمة) وتقفز (ريما ولانا) — المجموع 6 طرق.'
       ]
     }
@@ -99,7 +125,9 @@
 
   function getMaxSteps(preset) {
     if (!preset) return 1;
-    return preset.kind === 'pairs' ? preset.pairs.length : preset.colHeads.length;
+    if (preset.kind === 'pairs') return preset.pairs.length;
+    if (preset.kind === 'vgrid') return preset.rows.length;
+    return preset.colHeads.length;
   }
 
   function renderLabStage() {
@@ -129,8 +157,9 @@
           const shown = idx < revealedCols;
           const active = idx === revealedCols - 1;
           return `
-            <div class="l5-pair-card${active ? ' is-selected' : ''}" style="${shown ? '' : 'opacity:0.35'}">
-              <div class="l5-pair-static is-top">${p.num}) تمسك: ${shown ? p.hold : '؟'}</div>
+            <div class="l5-pair-card${active ? ' is-card-active' : ''}${shown ? '' : ' is-dim'}">
+              <div class="l5-pair-num">الطريقة <bdi dir="ltr">${p.num}</bdi></div>
+              <div class="l5-pair-static is-top">تمسك: ${shown ? p.hold : '؟'}</div>
               <div class="l5-pair-static">تقفز: ${shown ? p.jump : '؟'}</div>
             </div>`;
         }).join('');
@@ -140,22 +169,25 @@
             <div class="l5-pair-grid">${cardsHtml}</div>
           </div>`;
       } else {
-        const cols = preset.colHeads.length;
-        const headHtml = `<div class="l5-cell-head">البيان</div>` +
-          preset.colHeads.map((h, i) => `<div class="l5-cell-head${i === revealedCols - 1 ? ' is-active-col' : ''}">${h}</div>`).join('');
-        const rowsHtml = preset.rows.map((r) => {
-          const cells = r.vals.map((v, i) => {
-            const shown = i < revealedCols;
-            const active = i === revealedCols - 1;
-            const cls = `l5-cell-static tone-${r.tone}${active ? ' is-active-col' : ''}${shown ? '' : ' is-dim'}`;
-            return `<div class="${cls}"><bdi dir="ltr">${shown ? v : '؟'}</bdi></div>`;
+        const cols = preset.columns.length;
+        const headHtml = preset.columns.map((c) =>
+          `<div class="l5-vcell-head tone-${c.tone || 'neutral'}">${c.label}</div>`
+        ).join('');
+        const rowsHtml = preset.rows.map((r, rIdx) => {
+          const shown = rIdx < revealedCols;
+          const active = rIdx === revealedCols - 1;
+          return r.vals.map((v, cIdx) => {
+            const tone = preset.columns[cIdx]?.tone || 'neutral';
+            const isTxt = Array.isArray(r.textCols) && r.textCols.includes(cIdx);
+            const cls = `l5-vcell-static tone-${tone}${active ? ' is-active-row' : ''}${shown && r.isGoal ? ' is-goal' : ''}${shown ? '' : ' is-dim'}`;
+            const valHtml = shown ? (isTxt ? v : `<bdi dir="ltr">${v}</bdi>`) : '<bdi dir="ltr">؟</bdi>';
+            return `<div class="${cls}">${valHtml}</div>`;
           }).join('');
-          return `<div class="l5-row-lbl tone-${r.tone}">${r.label}</div>${cells}`;
         }).join('');
         stage.innerHTML = `
           <div class="l5-table-card">
             <div class="l5-table-rule-chip">${preset.ruleChip}</div>
-            <div class="l5-data-table${cols >= 5 ? ' is-static-wide' : ''}" style="--l5-cols:${cols}">
+            <div class="l5-vtable" style="--l5-vcols:${cols}">
               ${headHtml}
               ${rowsHtml}
             </div>

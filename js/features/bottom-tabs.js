@@ -25,7 +25,7 @@
   const k=b.dataset.tab;
   if(k==='map'){
    if(state.viewMode!=='map')showDuolingoMap(true);
-   else if(state.mapSubView==='units'||state.mapSubView==='sections')window.scrollTo?.({top:0,behavior:reduced.matches?'instant':'smooth'});
+   else if(state.mapSubView==='units'||state.mapSubView==='sections'||state.mapSubView==='u2_sections')window.scrollTo?.({top:0,behavior:reduced.matches?'instant':'smooth'});
    else scrollToCurrentStation(true);
   }else if(k==='challenge')$('infinite-toggle').click();
   else if(k==='report'){$('report-open').click();syncTabs();}

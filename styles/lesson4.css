@@ -2346,6 +2346,13 @@ html.calm .l4-nline-nav-btn,
 html.calm .l4-nline-cat,
 html.calm .l4-nline-exp-takeaway,
 html.calm .l4-vscene-wave,
+html.calm .l4-vscene-wave-back,
+html.calm .l4-vscene-cloud,
+html.calm .l4-vscene-sun,
+html.calm .l4-vscene-bubble,
+html.calm .l4-vscene-art-float,
+html.calm .l4-anim-tail,
+html.calm .l4-anim-wing,
 html.calm .l4-vscene-halo,
 html.calm .l4-vscene-replay-btn,
 html.calm .l4-vscene-back-btn,
@@ -2379,6 +2386,13 @@ html.calm .l4-mread-tab {
   .l4-nline-cat,
   .l4-nline-exp-takeaway,
   .l4-vscene-wave,
+  .l4-vscene-wave-back,
+  .l4-vscene-cloud,
+  .l4-vscene-sun,
+  .l4-vscene-bubble,
+  .l4-vscene-art-float,
+  .l4-anim-tail,
+  .l4-anim-wing,
   .l4-vscene-halo,
   .l4-vscene-replay-btn,
   .l4-vscene-back-btn,
@@ -2398,6 +2412,42 @@ html.calm .l4-mread-tab {
 @keyframes l4WaveDrift {
   0%, 100% { transform: translateX(0); }
   50% { transform: translateX(var(--l4-vscene-wave-shift)); }
+}
+
+@keyframes l4WaveDriftRev {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(calc(var(--l4-vscene-wave-shift) * -1)); }
+}
+
+@keyframes l4BubbleRise {
+  0% { transform: translateY(var(--space-2)); opacity: 0; }
+  30% { opacity: 0.65; }
+  100% { transform: translateY(calc(var(--space-8) * -2)); opacity: 0; }
+}
+
+@keyframes l4FloatSoft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(calc(var(--space-0-75) * -1)); }
+}
+
+@keyframes l4FloatSea {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(var(--space-0-75), calc(var(--space-0-5) * -1)); }
+}
+
+@keyframes l4SunBreath {
+  0%, 100% { transform: scale(1); opacity: 0.72; }
+  50% { transform: scale(1.1); opacity: 0.92; }
+}
+
+@keyframes l4TailWag {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
+}
+
+@keyframes l4WingGlide {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-7deg); }
 }
 
 /* 9e. Vertical Sea / Tower Animated Scene Component (Mobile-First 320px+) */
@@ -2794,6 +2844,100 @@ html.calm .l4-mread-tab {
   display: none;
 }
 
+.l4-vscene-wave-back {
+  animation: l4WaveDriftRev calc(var(--l4-vscene-wave-dur) * 1.35) ease-in-out infinite;
+}
+
+.l4-vscene-cloud {
+  animation: l4WaveDrift calc(var(--l4-vscene-wave-dur) * 2.4) ease-in-out infinite;
+}
+
+.l4-vscene-cloud.is-slow {
+  animation: l4WaveDriftRev calc(var(--l4-vscene-wave-dur) * 3) ease-in-out infinite;
+}
+
+.l4-vscene-sun {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: l4SunBreath var(--l4-vscene-wave-dur) ease-in-out infinite;
+}
+
+.l4-vscene-bubble {
+  animation: l4BubbleRise var(--l4-vscene-wave-dur) ease-in infinite;
+}
+
+.l4-vscene-bubble.is-b2 {
+  animation-delay: calc(var(--l4-vscene-wave-dur) * 0.35);
+}
+
+.l4-vscene-bubble.is-b3 {
+  animation-delay: calc(var(--l4-vscene-wave-dur) * 0.68);
+}
+
+.l4-vscene-art-float.is-pos,
+.l4-vscene-art-float.is-zero {
+  animation: l4FloatSoft var(--l4-vscene-wave-dur) ease-in-out infinite;
+}
+
+.l4-vscene-art-float.is-neg {
+  animation: l4FloatSea calc(var(--l4-vscene-wave-dur) * 1.15) ease-in-out infinite;
+}
+
+.l4-anim-tail {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: l4TailWag calc(var(--l4-vscene-wave-dur) * 0.45) ease-in-out infinite;
+}
+
+.l4-anim-wing {
+  transform-box: fill-box;
+  transform-origin: left bottom;
+  animation: l4WingGlide calc(var(--l4-vscene-wave-dur) * 0.65) ease-in-out infinite;
+}
+
+.l4-vscene-probe-line {
+  stroke: var(--brand-gold);
+  stroke-width: var(--border-mid);
+  stroke-dasharray: var(--space-1) var(--space-1);
+}
+
+.l4-vscene-probe.is-pos .l4-vscene-probe-line,
+.l4-vscene-probe.is-pos .l4-vscene-probe-dot {
+  stroke: var(--action-info);
+  fill: var(--action-info);
+}
+
+.l4-vscene-probe.is-neg .l4-vscene-probe-line,
+.l4-vscene-probe.is-neg .l4-vscene-probe-dot {
+  stroke: var(--red);
+  fill: var(--red);
+}
+
+.l4-vscene-probe.is-zero .l4-vscene-probe-dot {
+  fill: var(--brand-gold);
+}
+
+.l4-vscene-probe-pill rect {
+  fill: var(--surface-card);
+  stroke: var(--brand-gold-border);
+  stroke-width: var(--border-mid);
+}
+
+.l4-vscene-probe.is-pos .l4-vscene-probe-pill rect {
+  stroke: var(--action-info);
+}
+
+.l4-vscene-probe.is-neg .l4-vscene-probe-pill rect {
+  stroke: var(--red);
+}
+
+.l4-vscene-probe-pill text {
+  font-family: var(--l4-font-num);
+  font-size: var(--text-2xs);
+  font-weight: 900;
+  fill: var(--ink-dark);
+}
+
 .l4-vscene-progress {
   display: flex;
   align-items: center;
@@ -2805,14 +2949,33 @@ html.calm .l4-mread-tab {
 .l4-vscene-chip {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-1) var(--space-2-5);
+  justify-content: center;
+  min-block-size: var(--touch-min);
+  min-inline-size: var(--touch-min);
+  padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-pill);
-  border: var(--border-thin) solid var(--border-muted);
+  border: var(--border-mid) solid var(--border-neutral);
   background: var(--surface-card);
-  color: var(--muted);
+  color: var(--ink-dark);
+  font-family: var(--l4-font-body);
   font-size: var(--text-xs);
   font-weight: 800;
-  transition: background-color var(--l4-dur-fast) ease, border-color var(--l4-dur-fast) ease, color var(--l4-dur-fast) ease;
+  cursor: pointer;
+  transition: background-color var(--l4-dur-fast) ease, border-color var(--l4-dur-fast) ease, color var(--l4-dur-fast) ease, transform var(--l4-dur-fast) ease;
+}
+
+.l4-vscene-chip:hover {
+  border-color: var(--action-info);
+  background: var(--action-info-wash);
+}
+
+.l4-vscene-chip:active {
+  transform: scale(0.96);
+}
+
+.l4-vscene-chip:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
 }
 
 .l4-vscene-chip.is-done {
@@ -2823,6 +2986,8 @@ html.calm .l4-mread-tab {
 
 .l4-vscene-chip.is-active {
   border-color: var(--action-info);
+  background: var(--action-info-wash);
+  color: var(--action-info);
   box-shadow: var(--l4-shadow-focus);
 }
 

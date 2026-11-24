@@ -431,92 +431,232 @@
       case 'plane':
         return (
           '<g class="l4-vscene-glyph" transform="translate(0,0)">' +
-            '<path d="M-19 2 L6 2 L16 -4 C19 -5 20 -2 17 0 L7 7 L-17 7 L-20 3 Z" fill="#0f5d84" stroke="#102a24" stroke-width="1.4" stroke-linejoin="round"/>' +
-            '<path d="M-3 2 L-11 -9 L-5 -9 L5 2 Z" fill="#38bdf8" stroke="#102a24" stroke-width="1.2" stroke-linejoin="round"/>' +
-            '<path d="M-16 3 L-20 -5 L-15 -5 L-11 2 Z" fill="#e0f2fe" stroke="#102a24" stroke-width="1.2" stroke-linejoin="round"/>' +
-            '<circle cx="9" cy="1.5" r="1.4" fill="#ffffff"/>' +
-            '<circle cx="3" cy="2.5" r="1.2" fill="#ffffff"/>' +
-            '<circle cx="-2" cy="2.5" r="1.2" fill="#ffffff"/>' +
+            // Soft contrail behind tail
+            '<path d="M-25 3 L-18 3" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" opacity="0.72" stroke-dasharray="3 2.5"/>' +
+            // Far background wing
+            '<path d="M-1 -1 L-7 -9 L-1 -9 L6 -1 Z" fill="#0284c7" stroke="#102a24" stroke-width="1.1" stroke-linejoin="round"/>' +
+            // Tail stabilizer fin with warm gold airline stripe
+            '<path d="M-16 1 L-21 -9 L-15 -9 L-10 0 Z" fill="#0f5d84" stroke="#102a24" stroke-width="1.2" stroke-linejoin="round"/>' +
+            '<path d="M-17.5 -5.5 L-13.5 -5.5" stroke="#f59e0b" stroke-width="1.6" stroke-linecap="round"/>' +
+            // Sleek aerodynamic white/ice-blue fuselage + ocean-blue belly band
+            '<path d="M-18 1.5 C-18 -2.5 -10 -4 4 -4 C13 -4 19 -1.5 21 1.5 C19 4.5 13 6 4 6 L-15 6 C-18 5.5 -19 3.5 -18 1.5 Z" fill="#f8fafc" stroke="#102a24" stroke-width="1.35" stroke-linejoin="round"/>' +
+            '<path d="M-16 3.2 L17 3.2 C15 5 10 5.8 4 5.8 L-14 5.8 Z" fill="#0f5d84"/>' +
+            // Panoramic cockpit windshield
+            '<path d="M12 -2.6 C15 -2.2 17.5 -1 18.8 0.5 L12.8 0.5 C11.8 -0.4 11.4 -1.6 12 -2.6 Z" fill="#38bdf8" stroke="#102a24" stroke-width="0.9" stroke-linejoin="round"/>' +
+            // Cabin porthole windows
+            '<circle cx="7.5" cy="0.2" r="1.15" fill="#0f5d84"/>' +
+            '<circle cx="3.2" cy="0.2" r="1.15" fill="#0f5d84"/>' +
+            '<circle cx="-1.1" cy="0.2" r="1.15" fill="#0f5d84"/>' +
+            '<circle cx="-5.4" cy="0.2" r="1.15" fill="#0f5d84"/>' +
+            // Swept foreground main wing + engine pod
+            '<path d="M5 2.5 L-7 10.5 L-11 10.5 L-2 2.5 Z" fill="#38bdf8" stroke="#102a24" stroke-width="1.15" stroke-linejoin="round"/>' +
+            '<rect x="-4" y="6.8" width="5.5" height="2.8" rx="1.4" fill="#64748b" stroke="#102a24" stroke-width="0.9"/>' +
           '</g>'
         );
       case 'boat':
         return (
           '<g class="l4-vscene-glyph" transform="translate(0,0)">' +
-            '<path d="M0 -17 L0 -1" stroke="#102a24" stroke-width="2" stroke-linecap="round"/>' +
-            '<path d="M1 -16 L13 -4 L1 -4 Z" fill="#fef3c7" stroke="#102a24" stroke-width="1.3" stroke-linejoin="round"/>' +
-            '<path d="M-1 -14 L-10 -4 L-1 -4 Z" fill="#fde68a" stroke="#102a24" stroke-width="1.2" stroke-linejoin="round"/>' +
-            '<path d="M-16 -1 L16 -1 L12 7 L-12 7 Z" fill="#c88d21" stroke="#102a24" stroke-width="1.5" stroke-linejoin="round"/>' +
-            '<path d="M-13 2.5 L13 2.5" stroke="#fff7ed" stroke-width="1.3" stroke-linecap="round"/>' +
+            // Subtle water shimmer beneath hull
+            '<path d="M-14 10 Q0 12 14 10" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>' +
+            // Wooden mast + fluttering pennant
+            '<path d="M-1 -16.5 L-1 0" stroke="#78350f" stroke-width="2" stroke-linecap="round"/>' +
+            '<path d="M-1 -16.5 L6 -14.2 L-1 -12 Z" fill="#d97706" stroke="#102a24" stroke-width="0.8" stroke-linejoin="round"/>' +
+            // Billowing front jib sail (left)
+            '<path d="M-2.2 -13.5 Q-11 -8.5 -13.5 -2.2 L-2.2 -2.2 Z" fill="#f0f9ff" stroke="#102a24" stroke-width="1.15" stroke-linejoin="round"/>' +
+            // Billowing main sail (right) with warm sunlit fold
+            '<path d="M0.5 -15 Q13 -9.5 14.5 -2 L0.5 -2 Z" fill="#fffbeb" stroke="#102a24" stroke-width="1.2" stroke-linejoin="round"/>' +
+            '<path d="M1.8 -12.5 Q8.5 -8.5 9.5 -3 L1.8 -3 Z" fill="#fde68a" opacity="0.72"/>' +
+            // Curved two-tone mahogany sailboat hull + white deck stripe + brass portholes
+            '<path d="M-17.5 -1.5 Q0 0.5 18.5 -2.5 C16.5 4 13.5 8 8.5 8.2 L-10.5 8.2 C-14.5 8 -17 4.2 -17.5 -1.5 Z" fill="#b45309" stroke="#102a24" stroke-width="1.4" stroke-linejoin="round"/>' +
+            '<path d="M-15.2 4.2 L14.5 4.2 C13 6.8 10.5 7.8 8 7.8 L-10 7.8 C-12.5 7.8 -14.2 6.4 -15.2 4.2 Z" fill="#78350f"/>' +
+            '<path d="M-16 0.6 Q0 2.2 16.5 -0.2" fill="none" stroke="#fff7ed" stroke-width="1.35" stroke-linecap="round"/>' +
+            '<circle cx="-5.5" cy="3" r="1.5" fill="#fef08a" stroke="#102a24" stroke-width="0.8"/>' +
+            '<circle cx="2" cy="3" r="1.5" fill="#fef08a" stroke="#102a24" stroke-width="0.8"/>' +
+            '<circle cx="9.5" cy="2.6" r="1.4" fill="#fef08a" stroke="#102a24" stroke-width="0.8"/>' +
           '</g>'
         );
       case 'fish':
         return (
           '<g class="l4-vscene-glyph" transform="translate(0,0)">' +
-            '<path d="M10 0 L18 -7 L16 0 L18 7 Z" fill="#f59e0b" stroke="#102a24" stroke-width="1.3" stroke-linejoin="round"/>' +
-            '<ellipse cx="-2" cy="0" rx="13" ry="8" fill="#fb923c" stroke="#102a24" stroke-width="1.4"/>' +
-            '<path d="M-4 -7.5 L1 -12 L4 -7 Z" fill="#f59e0b" stroke="#102a24" stroke-width="1.2" stroke-linejoin="round"/>' +
-            '<circle cx="-9" cy="-2" r="2" fill="#ffffff" stroke="#102a24" stroke-width="1"/>' +
-            '<circle cx="-9.5" cy="-2" r="0.9" fill="#102a24"/>' +
-            '<path d="M1 -5 Q4 0 1 5" fill="none" stroke="#fff7ed" stroke-width="1.3" stroke-linecap="round"/>' +
+            // Tiny rising bubbles near mouth
+            '<circle cx="-18" cy="-4" r="1.6" fill="#ffffff" stroke="#0284c7" stroke-width="0.8" opacity="0.85"/>' +
+            '<circle cx="-16" cy="-8.5" r="1.1" fill="#ffffff" opacity="0.75"/>' +
+            // Swept swaying caudal tail fin
+            '<g class="l4-anim-tail">' +
+              '<path d="M9.5 0 C13 -4.5 17.5 -7.5 19.5 -6.5 C18 -2.5 17.5 -1 17 0 C17.5 1 18 2.5 19.5 6.5 C17.5 7.5 13 4.5 9.5 0 Z" fill="#f59e0b" stroke="#102a24" stroke-width="1.25" stroke-linejoin="round"/>' +
+              '<path d="M12.5 0 L17 -3 M12.5 0 L17 3" stroke="#fef3c7" stroke-width="0.9" stroke-linecap="round"/>' +
+            '</g>' +
+            // Sculpted dorsal and ventral fins
+            '<path d="M-5 -7.2 C-2 -13 5 -12.5 7.5 -6.2 Z" fill="#ea580c" stroke="#102a24" stroke-width="1.2" stroke-linejoin="round"/>' +
+            '<path d="M-2 7.2 C1 11.2 5.5 10.5 7 6.5 Z" fill="#f59e0b" stroke="#102a24" stroke-width="1.1" stroke-linejoin="round"/>' +
+            // Plump contoured tropical reef fish body + sunlit belly highlight
+            '<path d="M-15 0.5 C-14.5 -6.8 -6 -9.5 2 -7.5 C7.5 -6 11 -2.5 11.5 0 C11 2.5 7.5 6.2 2 7.6 C-6 9.5 -14.5 6.8 -15 0.5 Z" fill="#fb923c" stroke="#102a24" stroke-width="1.35" stroke-linejoin="round"/>' +
+            '<path d="M-12 2.5 C-7 6.8 2 6.8 8 3.2 C3 5.2 -6 5.2 -12 2.5 Z" fill="#fed7aa" opacity="0.8"/>' +
+            // Iconic clownfish curved white stripes
+            '<path d="M-3.5 -8.1 C-1 -3 -1 3 -3.5 8.1 C-0.5 8.2 1.8 7.6 1.8 7.6 C3.8 2.5 3.8 -2.5 1.8 -7.6 C1.8 -7.6 -0.5 -8.2 -3.5 -8.1 Z" fill="#fffbeb" stroke="#102a24" stroke-width="0.95"/>' +
+            '<path d="M6.2 -5.8 C7.6 -2 7.6 2 6.2 5.8 C7.8 5 9 3.6 9.2 2.8 C10 1 10 -1 9.2 -2.8 C9 -3.6 7.8 -5 6.2 -5.8 Z" fill="#fffbeb" stroke="#102a24" stroke-width="0.85"/>' +
+            // Side pectoral fin
+            '<path d="M-2 1.5 C1.5 0 4.5 1.8 3.2 4.6 C1.2 5.6 -1.5 4.2 -2 1.5 Z" fill="#fdba74" stroke="#102a24" stroke-width="1" stroke-linejoin="round"/>' +
+            // Bright glossy eye + cheerful smile
+            '<circle cx="-8.8" cy="-1.8" r="2.6" fill="#ffffff" stroke="#102a24" stroke-width="1"/>' +
+            '<circle cx="-9.5" cy="-1.8" r="1.35" fill="#0f172a"/>' +
+            '<circle cx="-10" cy="-2.4" r="0.55" fill="#ffffff"/>' +
+            '<path d="M-14.2 2.2 Q-11.8 3.8 -9.8 2.4" fill="none" stroke="#102a24" stroke-width="1.05" stroke-linecap="round"/>' +
           '</g>'
         );
       case 'bird':
         return (
           '<g class="l4-vscene-glyph" transform="translate(0,0)">' +
-            '<path d="M-15 -3 Q-6 -12 0 -2 Q6 -12 15 -3" fill="none" stroke="#0f5d84" stroke-width="2.4" stroke-linecap="round"/>' +
-            '<ellipse cx="0" cy="1" rx="7" ry="4.5" fill="#e0f2fe" stroke="#102a24" stroke-width="1.3"/>' +
-            '<path d="M-7 1 L-12 2.5 L-7 3.5 Z" fill="#f59e0b" stroke="#102a24" stroke-width="1" stroke-linejoin="round"/>' +
-            '<circle cx="-3.5" cy="0" r="1" fill="#102a24"/>' +
+            // Back swept wing for 3D depth
+            '<path d="M0 -2 C4 -10 11 -13.5 16.5 -10.5 C12 -6.5 8 -3.5 4 -1 Z" fill="#cbd5e1" stroke="#102a24" stroke-width="1.15" stroke-linejoin="round"/>' +
+            '<path d="M12 -11.5 L16.5 -10.5 L13.2 -7.6 Z" fill="#334155"/>' +
+            // Fanned tail feathers
+            '<path d="M9 1 L17.5 -2 L16.5 2.5 L10 4 Z" fill="#e2e8f0" stroke="#102a24" stroke-width="1.1" stroke-linejoin="round"/>' +
+            // Streamlined gull body + soft underside shading
+            '<path d="M-12.5 -1 C-11 -5.8 -4 -6.8 3 -3.5 C8 -1.2 12 0.8 11.5 3.5 C9 6.5 -1 7.2 -8 4.2 C-11.5 2.6 -13 1 -12.5 -1 Z" fill="#ffffff" stroke="#102a24" stroke-width="1.3" stroke-linejoin="round"/>' +
+            '<path d="M-8.5 3.2 C-3 5.8 5 5.4 10 3.2 C4.5 4.2 -3 4.2 -8.5 3.2 Z" fill="#cbd5e1"/>' +
+            // Curved golden gull beak
+            '<path d="M-12.2 -0.8 L-18.5 1.2 C-15.5 2.8 -13 2.8 -11.2 2 Z" fill="#f59e0b" stroke="#102a24" stroke-width="1.05" stroke-linejoin="round"/>' +
+            // Expressive eye with glint
+            '<circle cx="-8.8" cy="-1.6" r="1.45" fill="#0f172a"/>' +
+            '<circle cx="-9.2" cy="-2" r="0.5" fill="#ffffff"/>' +
+            // Sweeping animated foreground primary wing
+            '<g class="l4-anim-wing">' +
+              '<path d="M-4 -1.5 C-1 -9.5 6.5 -14 14 -12.5 C10 -7.5 6 -3 1.5 2.5 C-1.5 2.5 -3.5 0.5 -4 -1.5 Z" fill="#f8fafc" stroke="#102a24" stroke-width="1.25" stroke-linejoin="round"/>' +
+              '<path d="M8.5 -12.6 L14 -12.5 L11 -8.6 L7 -9.8 Z" fill="#1e3a5f"/>' +
+              '<path d="M0 -3.5 Q5 -7 9.5 -8.5" fill="none" stroke="#94a3b8" stroke-width="0.95" stroke-linecap="round"/>' +
+            '</g>' +
           '</g>'
         );
       case 'dolphin':
         return (
           '<g class="l4-vscene-glyph" transform="translate(0,0)">' +
-            '<path d="M-15 5 C-11 -6 1 -10 11 -2 C14 0 17 2 18 4 C13 3 9 2 6 3 C2 0 -4 1 -8 6 L-12 9 Z" fill="#0284c7" stroke="#102a24" stroke-width="1.4" stroke-linejoin="round"/>' +
-            '<path d="M-1 -7 L3 -13 L5 -5 Z" fill="#0369a1" stroke="#102a24" stroke-width="1.2" stroke-linejoin="round"/>' +
-            '<circle cx="9" cy="-1.5" r="1.1" fill="#ffffff"/>' +
+            // Delicate splash droplets under leaping dolphin
+            '<circle cx="-5" cy="11.5" r="1.3" fill="#ffffff" opacity="0.85"/>' +
+            '<circle cx="4" cy="12.5" r="1.1" fill="#bae6fd" opacity="0.9"/>' +
+            '<circle cx="11" cy="10.5" r="1.4" fill="#ffffff" opacity="0.8"/>' +
+            // Curved sickle dorsal fin
+            '<path d="M-1 -7.2 C0.5 -13.5 5.5 -13.5 4.8 -6.8 Z" fill="#0369a1" stroke="#102a24" stroke-width="1.2" stroke-linejoin="round"/>' +
+            // Graceful arched bottlenose dolphin silhouette (tail left -> leaping back -> snout right)
+            '<path d="M-18.5 7.5 C-17 4.2 -14.5 2.5 -12.5 3.5 C-11 -3.5 -3.5 -9.5 6 -7.8 C12 -6.5 16 -2.5 17.2 0.2 L21.2 1.8 C21.8 2.6 20.8 4 18.2 3.8 L14.8 3.2 C11.5 4.2 7 3.8 2.8 2.2 C-3 0.2 -7.8 2.5 -10.5 7.2 C-9 9.2 -8 11.2 -10.2 12 C-12.5 11.5 -13.8 9.2 -14.5 7.6 C-16.5 8.8 -19 9.5 -18.5 7.5 Z" fill="#0284c7" stroke="#102a24" stroke-width="1.35" stroke-linejoin="round"/>' +
+            // Sculpted smooth pearl-white belly sweep
+            '<path d="M-9.2 5.4 C-5 0.5 2.5 -0.8 9.8 1.4 C13 2.4 15.6 2.8 17.8 3.1 C14 3.8 8.5 3.8 3.2 2 C-2.2 0.2 -6.5 2.2 -9.2 5.4 Z" fill="#e0f2fe"/>' +
+            // Swept pectoral flipper
+            '<path d="M5 1.8 C5.5 6.2 2.5 9.2 0.5 8.4 C1.5 5.6 2 3.5 2.5 1.4 Z" fill="#0369a1" stroke="#102a24" stroke-width="1.1" stroke-linejoin="round"/>' +
+            // Subtle sunlit back highlight
+            '<path d="M-5.5 -4.2 C-1 -6.8 5.5 -7.2 10.5 -4.5" fill="none" stroke="#7dd3fc" stroke-width="1.3" stroke-linecap="round" opacity="0.8"/>' +
+            // Friendly eye with white glint + smiling rostrum line
+            '<circle cx="11.8" cy="-1.6" r="1.6" fill="#0f172a"/>' +
+            '<circle cx="11.3" cy="-2.1" r="0.6" fill="#ffffff"/>' +
+            '<path d="M13.8 1.5 Q16.8 2.2 19.8 2.2" fill="none" stroke="#102a24" stroke-width="0.95" stroke-linecap="round"/>' +
           '</g>'
         );
       case 'shark':
         return (
           '<g class="l4-vscene-glyph" transform="translate(0,0)">' +
-            '<path d="M11 0 L19 -7 L16 0 L19 7 Z" fill="#475569" stroke="#102a24" stroke-width="1.3" stroke-linejoin="round"/>' +
-            '<path d="M-16 1 C-12 -6 2 -7 12 0 C2 6 -11 6 -16 1 Z" fill="#64748b" stroke="#102a24" stroke-width="1.4" stroke-linejoin="round"/>' +
-            '<path d="M-2 -5 L2 -13 L6 -4 Z" fill="#475569" stroke="#102a24" stroke-width="1.3" stroke-linejoin="round"/>' +
-            '<circle cx="-10" cy="-1" r="1.2" fill="#ffffff"/>' +
-            '<path d="M-5 -1 L-5 2 M-3 -1 L-3 2" stroke="#102a24" stroke-width="1" stroke-linecap="round"/>' +
+            // Iconic asymmetric crescent shark tail (taller upper lobe!)
+            '<g class="l4-anim-tail">' +
+              '<path d="M10.5 -0.5 C14.5 -5 18.5 -10.5 21 -9.5 C19.5 -4.5 17.8 -1.5 16.5 0 C17.8 1.8 19 4.2 19.5 7.2 C17 7.5 14 4.2 10.5 1 Z" fill="#475569" stroke="#102a24" stroke-width="1.25" stroke-linejoin="round"/>' +
+            '</g>' +
+            // Small rear secondary dorsal fin
+            '<path d="M6 -3.8 L8.5 -6.8 L9.5 -3.2 Z" fill="#475569" stroke="#102a24" stroke-width="0.95" stroke-linejoin="round"/>' +
+            // Iconic tall swept primary dorsal fin
+            '<path d="M-3.5 -5.8 C-1.5 -13.8 4.2 -14.2 5.2 -5.5 Z" fill="#475569" stroke="#102a24" stroke-width="1.3" stroke-linejoin="round"/>' +
+            // Streamlined muscular shark body
+            '<path d="M-19.5 0.5 C-15.5 -6.2 -5 -8 4.5 -5.2 C9 -3.8 12.2 -1.2 12.8 0.2 C12.2 1.8 8.8 4.5 3.5 5.8 C-5.5 7.6 -14.5 6.2 -19.5 0.5 Z" fill="#64748b" stroke="#102a24" stroke-width="1.35" stroke-linejoin="round"/>' +
+            // Crisp pale silver-white underbelly
+            '<path d="M-18.2 1.2 C-12.5 5.6 -3.5 6.6 5.5 4.6 C8.5 3.8 10.5 2.4 11.4 1.2 C5 3.2 -5.5 3.6 -14.5 1.8 Z" fill="#f1f5f9"/>' +
+            // Swept downward pectoral fin
+            '<path d="M-3 3.5 C-1.5 8.8 2.8 10.5 4.8 9.2 C3.8 6.5 3 4.5 2.5 2.8 Z" fill="#475569" stroke="#102a24" stroke-width="1.15" stroke-linejoin="round"/>' +
+            // Three curved gill slits
+            '<path d="M-6.2 -1.4 Q-5.2 0.8 -6.2 2.8 M-4 -1.4 Q-3 0.8 -4 2.8 M-1.8 -1.2 Q-0.8 0.8 -1.8 2.6" fill="none" stroke="#1e293b" stroke-width="1.05" stroke-linecap="round"/>' +
+            // Friendly snout grin + tiny clean cartoon tooth
+            '<path d="M-15.8 3.2 Q-12.2 4.5 -9.5 3.3" fill="none" stroke="#102a24" stroke-width="1.1" stroke-linecap="round"/>' +
+            '<polygon points="-14,3.6 -13,5.2 -12,3.8" fill="#ffffff"/>' +
+            // Bright expressive shark eye with brow line
+            '<circle cx="-12.2" cy="-1.6" r="2.2" fill="#ffffff" stroke="#102a24" stroke-width="0.95"/>' +
+            '<circle cx="-12.8" cy="-1.6" r="1.15" fill="#0f172a"/>' +
+            '<circle cx="-13.2" cy="-2.1" r="0.45" fill="#ffffff"/>' +
           '</g>'
         );
       case 'octopus':
         return (
           '<g class="l4-vscene-glyph" transform="translate(0,0)">' +
-            '<path d="M-9 2 C-12 7 -15 9 -14 12 M-4 3 C-5 8 -7 11 -5 13 M4 3 C5 8 7 11 5 13 M9 2 C12 7 15 9 14 12" fill="none" stroke="#be185d" stroke-width="2.2" stroke-linecap="round"/>' +
-            '<circle cx="0" cy="-3" r="9.5" fill="#f472b6" stroke="#102a24" stroke-width="1.4"/>' +
-            '<circle cx="-3.5" cy="-3" r="1.5" fill="#ffffff"/><circle cx="3.5" cy="-3" r="1.5" fill="#ffffff"/>' +
-            '<circle cx="-3.5" cy="-3" r="0.7" fill="#102a24"/><circle cx="3.5" cy="-3" r="0.7" fill="#102a24"/>' +
+            // Back depth tentacles in rich berry-magenta
+            '<path d="M-6 4 C-10 8 -14 8 -15.5 11.5" fill="none" stroke="#9d174d" stroke-width="3.2" stroke-linecap="round"/>' +
+            '<path d="M6 4 C10 8 14 8 15.5 11.5" fill="none" stroke="#9d174d" stroke-width="3.2" stroke-linecap="round"/>' +
+            // 4 expressive curling foreground tentacles with dark outline + bright coral fill
+            '<path d="M-8.5 3.5 C-13 6.5 -17.5 7.5 -16 12.2 C-15 14 -12 13.8 -11.5 11.8" fill="none" stroke="#102a24" stroke-width="4.4" stroke-linecap="round"/>' +
+            '<path d="M-8.5 3.5 C-13 6.5 -17.5 7.5 -16 12.2 C-15 14 -12 13.8 -11.5 11.8" fill="none" stroke="#f472b6" stroke-width="2.6" stroke-linecap="round"/>' +
+            '<path d="M-3.5 5.5 C-5.5 9.5 -8.5 12.5 -5.8 14.5 C-3.8 15.5 -2.2 14 -2.5 12.2" fill="none" stroke="#102a24" stroke-width="4.2" stroke-linecap="round"/>' +
+            '<path d="M-3.5 5.5 C-5.5 9.5 -8.5 12.5 -5.8 14.5 C-3.8 15.5 -2.2 14 -2.5 12.2" fill="none" stroke="#f472b6" stroke-width="2.5" stroke-linecap="round"/>' +
+            '<path d="M3.5 5.5 C5.5 9.5 8.5 12.5 5.8 14.5 C3.8 15.5 2.2 14 2.5 12.2" fill="none" stroke="#102a24" stroke-width="4.2" stroke-linecap="round"/>' +
+            '<path d="M3.5 5.5 C5.5 9.5 8.5 12.5 5.8 14.5 C3.8 15.5 2.2 14 2.5 12.2" fill="none" stroke="#f472b6" stroke-width="2.5" stroke-linecap="round"/>' +
+            '<path d="M8.5 3.5 C13 6.5 17.5 7.5 16 12.2 C15 14 12 13.8 11.5 11.8" fill="none" stroke="#102a24" stroke-width="4.4" stroke-linecap="round"/>' +
+            '<path d="M8.5 3.5 C13 6.5 17.5 7.5 16 12.2 C15 14 12 13.8 11.5 11.8" fill="none" stroke="#f472b6" stroke-width="2.6" stroke-linecap="round"/>' +
+            // Cute pale suction cup dots along tentacles
+            '<circle cx="-13.2" cy="8.5" r="0.85" fill="#fdf2f8"/>' +
+            '<circle cx="-6" cy="11.2" r="0.85" fill="#fdf2f8"/>' +
+            '<circle cx="6" cy="11.2" r="0.85" fill="#fdf2f8"/>' +
+            '<circle cx="13.2" cy="8.5" r="0.85" fill="#fdf2f8"/>' +
+            // Plump domed octopus mantle head + glossy highlight & spots
+            '<path d="M-10.5 -1.5 C-11.5 -12.5 11.5 -12.5 10.5 -1.5 C10 4.8 6 7 0 7 C-6 7 -10 4.8 -10.5 -1.5 Z" fill="#f472b6" stroke="#102a24" stroke-width="1.35" stroke-linejoin="round"/>' +
+            '<ellipse cx="-4.2" cy="-7.2" rx="3.2" ry="1.8" transform="rotate(-24 -4.2 -7.2)" fill="#fbcfe8" opacity="0.72"/>' +
+            '<circle cx="5.2" cy="-6.8" r="1.4" fill="#db2777" opacity="0.45"/>' +
+            '<circle cx="7.4" cy="-3.8" r="0.95" fill="#db2777" opacity="0.4"/>' +
+            // Large friendly cartoon eyes + rosy cheeks + sweet smile
+            '<circle cx="-3.8" cy="-1" r="2.6" fill="#ffffff" stroke="#102a24" stroke-width="1"/>' +
+            '<circle cx="3.8" cy="-1" r="2.6" fill="#ffffff" stroke="#102a24" stroke-width="1"/>' +
+            '<circle cx="-3.5" cy="-0.8" r="1.3" fill="#0f172a"/>' +
+            '<circle cx="3.5" cy="-0.8" r="1.3" fill="#0f172a"/>' +
+            '<circle cx="-4.1" cy="-1.5" r="0.5" fill="#ffffff"/>' +
+            '<circle cx="2.9" cy="-1.5" r="0.5" fill="#ffffff"/>' +
+            '<ellipse cx="-6.8" cy="1.8" rx="1.6" ry="0.9" fill="#e11d48" opacity="0.35"/>' +
+            '<ellipse cx="6.8" cy="1.8" rx="1.6" ry="0.9" fill="#e11d48" opacity="0.35"/>' +
+            '<path d="M-2.2 2.4 Q0 4.4 2.2 2.4" fill="none" stroke="#102a24" stroke-width="1.15" stroke-linecap="round"/>' +
           '</g>'
         );
       case 'tower':
         return (
           '<g class="l4-vscene-glyph" transform="translate(0,0)">' +
-            '<circle cx="0" cy="0" r="8" fill="#0f5d84" stroke="#ffffff" stroke-width="2"/>' +
-            '<circle cx="0" cy="0" r="3" fill="#fde68a"/>' +
+            // Rooftop observatory beacon dome + signal arcs
+            '<path d="M-11 -4 A12 12 0 0 1 -7 -10 M11 -4 A12 12 0 0 0 7 -10" fill="none" stroke="#0284c7" stroke-width="1.4" stroke-linecap="round" opacity="0.75"/>' +
+            '<circle cx="0" cy="0" r="8.5" fill="#0f5d84" stroke="#ffffff" stroke-width="2"/>' +
+            '<circle cx="0" cy="0" r="5" fill="#38bdf8" opacity="0.5"/>' +
+            '<circle cx="0" cy="0" r="3.2" fill="#fde68a" stroke="#102a24" stroke-width="0.9"/>' +
           '</g>'
         );
       case 'ground':
         return (
           '<g class="l4-vscene-glyph" transform="translate(0,0)">' +
-            '<rect x="-10" y="-11" width="20" height="12" rx="2" fill="#fffdf7" stroke="#102a24" stroke-width="1.4"/>' +
-            '<rect x="-4" y="-8" width="8" height="9" rx="1" fill="#c88d21" stroke="#102a24" stroke-width="1.1"/>' +
-            '<path d="M-12 -11 L12 -11" stroke="#0f5d84" stroke-width="2.2" stroke-linecap="round"/>' +
+            // Refined hotel grand entrance portico + warm arched doorway + potted shrubs
+            '<rect x="-12" y="-12" width="24" height="13.5" rx="2.5" fill="#fffdf7" stroke="#102a24" stroke-width="1.35"/>' +
+            '<path d="M-14 -12 L14 -12 L12.5 -8.8 L-12.5 -8.8 Z" fill="#c88d21" stroke="#102a24" stroke-width="1.1" stroke-linejoin="round"/>' +
+            '<path d="M-4.8 1.5 L-4.8 -4.5 A4.8 4.8 0 0 1 4.8 -4.5 L4.8 1.5 Z" fill="#bae6fd" stroke="#102a24" stroke-width="1.15"/>' +
+            '<line x1="0" y1="-9" x2="0" y2="1.5" stroke="#102a24" stroke-width="1"/>' +
+            // Miniature potted greenery flanking doorway
+            '<circle cx="-8.8" cy="-3.5" r="2.4" fill="#15803d" stroke="#102a24" stroke-width="0.8"/>' +
+            '<rect x="-10" y="-1.3" width="2.4" height="2.6" rx="0.5" fill="#b45309"/>' +
+            '<circle cx="8.8" cy="-3.5" r="2.4" fill="#15803d" stroke="#102a24" stroke-width="0.8"/>' +
+            '<rect x="7.6" y="-1.3" width="2.4" height="2.6" rx="0.5" fill="#b45309"/>' +
           '</g>'
         );
       case 'basement':
       default:
         return (
-          '<g class="l4-vscene-glyph" transform="translate(0,0)">' +
-            '<rect x="-10" y="-7" width="20" height="14" rx="3.5" fill="#9f1239" stroke="#ffffff" stroke-width="1.5"/>' +
-            '<path d="M0 -3.5 L0 3.5 M-3.5 0.5 L0 4 L3.5 0.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+          '<g class="l4-vscene-glyph" transform="translate(-5,0)">' +
+            // Compact sleek parked car in underground level -7 (clear of right pill)
+            '<path d="M-13 0.5 L-11 -3.5 C-10 -5.5 -7.5 -6.5 -4.5 -6.5 L3.5 -6.5 C6.5 -6.5 8.5 -5 10 -2.2 L13.5 -1 C14.8 -0.4 15 1.2 14.5 3.2 L-13.5 3.2 C-14.5 2.4 -14 1.2 -13 0.5 Z" fill="#be123c" stroke="#102a24" stroke-width="1.25" stroke-linejoin="round"/>' +
+            // Windows
+            '<path d="M-8.5 -1.6 L-6.8 -5 L0 -5 L0 -1.6 Z" fill="#e0f2fe" stroke="#102a24" stroke-width="0.85"/>' +
+            '<path d="M1.4 -5 L4.5 -5 C6.2 -5 7.4 -3.6 8.2 -1.6 L1.4 -1.6 Z" fill="#e0f2fe" stroke="#102a24" stroke-width="0.85"/>' +
+            // Glowing headlight
+            '<circle cx="13.2" cy="0.5" r="1.4" fill="#fef08a" stroke="#102a24" stroke-width="0.6"/>' +
+            // Wheels with hubcaps
+            '<circle cx="-7.5" cy="3.5" r="3" fill="#1e293b" stroke="#ffffff" stroke-width="0.9"/>' +
+            '<circle cx="-7.5" cy="3.5" r="1.2" fill="#cbd5e1"/>' +
+            '<circle cx="7.5" cy="3.5" r="3" fill="#1e293b" stroke="#ffffff" stroke-width="0.9"/>' +
+            '<circle cx="7.5" cy="3.5" r="1.2" fill="#cbd5e1"/>' +
           '</g>'
         );
     }
@@ -563,16 +703,25 @@
         basementLines.join('') +
         // Highlighted 7th underground level floor strip at yBase7
         '<rect x="' + (towerX + 4) + '" y="' + (yBase7 - 2.5).toFixed(2) + '" width="' + (towerW - 8) + '" height="5" rx="1" fill="#fda4af" opacity="0.85"/>' +
-        // Main 50-story glass tower
+        // Main 50-story glass tower with subtle diagonal sunlight sheen
         '<rect x="' + towerX + '" y="' + yRoof.toFixed(2) + '" width="' + towerW + '" height="' + towerH.toFixed(2) + '" rx="3" fill="#0f5d84" stroke="#102a24" stroke-width="1.5"/>' +
         '<rect x="' + (towerX + 3) + '" y="' + (yRoof + 3).toFixed(2) + '" width="' + (towerW - 6) + '" height="' + (towerH - 4).toFixed(2) + '" fill="#156b96"/>' +
+        '<polygon points="' + (towerX + 3) + ',' + (yRoof + 12).toFixed(1) + ' ' + (towerX + towerW - 3) + ',' + (yRoof + 3).toFixed(1) + ' ' + (towerX + towerW - 3) + ',' + (yRoof + 24).toFixed(1) + ' ' + (towerX + 3) + ',' + (yRoof + 38).toFixed(1) + '" fill="#ffffff" opacity="0.14"/>' +
         floorRows.join('') +
         // Rooftop crown parapet and spire right at +50
         '<rect x="' + (towerX - 2) + '" y="' + (yRoof - 3).toFixed(2) + '" width="' + (towerW + 4) + '" height="5" rx="2" fill="#102a24"/>' +
         '<line x1="' + towerCenter + '" y1="' + (yRoof - 13).toFixed(2) + '" x2="' + towerCenter + '" y2="' + (yRoof - 3).toFixed(2) + '" stroke="#102a24" stroke-width="2" stroke-linecap="round"/>' +
-        // Ground-floor stone podium base spanning to left lobby doorway & main tower
+        // Ground-floor stone podium base + small stylized courtyard trees
         '<rect x="138" y="' + lobbyTop.toFixed(2) + '" width="88" height="14" rx="2.5" fill="#f5efe2" stroke="#102a24" stroke-width="1.5"/>' +
         '<line x1="138" y1="' + (lobbyTop + 4).toFixed(2) + '" x2="226" y2="' + (lobbyTop + 4).toFixed(2) + '" stroke="#cbd5e1" stroke-width="1"/>' +
+        '<g transform="translate(128,' + yZero.toFixed(2) + ')">' +
+          '<rect x="-1.2" y="-5" width="2.4" height="5" fill="#78350f"/>' +
+          '<ellipse cx="0" cy="-9" rx="4.2" ry="6.5" fill="#15803d" stroke="#102a24" stroke-width="0.9"/>' +
+        '</g>' +
+        '<g transform="translate(234,' + yZero.toFixed(2) + ')">' +
+          '<rect x="-1.2" y="-5" width="2.4" height="5" fill="#78350f"/>' +
+          '<ellipse cx="0" cy="-9" rx="4.2" ry="6.5" fill="#15803d" stroke="#102a24" stroke-width="0.9"/>' +
+        '</g>' +
       '</g>'
     );
   }
@@ -616,7 +765,7 @@
       ? [193, 154, 214]
       : (items.length >= 4
         ? [126, 182, 238, 294]
-        : (items.length === 3 ? [144, 218, 290] : (items.length === 2 ? [164, 260] : [206])));
+        : (items.length === 3 ? [132, 194, 286] : (items.length === 2 ? [164, 260] : [206])));
 
     const formatSigned = (num, showPlusZeroFalse) => {
       const n = Math.round(num);
@@ -636,18 +785,49 @@
     }
 
     const wavePathD = (() => {
-      const pts = [];
-      for (let x = 0; x <= W; x += 17) {
-        const dy = (x / 17) % 2 === 0 ? -1.8 : 1.8;
-        pts.push((x === 0 ? 'M' : 'L') + x + ' ' + (yZero + dy).toFixed(1));
+      let d = 'M -20 ' + yZero.toFixed(1);
+      for (let x = -20; x <= W + 20; x += 28) {
+        d += ' Q ' + (x + 14) + ' ' + (yZero - 3.2).toFixed(1) + ' ' + (x + 28) + ' ' + yZero.toFixed(1);
       }
-      return pts.join(' ');
+      return d;
+    })();
+    const waveBackD = (() => {
+      let d = 'M -12 ' + (yZero + 2.5).toFixed(1);
+      for (let x = -12; x <= W + 28; x += 34) {
+        d += ' Q ' + (x + 17) + ' ' + (yZero + 5.8).toFixed(1) + ' ' + (x + 34) + ' ' + (yZero + 2.5).toFixed(1);
+      }
+      return d;
     })();
 
-    const topGradTop = theme === 'tower' ? '#e7f4fb' : '#dff1fb';
-    const topGradBot = theme === 'tower' ? '#f7f9eb' : '#f2f9fd';
-    const botGradTop = theme === 'tower' ? '#eadac2' : '#cfeaf7';
-    const botGradBot = theme === 'tower' ? '#cbb28e' : '#96cde8';
+    const topGradTop = theme === 'tower' ? '#d9eefb' : '#d4edfc';
+    const topGradBot = theme === 'tower' ? '#f6faec' : '#f2fafe';
+    const botGradTop = theme === 'tower' ? '#eadac2' : '#c6e7f7';
+    const botGradBot = theme === 'tower' ? '#c5a882' : '#7cbcd9';
+
+    const ambientBackdropSVG = theme === 'sea'
+      ? (
+        '<g class="l4-vscene-ambient" aria-hidden="true">' +
+          '<circle class="l4-vscene-sun" cx="304" cy="22" r="13" fill="#fde68a" opacity="0.72"/>' +
+          '<circle cx="304" cy="22" r="8" fill="#f5b82e"/>' +
+          '<path class="l4-vscene-cloud" d="M 86 24 h 30 a 6 6 0 0 0 0 -12 a 8 8 0 0 0 -15 -2 a 6 6 0 0 0 -15 4 a 5 5 0 0 0 0 10 z" fill="#ffffff" opacity="0.82"/>' +
+          '<path class="l4-vscene-cloud is-slow" d="M 226 30 h 24 a 5 5 0 0 0 0 -10 a 6.5 6.5 0 0 0 -12 -1.5 a 5 5 0 0 0 -12 3 a 4.2 4.2 0 0 0 0 8.5 z" fill="#ffffff" opacity="0.72"/>' +
+          '<path d="M 0 ' + H + ' L 0 ' + (H - 12) + ' Q 90 ' + (H - 22) + ' 175 ' + (H - 11) + ' T ' + W + ' ' + (H - 14) + ' L ' + W + ' ' + H + ' Z" fill="#4f95b8" opacity="0.32"/>' +
+          '<path class="l4-vscene-wave-back" d="' + waveBackD + '" fill="none" stroke="#6db3d4" stroke-opacity="0.45" stroke-width="2" stroke-linecap="round"/>' +
+          '<path class="l4-vscene-wave" d="' + wavePathD + '" fill="none" stroke="#ffffff" stroke-opacity="0.78" stroke-width="2.4" stroke-linecap="round"/>' +
+          '<circle class="l4-vscene-bubble" cx="116" cy="' + (H - 18) + '" r="2.6" fill="#ffffff" opacity="0.58"/>' +
+          '<circle class="l4-vscene-bubble is-b2" cx="204" cy="' + (H - 14) + '" r="2" fill="#ffffff" opacity="0.52"/>' +
+          '<circle class="l4-vscene-bubble is-b3" cx="272" cy="' + (H - 20) + '" r="2.8" fill="#ffffff" opacity="0.5"/>' +
+        '</g>'
+      )
+      : (
+        '<g class="l4-vscene-ambient" aria-hidden="true">' +
+          '<circle class="l4-vscene-sun" cx="302" cy="24" r="12" fill="#fde68a" opacity="0.7"/>' +
+          '<circle cx="302" cy="24" r="7.5" fill="#f5b82e"/>' +
+          '<path class="l4-vscene-cloud" d="M 88 26 h 28 a 5.5 5.5 0 0 0 0 -11 a 7.5 7.5 0 0 0 -14 -2 a 5.5 5.5 0 0 0 -14 3.5 a 4.8 4.8 0 0 0 0 9.5 z" fill="#ffffff" opacity="0.84"/>' +
+          '<line x1="0" y1="' + (yZero + 5).toFixed(1) + '" x2="' + W + '" y2="' + (yZero + 5).toFixed(1) + '" stroke="#b79b76" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="6 5"/>' +
+        '</g>' +
+        buildTowerBackdropSVG(valToY, yZero)
+      );
 
     const ticksSVG = ticks.map(v => {
       const ty = valToY(v).toFixed(2);
@@ -677,10 +857,11 @@
         else { pillX = 32; pillY = 0; }
       }
       const clsZone = it.val > 0 ? 'is-pos' : (it.val < 0 ? 'is-neg' : 'is-zero');
+      const floatCls = theme === 'sea' ? ('l4-vscene-art-float ' + clsZone) : 'l4-vscene-art-float is-still';
       return (
         '<g class="l4-vscene-item ' + clsZone + '" data-item-idx="' + idx + '" transform="translate(' + cx.toFixed(1) + ',' + cy.toFixed(1) + ')" role="button" tabindex="0" aria-pressed="false" aria-label="' + escHtmlAttr(it.label + ' ' + valText) + '">' +
           '<circle class="l4-vscene-halo" cx="0" cy="0" r="23"/>' +
-          l4SceneVectorGroup(it.iconType) +
+          '<g class="' + floatCls + '">' + l4SceneVectorGroup(it.iconType) + '</g>' +
           '<g class="l4-vscene-tag" aria-hidden="true" transform="translate(' + pillX + ',' + pillY + ')">' +
             '<rect x="' + (-pillW / 2).toFixed(1) + '" y="-9" width="' + pillW + '" height="18" rx="9"/>' +
             '<text aria-hidden="true" x="0" y="3.5" text-anchor="middle">' + valText + '</text>' +
@@ -711,10 +892,16 @@
         '<g clip-path="url(#' + uid + '_clip)">' +
           '<rect x="0" y="0" width="' + W + '" height="' + yZero.toFixed(2) + '" fill="url(#' + uid + '_top)"/>' +
           '<rect x="0" y="' + yZero.toFixed(2) + '" width="' + W + '" height="' + (H - yZero).toFixed(2) + '" fill="url(#' + uid + '_bot)"/>' +
-          (theme === 'sea'
-            ? '<path class="l4-vscene-wave" d="' + wavePathD + '" fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="2" stroke-linecap="round"/>'
-            : '<line x1="0" y1="' + (yZero + 4).toFixed(1) + '" x2="' + W + '" y2="' + (yZero + 4).toFixed(1) + '" stroke="#b79b76" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="6 5"/>' + buildTowerBackdropSVG(valToY, yZero)) +
+          ambientBackdropSVG +
           '<line class="l4-vscene-zero-line" x1="' + xAxis + '" y1="' + yZero.toFixed(2) + '" x2="' + W + '" y2="' + yZero.toFixed(2) + '"/>' +
+          '<g class="l4-vscene-probe" hidden aria-hidden="true">' +
+            '<line class="l4-vscene-probe-line" x1="' + xAxis + '" y1="' + yZero.toFixed(2) + '" x2="' + (W - 8) + '" y2="' + yZero.toFixed(2) + '"/>' +
+            '<circle class="l4-vscene-probe-dot" cx="' + xAxis + '" cy="' + yZero.toFixed(2) + '" r="4.5"/>' +
+            '<g class="l4-vscene-probe-pill" transform="translate(' + (xAxis + 12) + ',' + yZero.toFixed(2) + ')">' +
+              '<rect x="0" y="-10" width="54" height="20" rx="10"/>' +
+              '<text x="27" y="3.5" text-anchor="middle" dir="ltr" unicode-bidi="isolate">0</text>' +
+            '</g>' +
+          '</g>' +
           '<g class="l4-vscene-zero-badge" transform="translate(' + (W - 6) + ',' + (yZero - 14).toFixed(2) + ')">' +
             '<rect x="' + (-zeroPillW) + '" y="-9" width="' + zeroPillW + '" height="18" rx="9"/>' +
             '<text x="' + (-zeroPillW / 2) + '" y="3.5" text-anchor="middle">' + escapeSvgText(zeroLabel) + '</text>' +
@@ -776,7 +963,37 @@
     const counterText = counterPill.querySelector('text');
     const zeroLine = svgEl.querySelector('.l4-vscene-zero-line');
     const zeroBadge = svgEl.querySelector('.l4-vscene-zero-badge');
+    const probeGroup = svgEl.querySelector('.l4-vscene-probe');
+    const probeLine = svgEl.querySelector('.l4-vscene-probe-line');
+    const probeDot = svgEl.querySelector('.l4-vscene-probe-dot');
+    const probePill = svgEl.querySelector('.l4-vscene-probe-pill');
+    const probeText = probePill ? probePill.querySelector('text') : null;
     const itemEls = Array.from(svgEl.querySelectorAll('.l4-vscene-item'));
+    let probing = false;
+
+    function hideProbe() {
+      if (probeGroup) probeGroup.setAttribute('hidden', '');
+    }
+
+    function updateProbeAtClientY(clientY) {
+      if (!probeGroup || !probeLine || !probeDot || !probePill || !probeText) return;
+      const rect = svgEl.getBoundingClientRect();
+      if (!rect.height) return;
+      const svgY = Math.max(yTop, Math.min(yBottom, ((clientY - rect.top) / rect.height) * H));
+      const rawV = scaleMax - (svgY - yTop) / pxPerUnit;
+      const roundedV = Math.round(rawV);
+      const snappedY = valToY(roundedV);
+      const pol = roundedV > 0 ? 'is-pos' : (roundedV < 0 ? 'is-neg' : 'is-zero');
+      probeGroup.removeAttribute('hidden');
+      probeGroup.classList.remove('is-pos', 'is-neg', 'is-zero');
+      probeGroup.classList.add(pol);
+      probeLine.setAttribute('y1', snappedY.toFixed(1));
+      probeLine.setAttribute('y2', snappedY.toFixed(1));
+      probeDot.setAttribute('cy', snappedY.toFixed(1));
+      const pY = Math.max(16, Math.min(H - 16, snappedY));
+      probePill.setAttribute('transform', 'translate(' + (xAxis + 12) + ',' + pY.toFixed(1) + ')');
+      probeText.textContent = formatSigned(roundedV) + (unitText ? (' ' + unitText) : '');
+    }
 
     let rafId = 0;
     let animToken = 0;
@@ -920,6 +1137,7 @@
     function selectItem(idx, animate) {
       if (idx < 0 || idx >= items.length) return;
       cancelAnim();
+      hideProbe();
       selectedIdx = idx;
       exploredSet.add(idx);
       const isZeroItem = items[idx].val === 0;
@@ -956,7 +1174,10 @@
     }
 
     itemEls.forEach((g, idx) => {
-      g.addEventListener('click', () => selectItem(idx, true));
+      g.addEventListener('click', ev => {
+        ev.stopPropagation();
+        selectItem(idx, true);
+      });
       g.addEventListener('keydown', ev => {
         if (ev.key === 'Enter' || ev.key === ' ') {
           ev.preventDefault();
@@ -964,6 +1185,19 @@
         }
       });
     });
+
+    svgEl.addEventListener('pointerdown', ev => {
+      if (ev.target && ev.target.closest && ev.target.closest('.l4-vscene-item')) return;
+      probing = true;
+      updateProbeAtClientY(ev.clientY);
+    });
+    svgEl.addEventListener('pointermove', ev => {
+      if (!probing) return;
+      updateProbeAtClientY(ev.clientY);
+    });
+    const endProbe = () => { probing = false; };
+    svgEl.addEventListener('pointerup', endProbe);
+    svgEl.addEventListener('pointercancel', endProbe);
 
     replayBtn.addEventListener('click', () => {
       if (selectedIdx !== null) selectItem(selectedIdx, true);
@@ -1031,13 +1265,17 @@
           '</defs>' +
           '<g clip-path="url(#' + uid + '_clip)">' +
             '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="url(#' + uid + '_bg)"/>' +
-            // Wallet / Account Card on left
+            // Wallet / Account Card on left with sleek sheen, EMV chip & contactless arc
             '<g transform="translate(18,14)">' +
-              '<rect x="0" y="0" width="96" height="54" rx="10" fill="#0f5d84" stroke="#102a24" stroke-width="1.5"/>' +
-              '<rect x="6" y="10" width="84" height="10" rx="3" fill="#0b4664"/>' +
-              '<rect x="62" y="30" width="24" height="14" rx="4" fill="#fde68a" stroke="#102a24" stroke-width="1.1"/>' +
-              '<circle cx="74" cy="37" r="2.2" fill="#102a24"/>' +
-              '<text x="54" y="40" text-anchor="start" fill="#ffffff" font-size="9" font-weight="800">رصيد مها</text>' +
+              '<rect x="0" y="0" width="96" height="56" rx="10" fill="#0f5d84" stroke="#102a24" stroke-width="1.5"/>' +
+              '<path d="M0 32 Q34 18 96 26 L96 46 Q96 56 86 56 L10 56 Q0 56 0 46 Z" fill="#0b4664" opacity="0.72"/>' +
+              '<rect x="6" y="9" width="84" height="9" rx="3" fill="#083344"/>' +
+              // Metallic EMV chip
+              '<rect x="64" y="25" width="22" height="16" rx="3.5" fill="#fde68a" stroke="#92400e" stroke-width="1.1"/>' +
+              '<path d="M71 25 L71 41 M79 25 L79 41 M64 33 L86 33" stroke="#b45309" stroke-width="0.8"/>' +
+              // Contactless wave arcs
+              '<path d="M52 29 A5 5 0 0 1 52 37 M48 27 A8 8 0 0 1 48 39" fill="none" stroke="#bae6fd" stroke-width="1.1" stroke-linecap="round"/>' +
+              '<text x="44" y="47" text-anchor="end" fill="#ffffff" font-size="9" font-weight="800">رصيد مها</text>' +
             '</g>' +
             // Reference 0 line ("قبل السحب: 0 (لا تغيّر)")
             '<line class="l4-sitanim-zero-line" x1="124" y1="' + yZero + '" x2="' + (W - 10) + '" y2="' + yZero + '"/>' +
@@ -1045,10 +1283,11 @@
               '<rect x="-136" y="-9" width="136" height="18" rx="9"/>' +
               '<text x="-68" y="3.5" text-anchor="middle">قبل السحب: 0 (لا تغيّر)</text>' +
             '</g>' +
-            // Withdrawn cash tray below reference line
-            '<g transform="translate(230,68)">' +
-              '<rect x="0" y="0" width="90" height="40" rx="9" fill="#fff1f2" stroke="#fca5a5" stroke-width="1.4" stroke-dasharray="4 3"/>' +
-              '<text x="45" y="34" text-anchor="middle" fill="#9f1239" font-size="8.5" font-weight="800">مبلغ مسحوب</text>' +
+            // Withdrawn cash leather pouch tray below reference line
+            '<g transform="translate(228,66)">' +
+              '<rect x="0" y="0" width="94" height="44" rx="10" fill="#fff1f2" stroke="#f43f5e" stroke-width="1.4" stroke-dasharray="4 3"/>' +
+              '<rect x="5" y="5" width="84" height="22" rx="6" fill="#ffe4e6" opacity="0.65"/>' +
+              '<text x="47" y="38" text-anchor="middle" fill="#9f1239" font-size="8.5" font-weight="800">مبلغ مسحوب</text>' +
             '</g>' +
             // Subtle curved guide path showing money leaving the card down to tray
             '<path d="M114 48 Q185 48 258 76" fill="none" stroke="#fda4af" stroke-width="1.4" stroke-dasharray="4 4"/>' +
@@ -1058,10 +1297,10 @@
             '<line class="l4-sa-proj-line" x1="148" y1="' + yDropTarget + '" x2="148" y2="' + yDropTarget + '"/>' +
             '<line class="l4-sa-arrow-line is-neg" x1="148" y1="' + yZero + '" x2="148" y2="' + yZero + '"/>' +
             '<polygon class="l4-sa-arrow-head is-neg" points="148,' + yZero + ' 143,' + (yZero - 7) + ' 153,' + (yZero - 7) + '" hidden/>' +
-            // Animated banknote + coins flowing out from card into withdrawn tray
-            '<g class="l4-sa-coin" data-idx="0" transform="translate(106,46)"><rect x="-13" y="-8" width="26" height="16" rx="3" fill="#fde68a" stroke="#92400e" stroke-width="1.3"/><text class="l4-sitanim-num" x="0" y="3" text-anchor="middle" font-size="8" font-weight="900" fill="#78350f">50</text></g>' +
-            '<g class="l4-sa-coin" data-idx="1" transform="translate(106,46)"><circle r="7.5" fill="#fbbf24" stroke="#92400e" stroke-width="1.3"/><text class="l4-sitanim-num" x="0" y="3" text-anchor="middle" font-size="7.5" font-weight="900" fill="#78350f">JD</text></g>' +
-            '<g class="l4-sa-coin" data-idx="2" transform="translate(106,46)"><circle r="7.5" fill="#fcd34d" stroke="#92400e" stroke-width="1.3"/><text class="l4-sitanim-num" x="0" y="3" text-anchor="middle" font-size="7.5" font-weight="900" fill="#78350f">JD</text></g>' +
+            // Animated styled banknote + gleaming ribbed gold coins flowing out from card into tray
+            '<g class="l4-sa-coin" data-idx="0" transform="translate(106,46)"><rect x="-15" y="-9" width="30" height="18" rx="3.5" fill="#fef3c7" stroke="#92400e" stroke-width="1.3"/><rect x="-12" y="-6" width="24" height="12" rx="2" fill="none" stroke="#d97706" stroke-width="0.9"/><text class="l4-sitanim-num" x="0" y="3" text-anchor="middle" font-size="8.5" font-weight="900" fill="#78350f">50</text></g>' +
+            '<g class="l4-sa-coin" data-idx="1" transform="translate(106,46)"><circle r="8.2" fill="#f59e0b" stroke="#92400e" stroke-width="1.3"/><circle r="6" fill="#fde68a" stroke="#d97706" stroke-width="0.7"/><text class="l4-sitanim-num" x="0" y="2.8" text-anchor="middle" font-size="7" font-weight="900" fill="#78350f">JD</text></g>' +
+            '<g class="l4-sa-coin" data-idx="2" transform="translate(106,46)"><circle r="8.2" fill="#fbbf24" stroke="#92400e" stroke-width="1.3"/><circle r="6" fill="#fef3c7" stroke="#d97706" stroke-width="0.7"/><text class="l4-sitanim-num" x="0" y="2.8" text-anchor="middle" font-size="7" font-weight="900" fill="#78350f">JD</text></g>' +
             // Live badge at tip
             '<g class="l4-sa-badge is-neg" transform="translate(186,' + yDropTarget + ')">' +
               '<rect x="-24" y="-11" width="48" height="22" rx="11"/>' +
@@ -1089,18 +1328,47 @@
           '<g clip-path="url(#' + uid + '_clip)">' +
             '<rect x="0" y="0" width="' + W + '" height="' + yZero + '" fill="url(#' + uid + '_sky)"/>' +
             '<rect x="0" y="' + yZero + '" width="' + W + '" height="' + (H - yZero) + '" fill="url(#' + uid + '_sea)"/>' +
-            // Hill / plateau rising above sea level
-            '<path d="M188 ' + yZero + ' L214 ' + yHouseBase + ' L316 ' + yHouseBase + ' L340 ' + yZero + ' Z" fill="#e5d4b3" stroke="#8b7355" stroke-width="1.4"/>' +
-            // Crisp House atop the plateau
-            '<g transform="translate(264,' + yHouseBase + ')">' +
-              '<rect x="-24" y="-22" width="48" height="22" rx="2" fill="#fffef7" stroke="#102a24" stroke-width="1.4"/>' +
-              '<polygon points="-28,-22 0,-38 28,-22" fill="#c2410c" stroke="#102a24" stroke-width="1.4" stroke-linejoin="round"/>' +
-              '<rect x="-6" y="-14" width="12" height="14" rx="1.5" fill="#c88d21" stroke="#102a24" stroke-width="1.2"/>' +
-              '<rect x="-18" y="-16" width="8" height="8" rx="1" fill="#bae6fd" stroke="#102a24" stroke-width="1"/>' +
-              '<rect x="10" y="-16" width="8" height="8" rx="1" fill="#bae6fd" stroke="#102a24" stroke-width="1"/>' +
+            // Warm sky sun & drifting soft cloud
+            '<circle class="l4-vscene-sun" cx="28" cy="22" r="11" fill="#fde68a" opacity="0.72"/>' +
+            '<circle cx="28" cy="22" r="6.8" fill="#f5b82e"/>' +
+            '<path class="l4-vscene-cloud" d="M 122 24 h 26 a 5 5 0 0 0 0 -10 a 6.5 6.5 0 0 0 -12 -1.5 a 5 5 0 0 0 -14 3 a 4.2 4.2 0 0 0 0 8.5 z" fill="#ffffff" opacity="0.82"/>' +
+            // Layered coastal cliff & sunlit green grassy hillside rising above sea level
+            '<path d="M180 ' + yZero + ' Q200 ' + (yHouseBase + 4) + ' 216 ' + yHouseBase + ' L318 ' + yHouseBase + ' Q332 ' + (yHouseBase + 6) + ' 340 ' + yZero + ' Z" fill="#dfc9a3" stroke="#8b7355" stroke-width="1.3"/>' +
+            '<path d="M196 ' + (yHouseBase + 10) + ' Q210 ' + yHouseBase + ' 222 ' + yHouseBase + ' L318 ' + yHouseBase + ' Q328 ' + (yHouseBase + 4) + ' 332 ' + (yHouseBase + 10) + ' Q264 ' + (yHouseBase + 15) + ' 196 ' + (yHouseBase + 10) + ' Z" fill="#65a30d" opacity="0.88"/>' +
+            // Two stylized Mediterranean cypress/olive trees flanking the villa
+            '<g transform="translate(226,' + yHouseBase + ')">' +
+              '<rect x="-1.5" y="-6" width="3" height="6" fill="#78350f"/>' +
+              '<ellipse cx="0" cy="-12" rx="4.5" ry="8" fill="#15803d" stroke="#102a24" stroke-width="1"/>' +
+              '<ellipse cx="-1.2" cy="-14" rx="1.6" ry="3.5" fill="#4ade80" opacity="0.45"/>' +
             '</g>' +
-            // Subtle sea wave highlight + reference 0 line
-            '<path class="l4-vscene-wave" d="M0 ' + (yZero + 4) + ' Q25 ' + (yZero + 1) + ' 50 ' + (yZero + 4) + ' T100 ' + (yZero + 4) + ' T150 ' + (yZero + 4) + ' T200 ' + (yZero + 4) + ' T250 ' + (yZero + 4) + ' T300 ' + (yZero + 4) + ' T350 ' + (yZero + 4) + '" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.8" stroke-linecap="round"/>' +
+            '<g transform="translate(306,' + yHouseBase + ')">' +
+              '<rect x="-1.5" y="-5" width="3" height="5" fill="#78350f"/>' +
+              '<circle cx="0" cy="-11" r="6" fill="#16a34a" stroke="#102a24" stroke-width="1"/>' +
+              '<circle cx="-2" cy="-12.5" r="2.2" fill="#86efac" opacity="0.5"/>' +
+            '</g>' +
+            // Charming limestone Jordanian-inspired villa atop the plateau
+            '<g transform="translate(266,' + yHouseBase + ')">' +
+              // Cozy roof chimney
+              '<rect x="11" y="-36" width="6" height="10" rx="1" fill="#9a3412" stroke="#102a24" stroke-width="1.1"/>' +
+              // Limestone walls
+              '<rect x="-24" y="-23" width="48" height="23" rx="2.5" fill="#fffdf5" stroke="#102a24" stroke-width="1.35"/>' +
+              // Layered terracotta gabled roof with warm trim
+              '<polygon points="-28,-22 0,-39 28,-22" fill="#c2410c" stroke="#102a24" stroke-width="1.35" stroke-linejoin="round"/>' +
+              '<polygon points="-22,-23 0,-35.5 22,-23" fill="#ea580c" opacity="0.55"/>' +
+              // Arched wooden doorway + brass knob
+              '<path d="M-5.5 0 L-5.5 -10 A5.5 5.5 0 0 1 5.5 -10 L5.5 0 Z" fill="#b45309" stroke="#102a24" stroke-width="1.15"/>' +
+              '<circle cx="2.5" cy="-6" r="1" fill="#fde68a"/>' +
+              // Twin glowing shuttered windows with flower sills
+              '<rect x="-19" y="-17" width="9" height="8.5" rx="1.2" fill="#fef08a" stroke="#102a24" stroke-width="1"/>' +
+              '<line x1="-14.5" y1="-17" x2="-14.5" y2="-8.5" stroke="#102a24" stroke-width="0.8"/>' +
+              '<rect x="-20" y="-8.5" width="11" height="2" rx="0.8" fill="#15803d"/>' +
+              '<rect x="10" y="-17" width="9" height="8.5" rx="1.2" fill="#fef08a" stroke="#102a24" stroke-width="1"/>' +
+              '<line x1="14.5" y1="-17" x2="14.5" y2="-8.5" stroke="#102a24" stroke-width="0.8"/>' +
+              '<rect x="9" y="-8.5" width="11" height="2" rx="0.8" fill="#15803d"/>' +
+            '</g>' +
+            // Seabed silhouette & dual smooth sea waves
+            '<path d="M 0 ' + H + ' L 0 ' + (H - 8) + ' Q 90 ' + (H - 14) + ' 180 ' + (H - 7) + ' T ' + W + ' ' + (H - 9) + ' L ' + W + ' ' + H + ' Z" fill="#4f95b8" opacity="0.32"/>' +
+            '<path class="l4-vscene-wave" d="M-12 ' + (yZero + 4) + ' Q12 ' + (yZero + 1) + ' 36 ' + (yZero + 4) + ' T84 ' + (yZero + 4) + ' T132 ' + (yZero + 4) + ' T180 ' + (yZero + 4) + ' T228 ' + (yZero + 4) + ' T276 ' + (yZero + 4) + ' T324 ' + (yZero + 4) + ' T372 ' + (yZero + 4) + '" fill="none" stroke="#ffffff" stroke-opacity="0.65" stroke-width="2" stroke-linecap="round"/>' +
             '<line class="l4-sitanim-zero-line" x1="12" y1="' + yZero + '" x2="' + (W - 10) + '" y2="' + yZero + '"/>' +
             '<g class="l4-sitanim-zero-pill" transform="translate(158,' + (yZero + 16) + ')">' +
               '<rect x="-64" y="-9" width="128" height="18" rx="9"/>' +

@@ -39,6 +39,11 @@ if($('back-to-map'))$('back-to-map').addEventListener('click',()=>{
   if(typeof showDuolingoMap==='function')showDuolingoMap(false);
   return;
  }
+ if(state.viewMode==='u2_lesson1'){
+  setMapSubView('u2_lesson1',true);
+  if(typeof showDuolingoMap==='function')showDuolingoMap(false);
+  return;
+ }
  if(state.viewMode==='unit1_exam'){
   if(typeof Unit1ExamEngine!=='undefined'&&Unit1ExamEngine.closeToHub){Unit1ExamEngine.closeToHub();return;}
   setMapSubView('unit1_exam',true);
@@ -79,7 +84,9 @@ if($('l2-open-lab-btn'))$('l2-open-lab-btn').addEventListener('click',()=>openCo
 if($('l3-open-lab-btn'))$('l3-open-lab-btn').addEventListener('click',()=>{ if(typeof openOperationsLab === 'function') openOperationsLab(); });
 if($('l4-open-lab-btn'))$('l4-open-lab-btn').addEventListener('click',()=>{ if(typeof openNegativeNumbersLab === 'function') openNegativeNumbersLab(); });
 if($('l5-open-lab-btn'))$('l5-open-lab-btn').addEventListener('click',()=>{ if(typeof openTableStrategyLab === 'function') openTableStrategyLab(); });
+if($('u2l1-open-lab-btn'))$('u2l1-open-lab-btn').addEventListener('click',()=>{ if(typeof openMentalMulLab === 'function') openMentalMulLab(); });
 if($('duo-open-lab-btn'))$('duo-open-lab-btn').addEventListener('click',()=>{
+ if(state.mapSubView==='u2_lesson1'&&typeof openMentalMulLab==='function'){ openMentalMulLab(); return; }
  if(state.mapSubView==='lesson5'&&typeof openTableStrategyLab==='function'){ openTableStrategyLab(); return; }
  if(state.mapSubView==='lesson4'&&typeof openNegativeNumbersLab==='function'){ openNegativeNumbersLab(); return; }
  if(state.mapSubView==='lesson3'&&typeof openOperationsLab==='function'){ openOperationsLab(); return; }
@@ -90,7 +97,12 @@ setupComparisonLabEvents();
 if(typeof setupOperationsLabEvents === 'function') setupOperationsLabEvents();
 if(typeof setupNegLineLabEvents === 'function') setupNegLineLabEvents();
 if(typeof setupTableLabEvents === 'function') setupTableLabEvents();
-if($('duo-back-sections'))$('duo-back-sections').addEventListener('click',()=>setMapSubView('sections',true));
+if(typeof setupMentalMulLabEvents === 'function') setupMentalMulLabEvents();
+if(typeof setupUnit2ProjectEvents === 'function') setupUnit2ProjectEvents();
+if($('duo-back-sections'))$('duo-back-sections').addEventListener('click',()=>{
+ if(state.mapSubView==='u2_lesson1')setMapSubView('u2_sections',true);
+ else setMapSubView('sections',true);
+});
 if($('bc-to-units'))$('bc-to-units').addEventListener('click',()=>setMapSubView('units',true));
 if($('compact-brand-home'))$('compact-brand-home').addEventListener('click',()=>{
  if(state.mapSubView==='sections')setMapSubView('units',true);
@@ -165,6 +177,10 @@ if($('duo-hero-start'))$('duo-hero-start').addEventListener('click',()=>{
  }
  if(state.mapSubView==='lesson5'&&typeof openLesson5Node==='function'){
   openLesson5Node(currentLesson5Frontier());
+  return;
+ }
+ if(state.mapSubView==='u2_lesson1'&&typeof openU2L1Node==='function'){
+  openU2L1Node(currentU2L1Frontier());
   return;
  }
  const allDone=PATH_NODES.every(n=>isNodeCompleted(n.id));

@@ -83,6 +83,15 @@
   --action-info-border: #8ab8ce;
   --focus-ring: #116b55;
 
+  /* Unit 2 Botanical Olive-Forest Accent Tokens (WCAG AA >= 6.3:1 on white) */
+  --u2-primary: #3b6b18;
+  --u2-primary-hover: #2d5311;
+  --u2-primary-shadow: #1f3c0a;
+  --u2-primary-border: #8ab464;
+  --u2-primary-tint: #eef6e6;
+  --u2-primary-tint-deep: #dcecc9;
+  --u2-ink: #25450d;
+
   /* Typography & Touch Target Tokens */
   --body: 'Book Arabic', Tahoma, sans-serif;
   --heading: 'Book Head', 'Book Arabic', Tahoma, sans-serif;

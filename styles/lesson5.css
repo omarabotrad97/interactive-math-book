@@ -1,11 +1,10 @@
-/* Lesson 5: خطة حل المسألة: أنشئ جدولاً (Mobile-First 320px+, Token-Driven, RTL-Strict, Zero-Scroll) */
+/* Lesson 5: خطة حل المسألة: أنشئ جدولاً (Mobile-First 320px+, Token-Driven, RTL-Strict, Low-Scroll) */
 
 :root {
-  --l5-gap-tight: var(--space-0-75);
+  --l5-gap-tight: var(--space-1);
   --l5-gap-sm: var(--space-1-5);
-  --l5-lbl-col: 62px;
-  --l5-lbl-col-wide: 88px;
-  --l5-dialog-max: 560px;
+  --l5-lbl-col: calc(var(--space-8) * 2);
+  --l5-dialog-max: calc(var(--space-8) * 17.5);
   --l5-lab-max-h: 96dvh;
   --l5-fs-chip: var(--text-xs);
   --l5-fs-cell: var(--text-sm);
@@ -13,23 +12,23 @@
   --l5-fs-choice: var(--text-base);
   --l5-line-tight: 1.3;
   --l5-line-body: 1.5;
-  --l5-dur-fast: 0.16s;
-  --l5-dur-shake: 0.32s;
-  --l5-shake-pos: 4px;
-  --l5-shake-neg: -4px;
+  --l5-dur-fast: var(--dur-fast);
+  --l5-dur-shake: var(--dur-normal);
+  --l5-shake-pos: var(--space-1);
+  --l5-shake-neg: calc(var(--space-1) * -1);
   --l5-gold-wash-deep: color-mix(in srgb, var(--brand-gold) 22%, var(--surface-card));
-  --l5-shadow-gold: 0 2px 8px rgba(184, 126, 22, 0.16);
-  --l5-dialog-shadow: 0 20px 36px rgba(10, 38, 30, 0.24);
-  --l5-backdrop: rgba(16, 42, 36, 0.56);
-  --l5-close-border: rgba(255, 255, 255, 0.35);
-  --l5-close-bg: rgba(255, 255, 255, 0.16);
+  --l5-shadow-gold: var(--shadow-xs);
+  --l5-dialog-shadow: var(--shadow-md);
+  --l5-backdrop: color-mix(in srgb, var(--ink-dark) 56%, transparent);
+  --l5-close-border: color-mix(in srgb, var(--surface-card) 38%, transparent);
+  --l5-close-bg: color-mix(in srgb, var(--surface-card) 18%, transparent);
   --l5-red-wash: color-mix(in srgb, var(--red) 10%, var(--surface-card));
   --l5-red-border: color-mix(in srgb, var(--red) 42%, var(--surface-card));
   --l5-info-border: color-mix(in srgb, var(--action-info) 45%, var(--surface-card));
-  --l5-marble-size: var(--space-3-5);
+  --l5-marble-size: var(--space-3);
 }
 
-/* 1. Multi-Lesson Map Navigation Grid (6 Tabs Safe on 320px+) & Lesson 5 Accent */
+/* 1. Multi-Lesson Map Navigation Grid & Lesson 5 Accent */
 body[data-view="map"] .duo-map-nav {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -79,7 +78,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   outline-offset: var(--space-0-5);
 }
 
-/* 2. Zero-Scroll Compact Runner Shell Overrides for Lesson 5 */
+/* 2. Low-Scroll Compact Runner Shell Overrides for Lesson 5 */
 #l1-shell[data-l1-lesson="5"] .l1-stage {
   padding: var(--space-1-5) var(--space-2);
 }
@@ -89,7 +88,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
 }
 
 #l1-shell[data-l1-lesson="5"] .l1-prompt {
-  font-size: var(--text-base);
+  font-size: var(--text-md-plus);
   line-height: var(--l5-line-body);
   margin-bottom: var(--space-1-5);
 }
@@ -109,7 +108,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-1);
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-1-5);
 }
 
 .l5-step-pill {
@@ -117,7 +116,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   align-items: center;
   justify-content: center;
   min-height: var(--space-6);
-  padding: var(--space-1) var(--space-1-5);
+  padding: var(--space-1) var(--space-1);
   border-radius: var(--radius-sm);
   border: var(--border-mid) solid var(--border-muted);
   background: var(--surface-card);
@@ -140,7 +139,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   color: var(--gold-ink);
 }
 
-/* 4. Teach Card & Verify Pill (One Idea Per Screen) */
+/* 4. Teach Card, Understand Grid, Plan Box & Verification Rows */
 .l5-teach-card {
   background: var(--surface-cream-soft);
   border: var(--border-mid) solid var(--border-muted);
@@ -149,6 +148,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  min-width: 0;
 }
 
 .l5-teach-head {
@@ -178,6 +178,128 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   white-space: nowrap;
 }
 
+.l5-understand-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-1-5);
+}
+
+.l5-understand-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-1-5) var(--space-2);
+  border-radius: var(--radius-sm);
+  border: var(--border-mid) solid var(--border-muted);
+  background: var(--surface-muted);
+  min-width: 0;
+}
+
+.l5-understand-item.tone-green {
+  background: var(--brand-primary-tint);
+  border-color: var(--brand-primary-border);
+}
+
+.l5-understand-item.tone-gold {
+  background: var(--brand-gold-wash);
+  border-color: var(--brand-gold-border);
+}
+
+.l5-understand-tag {
+  flex: 0 0 auto;
+  padding: var(--space-0-5) var(--space-1-5);
+  border-radius: var(--radius-pill);
+  background: var(--surface-card);
+  border: var(--border-hairline) solid var(--border-neutral);
+  font-size: var(--text-2xs);
+  font-weight: 800;
+  color: var(--ink-dark);
+  white-space: nowrap;
+}
+
+.l5-understand-txt {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--ink-dark);
+  line-height: var(--l5-line-body);
+  min-width: 0;
+}
+
+.l5-plan-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-75);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  border: var(--border-mid) solid var(--l5-info-border);
+  background: var(--action-info-wash);
+  color: var(--ink-dark);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: var(--l5-line-body);
+}
+
+.l5-plan-tag {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  color: var(--action-info);
+}
+
+.l5-verify-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+}
+
+.l5-verify-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1-5);
+  padding: var(--space-1-5) var(--space-2);
+  border-radius: var(--radius-sm);
+  border: var(--border-mid) solid var(--success-border);
+  background: var(--success-wash);
+  color: var(--success-ink);
+  font-size: var(--text-xs);
+  font-weight: 800;
+}
+
+.l5-verify-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--success-ink);
+  flex: 0 0 auto;
+}
+
+.l5-verify-lbl {
+  color: var(--ink-dark);
+  font-weight: 700;
+}
+
+.l5-verify-eq {
+  display: inline-block;
+  direction: ltr;
+  unicode-bidi: isolate;
+  white-space: nowrap;
+  padding: var(--space-0-5) var(--space-2);
+  border-radius: var(--radius-xs);
+  border: var(--border-hairline) solid var(--success-border);
+  background: var(--surface-card);
+  color: var(--ink-dark);
+  font-size: var(--text-sm);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  margin-inline-start: auto;
+}
+
+.l5-verify-det {
+  font-size: var(--text-2xs);
+  font-weight: 800;
+  color: var(--success-ink);
+}
+
 .l5-teach-bullets {
   margin: 0;
   padding-inline-start: var(--space-4);
@@ -205,8 +327,9 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   font-weight: 800;
 }
 
-/* 5. Organized Table Builder & Interactive Cells */
-.l5-table-card {
+/* 5. Organized Table Card, Vertical Row-by-Row Table & Mini Preview Table */
+.l5-table-card,
+.l5-mini-table-card {
   background: var(--surface-cream-soft);
   border: var(--border-mid) solid var(--border-muted);
   border-radius: var(--radius-md);
@@ -215,6 +338,13 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   flex-direction: column;
   gap: var(--space-1-5);
   min-width: 0;
+}
+
+.l5-mini-table-cap {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  color: var(--muted);
+  line-height: var(--l5-line-tight);
 }
 
 .l5-table-rule-chip {
@@ -230,6 +360,117 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   line-height: var(--l5-line-tight);
 }
 
+/* Vertical Clean Multi-Column Table (Zero Skipped Steps, Zero Cramped Labels on 320px+) */
+.l5-vtable {
+  display: grid;
+  grid-template-columns: repeat(var(--l5-vcols, 3), minmax(0, 1fr));
+  gap: var(--l5-gap-tight);
+  align-items: stretch;
+  min-width: 0;
+  width: 100%;
+}
+
+.l5-vcell-head,
+.l5-vcell-static {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-0-5);
+  min-width: 0;
+  padding: var(--space-1) var(--space-1);
+  border-radius: var(--radius-xs);
+  border: var(--border-mid) solid var(--border-muted);
+  background: var(--surface-card);
+  color: var(--ink-dark);
+  font-size: var(--l5-fs-cell);
+  font-weight: 800;
+  text-align: center;
+  line-height: var(--l5-line-tight);
+  font-variant-numeric: tabular-nums;
+}
+
+.l5-vcell-static.has-sub {
+  flex-direction: column;
+  gap: 0;
+}
+
+.l5-vcell-head {
+  background: var(--surface-muted);
+  color: var(--ink);
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-1);
+}
+
+.l5-vcell-head.tone-green,
+.l5-vcell-static.tone-green {
+  color: var(--brand-primary-dark);
+  background: var(--brand-primary-tint);
+  border-color: var(--brand-primary-border);
+}
+
+.l5-vcell-head.tone-red,
+.l5-vcell-static.tone-red {
+  color: var(--red);
+  background: var(--l5-red-wash);
+  border-color: var(--l5-red-border);
+}
+
+.l5-vcell-head.tone-gold,
+.l5-vcell-static.tone-gold,
+.l5-vcell-head.tone-sum,
+.l5-vcell-static.tone-sum,
+.l5-vcell-head.is-sum-col {
+  color: var(--ink-dark);
+  background: var(--brand-gold-wash);
+  border-color: var(--brand-gold-border);
+}
+
+.l5-vcell-head.tone-info,
+.l5-vcell-static.tone-info {
+  color: var(--action-info);
+  background: var(--action-info-wash);
+  border-color: var(--l5-info-border);
+}
+
+.l5-vcell-static {
+  min-height: var(--space-7);
+}
+
+.l5-vcell-static.is-active-row {
+  box-shadow: 0 0 0 var(--border-thick) var(--action-info);
+}
+
+.l5-vcell-static.is-goal {
+  background: var(--success-wash);
+  border-color: var(--success-border);
+  color: var(--success-ink);
+}
+
+.l5-vcell-static.is-err {
+  background: var(--l5-red-wash);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.l5-vcell-static.is-dim {
+  opacity: 0.35;
+}
+
+.l5-vcell-main {
+  font-size: var(--text-xs);
+  font-weight: 900;
+  color: var(--ink-dark);
+}
+
+.l5-vcell-sub {
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* Legacy Horizontal Table (Used by Recharge / Fallback) */
 .l5-data-table {
   display: grid;
   grid-template-columns: minmax(var(--l5-lbl-col), 1.12fr) repeat(var(--l5-cols, 4), minmax(0, 1fr));
@@ -237,10 +478,6 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   align-items: stretch;
   min-width: 0;
   width: 100%;
-}
-
-.l5-data-table.is-static-wide {
-  --l5-lbl-col: 54px;
 }
 
 .l5-cell-head,
@@ -311,11 +548,12 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   opacity: 0.35;
 }
 
+/* Interactive Slot Buttons */
 .l5-cell-slot {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 0;
+  min-width: var(--touch-min);
   min-height: var(--touch-min);
   width: 100%;
   padding: var(--space-0-5);
@@ -380,34 +618,9 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   cursor: default;
 }
 
-/* 6. Value Choice Bank */
-.l5-bank-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.l5-bank-label {
-  font-size: var(--text-xs);
-  font-weight: 800;
-  color: var(--muted);
-}
-
-.l5-choice-bank {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-1-5);
-}
-
-.l5-choice-bank.is-pair-bank {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.l5-choice-bank.is-compact-bank {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.l5-ratio-visual {
+/* 6. Visual Helper Strips (Marbles/Flowers, Outfit Tie Swatches, Coin Swap, 4-Friend Roster) */
+.l5-ratio-visual,
+.l5-coin-strip {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -422,10 +635,20 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   color: var(--ink-dark);
 }
 
+.l5-ratio-op {
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.l5-ratio-sum {
+  color: var(--brand-primary-dark);
+}
+
 .l5-marble-group {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
+  flex-wrap: wrap;
+  gap: var(--space-0-75);
 }
 
 .l5-marble-dot {
@@ -433,7 +656,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   width: var(--l5-marble-size);
   height: var(--l5-marble-size);
   border-radius: var(--radius-pill);
-  border: var(--border-mid) solid var(--border-muted);
+  border: var(--border-hairline) solid var(--border-muted);
 }
 
 .l5-marble-dot.tone-green {
@@ -446,10 +669,105 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   border-color: var(--l5-red-border);
 }
 
+.l5-marble-dot.tone-gold {
+  background: var(--brand-gold);
+  border-color: var(--gold-ink);
+}
+
+.l5-outfit-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1-5);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  border: var(--border-mid) solid var(--border-muted);
+  background: var(--surface-card);
+}
+
+.l5-outfit-lbl {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.l5-tie-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.l5-tie-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-0-5) var(--space-1-5);
+  border-radius: var(--radius-pill);
+  background: var(--surface-muted);
+  border: var(--border-hairline) solid var(--border-muted);
+  font-size: var(--text-2xs);
+  font-weight: 800;
+  color: var(--ink-dark);
+}
+
+.l5-tie-dot {
+  display: inline-block;
+  width: var(--space-2-5);
+  height: var(--space-2-5);
+  border-radius: var(--radius-pill);
+}
+
+.l5-tie-dot.tone-red {
+  background: var(--red);
+}
+
+.l5-tie-dot.tone-brown {
+  background: var(--gold-ink);
+}
+
+.l5-tie-dot.tone-green {
+  background: var(--brand-primary);
+}
+
+.l5-tie-dot.tone-dark {
+  background: var(--ink-dark);
+}
+
+.l5-coin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-0-75);
+  padding: var(--space-0-5) var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 800;
+}
+
+.l5-coin-badge.is-ten {
+  background: var(--brand-gold-wash);
+  border: var(--border-mid) solid var(--brand-gold-border);
+  color: var(--gold-ink);
+}
+
+.l5-coin-badge.is-five {
+  background: var(--brand-primary-tint);
+  border: var(--border-mid) solid var(--brand-primary-border);
+  color: var(--brand-primary-dark);
+}
+
+/* 7. Value Choice Bank & Guided Active Formula Bar */
+.l5-bank-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+}
+
 .l5-active-guide {
   display: flex;
   flex-direction: column;
-  gap: var(--space-0-5);
+  gap: var(--space-1);
   padding: var(--space-1-5) var(--space-2);
   border-radius: var(--radius-sm);
   border: var(--border-mid) solid var(--l5-info-border);
@@ -459,18 +777,79 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
 
 .l5-active-guide-top {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-1-5);
+  gap: var(--space-1);
   font-size: var(--text-xs);
   font-weight: 800;
   color: var(--action-info);
 }
 
+.l5-guide-step-count {
+  padding: var(--space-0-5) var(--space-1-5);
+  border-radius: var(--radius-pill);
+  background: var(--surface-card);
+  border: var(--border-hairline) solid var(--l5-info-border);
+  font-size: var(--text-2xs);
+  font-weight: 800;
+  color: var(--action-info);
+  white-space: nowrap;
+}
+
 .l5-active-guide-formula {
-  font-size: var(--text-xs);
-  font-weight: 700;
+  font-size: var(--text-sm);
+  font-weight: 800;
   color: var(--ink-dark);
+  line-height: var(--l5-line-body);
+}
+
+.l5-roster-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  padding-top: var(--space-0-5);
+}
+
+.l5-roster-lbl {
+  font-size: var(--text-2xs);
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.l5-roster-chip {
+  padding: var(--space-0-5) var(--space-1-5);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-2xs);
+  font-weight: 800;
+  border: var(--border-hairline) solid var(--border-muted);
+}
+
+.l5-roster-chip.is-used {
+  background: var(--surface-muted);
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.l5-roster-chip.is-open {
+  background: var(--brand-gold-wash);
+  border-color: var(--brand-gold-border);
+  color: var(--gold-ink);
+}
+
+.l5-choice-bank {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-1-5);
+}
+
+.l5-choice-bank.is-pair-bank {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.l5-choice-bank.is-compact-bank {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .l5-choice-btn {
@@ -522,30 +901,47 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   cursor: default;
 }
 
-/* 7. Jump Rope Combinations Pair Grid (Station 6) */
+/* 8. Jump Rope Combinations Pair Grid (Station 6 & Lab) */
 .l5-pair-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-1);
+  gap: var(--space-1-5);
 }
 
 .l5-pair-card {
   display: flex;
   flex-direction: column;
-  gap: var(--l5-gap-tight);
-  padding: var(--space-1);
+  gap: var(--space-1);
+  padding: var(--space-1-5);
   border-radius: var(--radius-sm);
   border: var(--border-mid) solid var(--border-muted);
   background: var(--surface-card);
   min-width: 0;
 }
 
+.l5-pair-card.is-card-active {
+  border-color: var(--action-info);
+  background: var(--action-info-wash);
+}
+
+.l5-pair-card.is-dim {
+  opacity: 0.35;
+}
+
+.l5-pair-num {
+  font-size: var(--text-2xs);
+  font-weight: 800;
+  color: var(--muted);
+  text-align: center;
+  line-height: var(--l5-line-tight);
+}
+
 .l5-pair-static {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: var(--space-5);
-  padding: var(--space-0-5) var(--space-1);
+  min-height: var(--space-6);
+  padding: var(--space-0-75) var(--space-1);
   border-radius: var(--radius-xs);
   border: var(--border-mid) solid var(--brand-primary-border);
   background: var(--brand-primary-tint);
@@ -557,9 +953,9 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
 }
 
 .l5-pair-static.is-top {
-  border-color: var(--border-muted);
-  background: var(--surface-muted);
-  color: var(--ink-dark);
+  border-color: var(--brand-gold-border);
+  background: var(--brand-gold-wash);
+  color: var(--gold-ink);
 }
 
 .l5-pair-slot {
@@ -583,7 +979,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
 .l5-pair-slot.is-active {
   border-style: solid;
   border-color: var(--action-info);
-  background: var(--action-info-wash);
+  background: var(--surface-card);
   color: var(--action-info);
 }
 
@@ -614,7 +1010,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   outline-offset: var(--space-0-5);
 }
 
-/* 8. Strategy Builder (Station 8) */
+/* 9. Strategy Builder (Station 8) */
 .l5-strategy-card {
   background: var(--surface-cream-soft);
   border: var(--border-mid) solid var(--border-muted);
@@ -623,6 +1019,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   display: flex;
   flex-direction: column;
   gap: var(--space-1-5);
+  min-width: 0;
 }
 
 .l5-scen-pills {
@@ -656,6 +1053,53 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   outline-offset: var(--space-0-5);
 }
 
+.l5-scen-step-note {
+  padding: var(--space-1-5) var(--space-2);
+  border-radius: var(--radius-sm);
+  border: var(--border-mid) solid var(--l5-info-border);
+  background: var(--action-info-wash);
+  color: var(--ink-dark);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  line-height: var(--l5-line-body);
+}
+
+.l5-scen-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-1-5);
+}
+
+.l5-scen-ctrl-btn {
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  border: var(--border-mid) solid var(--border-neutral);
+  background: var(--surface-card);
+  color: var(--ink-dark);
+  font-family: var(--body);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.l5-scen-ctrl-btn.is-primary {
+  background: var(--action-primary);
+  border-color: var(--action-primary-border);
+  color: var(--surface-card);
+}
+
+.l5-scen-ctrl-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.l5-scen-ctrl-btn:focus-visible {
+  outline: var(--border-thick) solid var(--focus-ring);
+  outline-offset: var(--space-0-5);
+}
+
 .l5-scen-summary {
   padding: var(--space-1-5) var(--space-2);
   border-radius: var(--radius-sm);
@@ -667,7 +1111,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   line-height: var(--l5-line-body);
 }
 
-/* 9. Standalone Table Strategy Lab Dialog (#table-lab-dialog) */
+/* 10. Standalone Table Strategy Lab Dialog (#table-lab-dialog) */
 #table-lab-dialog {
   width: calc(100vw - var(--space-2));
   max-width: var(--l5-dialog-max);
@@ -698,7 +1142,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
-  padding: var(--space-1) var(--space-2);
+  padding: var(--space-1-5) var(--space-2-5);
   background: var(--brand-primary);
   color: var(--surface-card);
   flex: 0 0 auto;
@@ -732,7 +1176,7 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
 }
 
 .table-lab-body {
-  padding: var(--space-1-5) var(--space-2);
+  padding: var(--space-2);
   display: flex;
   flex-direction: column;
   gap: var(--space-1-5);
@@ -747,17 +1191,10 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
 
 .table-lab-presets {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: var(--space-1);
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-inline: var(--space-0-5);
-}
-
-.table-lab-presets::-webkit-scrollbar {
-  display: none;
 }
 
 .table-lab-preset-btn {
@@ -800,14 +1237,14 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
 
 .table-lab-controls {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-1);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-1-5);
 }
 
 .table-lab-ctrl-btn {
   min-width: var(--touch-min);
   min-height: var(--touch-min);
-  padding: var(--space-0-75) var(--space-1);
+  padding: var(--space-1) var(--space-1-5);
   border-radius: var(--radius-sm);
   border: var(--border-mid) solid var(--border-neutral);
   background: var(--surface-card);
@@ -834,10 +1271,10 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
   outline-offset: var(--space-0-5);
 }
 
-/* 10. Mobile-First Responsive Breakpoints */
+/* 11. Mobile-First Responsive Breakpoints */
 @media (min-width: 390px) {
   :root {
-    --l5-lbl-col: 72px;
+    --l5-lbl-col: calc(var(--space-8) * 2.25);
   }
 
   #l1-shell[data-l1-lesson="5"] .l1-stage {
@@ -847,19 +1284,28 @@ body[data-view="map"] .duo-map-nav #duo-tab-lesson5 {
 
 @media (min-width: 480px) {
   :root {
-    --l5-lbl-col: 84px;
+    --l5-lbl-col: calc(var(--space-8) * 2.6);
     --l5-fs-cell: var(--text-sm-plus);
     --l5-fs-num: var(--text-lg);
   }
 
   .l5-table-card,
   .l5-teach-card,
-  .l5-strategy-card {
+  .l5-strategy-card,
+  .l5-mini-table-card {
     padding: var(--space-3);
+  }
+
+  .l5-understand-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .l5-pair-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .table-lab-controls {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 

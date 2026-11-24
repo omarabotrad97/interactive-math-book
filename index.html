@@ -19,18 +19,19 @@
 <link rel="stylesheet" href="styles/lesson1-runner.css?v=20261121a">
 <link rel="stylesheet" href="styles/lesson2.css?v=20261114g">
 <link rel="stylesheet" href="styles/lesson3.css?v=20261118a">
-<link rel="stylesheet" href="styles/lesson4.css?v=20261118b">
-<link rel="stylesheet" href="styles/lesson5.css?v=20261118b">
-<link rel="stylesheet" href="styles/concept-anim.css?v=20261117z">
+<link rel="stylesheet" href="styles/lesson4.css?v=20261122d">
+<link rel="stylesheet" href="styles/lesson5.css?v=20261122b">
+<link rel="stylesheet" href="styles/concept-anim.css?v=20261122c">
 <link rel="stylesheet" href="styles/redesign.css?v=20261120a">
 <link rel="stylesheet" href="styles/duolingo-nav.css?v=20261120a">
 <link rel="stylesheet" href="styles/ai-tutor.css?v=20261118d">
 <link rel="stylesheet" href="styles/unit1-exam.css?v=20261121d">
+<link rel="stylesheet" href="styles/u2-lesson1.css?v=20261123b">
 </head>
 <body data-view="map">
 <a class="skip" href="#main-content">انتقل إلى المحتوى الرئيسي</a>
 <div id="test-mode-banner" class="test-mode-banner" role="status" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="8.5" y1="14" x2="15.5" y2="14"/></svg><span class="test-mode-text">وضع الاختبار مفعّل: جميع الدروس متاحة دون إكمال السابق.</span><button type="button" id="test-mode-toggle">إيقاف وضع الاختبار</button></div>
-<header class="hud-wrap"><section class="hud" aria-label="شريط التنقل والمحطة والتقدم"><a class="brand" id="hud-brand" href="#duolingo-map" aria-label="كتاب الرياضيات: العودة إلى خريطة التعلّم"><span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#0f5c4b"/><path d="M7.5 10.5h7.5a3 3 0 0 1 3 2 3 3 0 0 1 3-2h7.5v15H21a2.8 2.8 0 0 0-3 2 2.8 2.8 0 0 0-3-2H7.5v-15Z" fill="#fffef4"/><path d="M18 12.5v15" stroke="#c88d21" stroke-width="2.2" stroke-linecap="round"/><rect x="10.2" y="14" width="4.8" height="1.8" rx="0.9" fill="#0f5c4b"/><rect x="10.2" y="18" width="3.5" height="1.8" rx="0.9" fill="#c88d21"/><rect x="21" y="14" width="4.8" height="1.8" rx="0.9" fill="#0f5c4b"/><rect x="21" y="18" width="3.5" height="1.8" rx="0.9" fill="#7fb3a2"/></svg></span><span><strong>كتاب الرياضيات</strong><small>الصف الخامس · تعلّم تفاعلي</small></span></a><button type="button" id="back-to-map" class="station-back-btn unified-back-btn" aria-label="العودة إلى خريطة التعلم" title="الخريطة"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></span><span class="back-text">الخريطة</span></button><div class="station-progress-wrap" id="station-topbar" role="region" aria-label="شريط تقدم وإرشاد المحطة الحالية" hidden><div class="station-progress-meta"><span id="station-title-label">المحطة 1</span><span id="station-streak-pill" class="station-streak-pill" role="status" aria-live="polite"></span><small id="station-step-label">1 / 6</small></div><div class="station-bar" role="progressbar" id="station-progress-role" aria-label="مستوى تقدم خطوات المحطة الحالية" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="station-progress-fill"></i></div></div><div class="level"><span aria-hidden="true" id="level-ico"></span><div><small>مستواك الآن</small><strong id="level-name">مبتدئ</strong></div></div><div class="hearts-block"><span id="hearts" class="hud-hearts" role="img" aria-label="3 قلوب"></span><small>كل محاولة تعلّم</small></div><div class="progress-block"><div class="progress-label"><span id="progress-caption">رحلتك · 0 من 12 مهمة</span><span id="hud-streak-pill" class="hud-streak-pill" role="status" aria-live="polite"></span><bdi id="percent">0%</bdi></div><div class="progress" role="progressbar" aria-label="تقدم الكتاب" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress"><div id="progress-fill"></div></div></div><div class="points"><span aria-hidden="true" class="points-icon"><svg viewBox="0 0 24 24" class="svg-ico gold"><polygon points="12,2 14.5,9.5 22,12 14.5,14.5 12,22 9.5,14.5 2,12 9.5,9.5" fill="currentColor"/></svg></span><strong id="points">0</strong><small>نقطة</small></div><span class="hud-badge" id="hud-badge" hidden aria-label="شارة أسطورة الملايين"><svg viewBox="0 0 24 24" class="svg-ico gold"><circle cx="12" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 14L18 22l-6-3-6 3 2.5-8" fill="none" stroke="currentColor" stroke-width="2"/></svg></span><div class="hud-micro-badges" id="hud-micro-badges" role="group" aria-label="شارات الإتقان"></div><button class="icon-btn" id="report-open" type="button" aria-label="تقرير المهارات والشهادة" title="تقرير المهارات والشهادة"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></button><button type="button" class="hud-tool-btn lab-trigger" id="l2-open-lab-btn" aria-label="مختبر مقارنة الأعداد" title="افتح مختبر مقارنة الأعداد في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span class="hud-tool-label">مختبر المقارنة</span></button><button type="button" class="hud-tool-btn lab-trigger" id="l3-open-lab-btn" aria-label="مختبر الجمع والطرح العمودي" title="افتح مختبر الجمع والطرح العمودي في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg><span class="hud-tool-label">مختبر العمليات</span></button><button type="button" class="hud-tool-btn lab-trigger" id="l4-open-lab-btn" aria-label="مختبر الأعداد السالبة" title="افتح مختبر الأعداد السالبة وخط الأعداد في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/></svg><span class="hud-tool-label">مختبر الأعداد</span></button><button type="button" class="hud-tool-btn lab-trigger" id="l5-open-lab-btn" aria-label="مختبر خطة إنشاء جدول" title="افتح مختبر الجداول لحل المسائل في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16M15 4v16"/></svg><span class="hud-tool-label">مختبر الجداول</span></button><button class="icon-btn" id="sound-toggle" type="button" aria-label="كتم الصوت" aria-pressed="false"><span id="sound-toggle-ico"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span></button><button class="icon-btn" id="reset-open" type="button" aria-label="إعادة بدء الكتاب"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button><button class="icon-btn ai-hud-btn" id="ai-tutor-hud-btn" type="button" aria-label="المعلم الذكي Gemini" title="المعلم الذكي Gemini"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z"/></svg></span></button><button class="icon-btn" id="prefs-open" type="button" aria-label="إعدادات العرض: حجم الخط والتباين والحركة" title="إعدادات العرض">Aa</button></section></header>
+<header class="hud-wrap"><section class="hud" aria-label="شريط التنقل والمحطة والتقدم"><a class="brand" id="hud-brand" href="#duolingo-map" aria-label="كتاب الرياضيات: العودة إلى خريطة التعلّم"><span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#0f5c4b"/><path d="M7.5 10.5h7.5a3 3 0 0 1 3 2 3 3 0 0 1 3-2h7.5v15H21a2.8 2.8 0 0 0-3 2 2.8 2.8 0 0 0-3-2H7.5v-15Z" fill="#fffef4"/><path d="M18 12.5v15" stroke="#c88d21" stroke-width="2.2" stroke-linecap="round"/><rect x="10.2" y="14" width="4.8" height="1.8" rx="0.9" fill="#0f5c4b"/><rect x="10.2" y="18" width="3.5" height="1.8" rx="0.9" fill="#c88d21"/><rect x="21" y="14" width="4.8" height="1.8" rx="0.9" fill="#0f5c4b"/><rect x="21" y="18" width="3.5" height="1.8" rx="0.9" fill="#7fb3a2"/></svg></span><span><strong>كتاب الرياضيات</strong><small>الصف الخامس · تعلّم تفاعلي</small></span></a><button type="button" id="back-to-map" class="station-back-btn unified-back-btn" aria-label="العودة إلى خريطة التعلم" title="الخريطة"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></span><span class="back-text">الخريطة</span></button><div class="station-progress-wrap" id="station-topbar" role="region" aria-label="شريط تقدم وإرشاد المحطة الحالية" hidden><div class="station-progress-meta"><span id="station-title-label">المحطة 1</span><span id="station-streak-pill" class="station-streak-pill" role="status" aria-live="polite"></span><small id="station-step-label">1 / 6</small></div><div class="station-bar" role="progressbar" id="station-progress-role" aria-label="مستوى تقدم خطوات المحطة الحالية" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="station-progress-fill"></i></div></div><div class="level"><span aria-hidden="true" id="level-ico"></span><div><small>مستواك الآن</small><strong id="level-name">مبتدئ</strong></div></div><div class="hearts-block"><span id="hearts" class="hud-hearts" role="img" aria-label="3 قلوب"></span><small>كل محاولة تعلّم</small></div><div class="progress-block"><div class="progress-label"><span id="progress-caption">رحلتك · 0 من 12 مهمة</span><span id="hud-streak-pill" class="hud-streak-pill" role="status" aria-live="polite"></span><bdi id="percent">0%</bdi></div><div class="progress" role="progressbar" aria-label="تقدم الكتاب" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress"><div id="progress-fill"></div></div></div><div class="points"><span aria-hidden="true" class="points-icon"><svg viewBox="0 0 24 24" class="svg-ico gold"><polygon points="12,2 14.5,9.5 22,12 14.5,14.5 12,22 9.5,14.5 2,12 9.5,9.5" fill="currentColor"/></svg></span><strong id="points">0</strong><small>نقطة</small></div><span class="hud-badge" id="hud-badge" hidden aria-label="شارة أسطورة الملايين"><svg viewBox="0 0 24 24" class="svg-ico gold"><circle cx="12" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 14L18 22l-6-3-6 3 2.5-8" fill="none" stroke="currentColor" stroke-width="2"/></svg></span><div class="hud-micro-badges" id="hud-micro-badges" role="group" aria-label="شارات الإتقان"></div><button class="icon-btn" id="report-open" type="button" aria-label="تقرير المهارات والشهادة" title="تقرير المهارات والشهادة"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></button><button type="button" class="hud-tool-btn lab-trigger" id="l2-open-lab-btn" aria-label="مختبر مقارنة الأعداد" title="افتح مختبر مقارنة الأعداد في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span class="hud-tool-label">مختبر المقارنة</span></button><button type="button" class="hud-tool-btn lab-trigger" id="l3-open-lab-btn" aria-label="مختبر الجمع والطرح العمودي" title="افتح مختبر الجمع والطرح العمودي في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg><span class="hud-tool-label">مختبر العمليات</span></button><button type="button" class="hud-tool-btn lab-trigger" id="l4-open-lab-btn" aria-label="مختبر الأعداد السالبة" title="افتح مختبر الأعداد السالبة وخط الأعداد في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/></svg><span class="hud-tool-label">مختبر الأعداد</span></button><button type="button" class="hud-tool-btn lab-trigger" id="l5-open-lab-btn" aria-label="مختبر خطة إنشاء جدول" title="افتح مختبر الجداول لحل المسائل في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16M15 4v16"/></svg><span class="hud-tool-label">مختبر الجداول</span></button><button type="button" class="hud-tool-btn lab-trigger" id="u2l1-open-lab-btn" aria-label="مختبر الضرب الذهني" title="افتح مختبر المضاعفة والتنصيف في أي وقت" hidden><svg viewBox="0 0 24 24" class="svg-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="12" r="4"/><circle cx="17" cy="12" r="4"/><path d="M11 12h2"/></svg><span class="hud-tool-label">مختبر الضرب الذهني</span></button><button class="icon-btn" id="sound-toggle" type="button" aria-label="كتم الصوت" aria-pressed="false"><span id="sound-toggle-ico"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span></button><button class="icon-btn" id="reset-open" type="button" aria-label="إعادة بدء الكتاب"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button><button class="icon-btn ai-hud-btn" id="ai-tutor-hud-btn" type="button" aria-label="المعلم الذكي Gemini" title="المعلم الذكي Gemini"><span class="btn-svg"><svg viewBox="0 0 24 24" class="svg-ico" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z"/></svg></span></button><button class="icon-btn" id="prefs-open" type="button" aria-label="إعدادات العرض: حجم الخط والتباين والحركة" title="إعدادات العرض">Aa</button></section></header>
 <main class="desk" id="main-content">
  <h1 class="sr-only" id="app-global-heading">كتاب الرياضيات التفاعلي: القيمة المنزلية ضمن الملايين ومقارنة الأعداد - الصف الخامس الابتدائي</h1>
  <nav class="scene-tabs" aria-label="مشاهد الكتاب"><button type="button" data-scene="0" class="active" aria-pressed="true"><span>الصفحتان <bdi>8 - 9</bdi></span><small>أفهم وأكتشف</small></button><button type="button" data-scene="1" aria-pressed="false" aria-disabled="true"><span id="training-tab-label">الصفحتان <bdi>10 - 11</bdi></span><small>أتدرّب وأحل المسائل</small></button></nav>
@@ -341,6 +342,10 @@
     </button>
     <button type="button" class="l1-audio-btn l5-shell-lab-btn" id="l5-shell-lab-btn" hidden aria-label="فتح مختبر الجداول التفاعلي" title="مختبر الجداول">
      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16M15 4v16"/></svg>
+     <span class="l1-audio-text">المختبر</span>
+    </button>
+    <button type="button" class="l1-audio-btn u2l1-shell-lab-btn" id="u2l1-shell-lab-btn" hidden aria-label="فتح مختبر الضرب الذهني التفاعلي" title="مختبر الضرب الذهني">
+     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="12" r="4"/><circle cx="17" cy="12" r="4"/><path d="M11 12h2"/></svg>
      <span class="l1-audio-text">المختبر</span>
     </button>
     <button type="button" class="l1-audio-btn" id="l1-audio-btn" hidden aria-label="الاستماع إلى النشاط">
@@ -800,7 +805,7 @@
     <div id="table-lab-stage"></div>
     <div class="table-lab-summary" id="table-lab-summary" aria-live="polite"></div>
     <div class="table-lab-controls">
-      <button type="button" class="table-lab-ctrl-btn" id="table-lab-prev">عمود سابق</button>
+      <button type="button" class="table-lab-ctrl-btn" id="table-lab-prev">خطوة سابقة</button>
       <button type="button" class="table-lab-ctrl-btn is-primary" id="table-lab-next">خطوة تالية</button>
       <button type="button" class="table-lab-ctrl-btn" id="table-lab-all">كل الجدول</button>
       <button type="button" class="table-lab-ctrl-btn" id="table-lab-speak">استمع</button>
@@ -818,16 +823,50 @@
  </div>
 </dialog>
 
+<dialog class="u2-lab-dialog" id="mental-mul-lab-dialog" aria-labelledby="mm-lab-title">
+ <div class="u2-lab-head">
+  <h2 id="mm-lab-title">مختبر الضرب الذهني (المضاعفة والتنصيف)</h2>
+  <button type="button" class="u2-lab-close" id="mm-lab-close" aria-label="إغلاق مختبر الضرب الذهني">إغلاق</button>
+ </div>
+ <div class="u2-lab-body">
+  <div class="u2-lab-tabs" role="group" aria-label="وضع مختبر الضرب الذهني">
+   <button type="button" class="u2-lab-tab is-active" data-mm-mode="chain" aria-pressed="true">سلسلة الضرب</button>
+   <button type="button" class="u2-lab-tab" data-mm-mode="tree" aria-pressed="false">شجرة التجزئة</button>
+  </div>
+  <div class="u2-lab-presets" id="mm-lab-presets" role="group" aria-label="أمثلة الكتاب الجاهزة"></div>
+  <div class="u2-lab-custom-row" id="mm-lab-custom"></div>
+  <div id="mm-lab-stage"></div>
+  <div class="u2-lab-summary" id="mm-lab-summary" aria-live="polite"></div>
+  <div class="u2-lab-controls" id="mm-lab-controls"></div>
+ </div>
+</dialog>
+
+<dialog class="u2-lab-dialog" id="u2-project-dialog" aria-labelledby="u2-proj-title">
+ <div class="u2-lab-head">
+  <h2 id="u2-proj-title">الوحدة 2 · أبحث وأكتشف (الضرب والقسمة)</h2>
+  <button type="button" class="u2-lab-close" id="u2-proj-close" aria-label="إغلاق مشروع الوحدة الثانية">إغلاق</button>
+ </div>
+ <div class="u2-lab-body">
+  <div class="u2-lab-tabs is-three" role="group" aria-label="أقسام مشروع الوحدة الثانية">
+   <button type="button" class="u2-lab-tab is-active" data-u2p-tab="overview" aria-pressed="true">عن الوحدة <bdi dir="ltr">2</bdi></button>
+   <button type="button" class="u2-lab-tab" data-u2p-tab="lines" aria-pressed="false">الضرب بالخطوط</button>
+   <button type="button" class="u2-lab-tab" data-u2p-tab="lattice" aria-pressed="false">الطريقة الشبكية</button>
+  </div>
+  <div id="u2-proj-stage"></div>
+  <div class="u2-proj-complete-bar" id="u2-proj-complete-bar"></div>
+ </div>
+</dialog>
+
 <script defer src="js/core/utils.js?v=20261114g"></script>
-<script defer src="js/core/state.js?v=20261120a"></script>
+<script defer src="js/core/state.js?v=20261123a"></script>
 <script defer src="js/core/audio-feedback.js?v=20261114g"></script>
 <script defer src="js/lesson1/badges-recharge.js?v=20261114g"></script>
-<script defer src="js/lesson1/engine.js?v=20261121b"></script>
-<script defer src="js/lesson1/story-and-playground.js?v=20261116a"></script>
+<script defer src="js/lesson1/engine.js?v=20261123a"></script>
+<script defer src="js/lesson1/story-and-playground.js?v=20261123a"></script>
 <script defer src="js/lesson1/exit-ticket.js?v=20261114g"></script>
-<script defer src="js/lesson1/map-and-nav.js?v=20261120a"></script>
-<script defer src="js/features/concept-anim.js?v=20261117z"></script>
-<script defer src="js/lesson1/runner.js?v=20261121a"></script>
+<script defer src="js/lesson1/map-and-nav.js?v=20261123a"></script>
+<script defer src="js/features/concept-anim.js?v=20261123b"></script>
+<script defer src="js/lesson1/runner.js?v=20261123b"></script>
 <script defer src="js/lesson2/state-and-map.js?v=20261114g"></script>
 <script defer src="js/lesson2/stations.js?v=20261117z"></script>
 <script defer src="js/lesson2/compare-lab.js?v=20261114g"></script>
@@ -836,16 +875,20 @@
 <script defer src="js/lesson3/add-sub-lab.js?v=20261115b"></script>
 <script defer src="js/lesson4/state-and-map.js?v=20261115a"></script>
 <script defer src="js/lesson4/stations.js?v=20261117z"></script>
-<script defer src="js/lesson4/neg-line-lab.js?v=20261117x"></script>
-<script defer src="js/lesson5/state-and-map.js?v=20261116a"></script>
-<script defer src="js/lesson5/stations.js?v=20261117a3"></script>
-<script defer src="js/lesson5/table-lab.js?v=20261116b"></script>
+<script defer src="js/lesson4/neg-line-lab.js?v=20261122d"></script>
+<script defer src="js/lesson5/state-and-map.js?v=20261122a"></script>
+<script defer src="js/lesson5/stations.js?v=20261122a"></script>
+<script defer src="js/lesson5/table-lab.js?v=20261122b"></script>
 <script defer src="js/unit1-exam/questions.js?v=20261121b"></script>
 <script defer src="js/unit1-exam/state-and-map.js?v=20261121a"></script>
 <script defer src="js/unit1-exam/engine.js?v=20261121c"></script>
-<script defer src="js/main.js?v=20261121a"></script>
-<script defer src="js/features/display-prefs.js?v=20261116a"></script>
-<script defer src="js/features/bottom-tabs.js?v=20261120a"></script>
-<script defer src="js/features/ai-tutor.js?v=20261121c"></script>
+<script defer src="js/u2-lesson1/state-and-map.js?v=20261123b"></script>
+<script defer src="js/u2-lesson1/stations.js?v=20261123b"></script>
+<script defer src="js/u2-lesson1/mental-mul-lab.js?v=20261123a"></script>
+<script defer src="js/u2-lesson1/unit2-project.js?v=20261123b"></script>
+<script defer src="js/main.js?v=20261123a"></script>
+<script defer src="js/features/display-prefs.js?v=20261123b"></script>
+<script defer src="js/features/bottom-tabs.js?v=20261123a"></script>
+<script defer src="js/features/ai-tutor.js?v=20261123a"></script>
 </body>
 </html>

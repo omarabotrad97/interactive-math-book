@@ -37,7 +37,7 @@
   if(popping)return;
   try{
    const sess=(typeof L1Runner!=='undefined'&&typeof L1Runner.getSession==='function')?L1Runner.getSession():null;
-   const curLesson=sess?.lesson||state.runnerStep?.lesson||(state.viewMode==='lesson5'?5:(state.viewMode==='lesson4'?4:(state.viewMode==='lesson3'?3:(state.viewMode==='lesson2'?2:1))));
+   const curLesson=sess?.lesson||state.runnerStep?.lesson||(state.viewMode==='u2_lesson1'?7:(state.viewMode==='lesson5'?5:(state.viewMode==='lesson4'?4:(state.viewMode==='lesson3'?3:(state.viewMode==='lesson2'?2:1)))));
    const curNode=Number.isInteger(sess?.nodeId)?sess.nodeId:(Number.isInteger(state.runnerStep?.nodeId)?state.runnerStep.nodeId:state.activeNode);
    if(state.viewMode!=='map'){
     const h=(curLesson>1?'#l'+curLesson+'-station-':'#station-')+curNode;
@@ -45,8 +45,8 @@
     else history.replaceState({st:curNode,lesson:curLesson},'',h);
    }else{
     inStation=false;
-    const mapHash=(state.mapSubView==='lesson2'||state.mapSubView==='lesson3'||state.mapSubView==='lesson4'||state.mapSubView==='lesson5')?('#'+state.mapSubView):'#map';
-    if(hasSt()||/^#(station-|l[2345]-station-)/.test(location.hash)){
+    const mapHash=(state.mapSubView==='lesson2'||state.mapSubView==='lesson3'||state.mapSubView==='lesson4'||state.mapSubView==='lesson5'||state.mapSubView==='u2_lesson1'||state.mapSubView==='u2_sections')?('#'+state.mapSubView):'#map';
+    if(hasSt()||/^#(station-|l[23457]-station-)/.test(location.hash)){
      history.replaceState(null,'',mapHash);
     }
    }
@@ -54,9 +54,21 @@
  };
  function applyHashRoute(isInit){
   try{
-   const lm=location.hash.match(/^#(lesson([1-5])|map)$/);
+   const lm=location.hash.match(/^#(lesson([1-5])|u2_lesson1|u2_sections|map)$/);
    const m=location.hash.match(/^#station-(\d+)/);
    if(lm){
+    if(lm[1]==='u2_lesson1'||lm[1]==='u2_sections'){
+     if(typeof isUnit2Unlocked==='function'&&isUnit2Unlocked()){
+      if(typeof L1Runner!=='undefined'&&L1Runner.closeToMap)L1Runner.closeToMap(7);
+      if(typeof setMapSubView==='function')setMapSubView(lm[1],true);
+     }else if(typeof setMapSubView==='function'){
+      setMapSubView('units',true);
+     }
+     return true;
+    }
+    if(lm[1]==='map'&&isInit){
+     return false;
+    }
     const n=lm[2]?+lm[2]:null;
     if(n===2&&typeof getLesson2State==='function'){const s2=getLesson2State();if(s2)s2.unlocked=true;}
     if(n===3&&typeof getLesson3State==='function'){const s3=getLesson3State();if(s3)s3.unlocked=true;}
@@ -77,7 +89,8 @@
   try{
    if(e.state&&e.state.st!==undefined){
     const l=e.state.lesson||1;
-    if(l===5&&typeof L1Runner!=='undefined'&&L1Runner.openLesson5Node){L1Runner.openLesson5Node(e.state.st,{preserveProgress:true});inStation=true;}
+    if(l===7&&typeof L1Runner!=='undefined'&&L1Runner.openU2L1Node){L1Runner.openU2L1Node(e.state.st,{preserveProgress:true});inStation=true;}
+    else if(l===5&&typeof L1Runner!=='undefined'&&L1Runner.openLesson5Node){L1Runner.openLesson5Node(e.state.st,{preserveProgress:true});inStation=true;}
     else if(l===4&&typeof L1Runner!=='undefined'&&L1Runner.openLesson4Node){L1Runner.openLesson4Node(e.state.st,{preserveProgress:true});inStation=true;}
     else if(l===3&&typeof L1Runner!=='undefined'&&L1Runner.openLesson3Node){L1Runner.openLesson3Node(e.state.st,{preserveProgress:true});inStation=true;}
     else if(l===2&&typeof L1Runner!=='undefined'&&L1Runner.openLesson2Node){L1Runner.openLesson2Node(e.state.st,{preserveProgress:true});inStation=true;}

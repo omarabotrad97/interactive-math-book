@@ -308,18 +308,52 @@
     }
 
     if (lesson === 5) {
-      if (/combinations_grid|قمصان|ربطات|وجبة/.test(text)) {
-        return { kind: 'pattern_table', mode: 'grid_pairs', rows: 3, cols: 4, caption: 'اربط كل عنصر من المجموعة الأولى بجميع عناصر الثانية' };
+      if (cur && cur.animCfg && typeof cur.animCfg === 'object') {
+        return Object.assign({}, cur.animCfg);
+      }
+      if (/combinations_grid|قميص|قمصان|ربطات|بسكويت|مثلجات|وجبة/.test(text)) {
+        const isIce = /مثلجات|بسكويت/.test(text);
+        const isTwoShirts = /قميصان/.test(text);
+        return {
+          kind: 'pattern_table',
+          mode: 'grid_pairs',
+          rows: isIce ? 2 : (isTwoShirts ? 2 : 3),
+          cols: isIce ? 3 : (isTwoShirts ? 5 : 4),
+          rightLabel: isIce ? 'البسكويت' : 'القمصان',
+          leftLabel: isIce ? 'النكهات' : 'الربطات',
+          caption: 'اربط كل عنصر من المجموعة الأولى بجميع عناصر المجموعة الثانية'
+        };
       }
       if (/coin_table|قرش|قهوة|فئة/.test(text)) {
-        return { kind: 'pattern_table', mode: 'coin_balance', caption: 'احسب قيمة القطع المعروفة ثم أكمل الباقي حتى الهدف' };
+        if (/استغنينا|تعوّضها/.test(text)) {
+          return { kind: 'pattern_table', mode: 'coin_swap', caption: 'قارن بين قيمة فئة 10 قروش وفئة 5 قروش' };
+        }
+        const tensCount = /قطعتين/.test(text) ? 2 : (/قطعة واحدة/.test(text) ? 1 : 3);
+        return { kind: 'pattern_table', mode: 'coin_balance', tensCount, target: 50, caption: 'احسب قيمة فئة 10 قروش ثم اقسم الباقي على 5' };
       }
-      if (/pairing_list|حبل|تقفز|تمسك|زوج|طرق لعب/.test(text)) {
-        return { kind: 'pattern_table', mode: 'rope_pairs', caption: 'بدّل الأزواج بانتظام واحذر تكرار الزوج نفسه بترتيب مختلف' };
+      if (/pairing_list|حبل|تقفز|تمسك|زوج|طرق لعب|أمل/.test(text)) {
+        const isDup = /تختلف|مختلفًا|سابعة/.test(text);
+        return { kind: 'pattern_table', mode: 'rope_pairs', hideSpoiler: isDup ? 'dup' : '', caption: 'نرتّب الأزواج بانتظام دون تكرار الزوج نفسه' };
       }
-      const bMatch = text.match(/(\d+)\s*(?:حمراء|سوداء|علب|كرات\s*حمراء|أقلام\s*سوداء)/);
+      const bMatch = text.match(/(\d+)\s*(?:حمراء|سوداء|دفاتر|علب|كرات\s*حمراء|أقلام\s*سوداء)/);
       const baseB = bMatch ? Number(bMatch[1]) : (text.includes('8') ? 8 : (text.includes('5') ? 5 : (text.includes('4') ? 4 : 3)));
-      return { kind: 'pattern_table', mode: 'ratio_grow', baseA: 1, baseB, caption: 'ابنِ الجدول عمودًا تلو آخر وفق النسبة الثابتة حتى المجموع' };
+      const labelA = /صفراء/.test(text) ? 'صفراء' : (/كتاب/.test(text) ? 'كتاب' : (/برتقال/.test(text) ? 'برتقال' : (/أزرق/.test(text) ? 'أزرق' : 'أخضر')));
+      const labelB = /دفاتر/.test(text) ? 'دفاتر' : (/سوداء/.test(text) ? 'أسود' : (/تفاح/.test(text) ? 'تفاح' : 'أحمر'));
+      const hideCol1Sum = /الصف الأول|العمود الأول/.test(text);
+      return { kind: 'pattern_table', mode: 'ratio_grow', baseA: 1, baseB, labelA, labelB, hideCol1Sum, caption: 'تابع النسبة الثابتة في كل صف حتى تصل للمجموع المطلوب' };
+    }
+
+    if (lesson === 7) {
+      if (cur && cur.animCfg && typeof cur.animCfg === 'object') {
+        return Object.assign({}, cur.animCfg);
+      }
+      if (/نصف|تنصيف|÷/.test(text)) {
+        return { kind: 'mental_mul', mode: 'split_half', num: 94, parts: [90, 4], caption: 'جزّئ العدد حسب القيمة المنزلية ثم اقسم كل جزء على 2 واجمع' };
+      }
+      if (/ضعف|مضاعفة/.test(text) && !/×\s*\d+/.test(text)) {
+        return { kind: 'mental_mul', mode: 'split_double', num: 57, parts: [50, 7], caption: 'جزّئ العدد حسب القيمة المنزلية ثم اضرب كل جزء في 2 واجمع' };
+      }
+      return { kind: 'mental_mul', mode: 'dh_balance', a: 35, b: 16, steps: [['35', '16'], ['70', '8']], caption: 'نصّف العدد الزوجي (÷ 2) وضاعف العدد الآخر (× 2)' };
     }
 
     return null;
@@ -404,12 +438,17 @@
     const shell = byId('l1-shell');
     const resultView = byId('l1-result-view');
     if (mode === 'learning') {
-      lastActiveLesson = session && session.lesson === 5
-        ? 5
-        : (session && session.lesson === 4
-          ? 4
-          : (session && session.lesson === 3 ? 3 : (session && session.lesson === 2 ? 2 : 1)));
-      if (session && session.lesson === 5) {
+      lastActiveLesson = session && session.lesson === 7
+        ? 7
+        : (session && session.lesson === 5
+          ? 5
+          : (session && session.lesson === 4
+            ? 4
+            : (session && session.lesson === 3 ? 3 : (session && session.lesson === 2 ? 2 : 1))));
+      if (session && session.lesson === 7) {
+        state.viewMode = 'u2_lesson1';
+        state.mapSubView = 'u2_lesson1';
+      } else if (session && session.lesson === 5) {
         state.viewMode = 'lesson5';
         state.mapSubView = 'lesson5';
       } else if (session && session.lesson === 4) {
@@ -421,7 +460,7 @@
       } else if (session && session.lesson === 2) {
         state.viewMode = 'lesson2';
         state.mapSubView = 'lesson2';
-      } else if (state.viewMode === 'map' || state.viewMode === 'lesson2' || state.viewMode === 'lesson3' || state.viewMode === 'lesson4' || state.viewMode === 'lesson5') {
+      } else if (state.viewMode === 'map' || state.viewMode === 'lesson2' || state.viewMode === 'lesson3' || state.viewMode === 'lesson4' || state.viewMode === 'lesson5' || state.viewMode === 'u2_lesson1') {
         state.viewMode = 'mission';
       }
       if (typeof updateViewDom === 'function') updateViewDom();
@@ -1341,6 +1380,7 @@
       kind === 'l3_teach' ||
       kind === 'l4_teach' ||
       kind === 'l5_teach' ||
+      kind === 'u2l1_teach' ||
       kind === 'rapid_intro' ||
       kind === 'scratchpad'
     ) {
@@ -1586,6 +1626,11 @@
       const showL5Lab = Boolean(!isRecharge && session.lesson === 5 && !session.remedial && session.nodeId !== 9);
       l5LabBtn.hidden = !showL5Lab;
     }
+    const u2l1LabBtn = byId('u2l1-shell-lab-btn');
+    if (u2l1LabBtn) {
+      const showU2L1Lab = Boolean(!isRecharge && session.lesson === 7 && !session.remedial && session.nodeId !== 10);
+      u2l1LabBtn.hidden = !showU2L1Lab;
+    }
 
     if (heartsPill) {
       if (session.showHearts) {
@@ -1609,7 +1654,12 @@
       stepIndex: session.index,
       subKey: cur?.key || null
     };
-    if (session.lesson === 5 && typeof getLesson5NodeRecord === 'function') {
+    if (session.lesson === 7 && typeof getU2L1NodeRecord === 'function') {
+      if (!session.remedial) {
+        const rec = getU2L1NodeRecord(session.nodeId);
+        if (rec) rec.index = session.index;
+      }
+    } else if (session.lesson === 5 && typeof getLesson5NodeRecord === 'function') {
       if (!session.remedial) {
         const rec = getLesson5NodeRecord(session.nodeId);
         if (rec) rec.index = session.index;
@@ -2219,6 +2269,27 @@
         break;
       case 'l5_strategy_builder':
         renderL5StrategyBuilderStep(cur, bodyEl);
+        break;
+      case 'u2l1_teach':
+        renderU2L1TeachStep(cur, bodyEl);
+        break;
+      case 'u2l1_split_tree':
+        renderU2L1SplitTreeStep(cur, bodyEl);
+        break;
+      case 'u2l1_dh_chain':
+        renderU2L1DHChainStep(cur, bodyEl);
+        break;
+      case 'u2l1_mental_drill':
+        renderU2L1MentalDrillStep(cur, bodyEl);
+        break;
+      case 'u2l1_balloons':
+        renderU2L1BalloonsStep(cur, bodyEl);
+        break;
+      case 'u2l1_train_story':
+        renderU2L1TrainStoryStep(cur, bodyEl);
+        break;
+      case 'u2l1_reason_builder':
+        renderU2L1ReasonBuilderStep(cur, bodyEl);
         break;
       default:
         setPrimaryButtonState('explanation', 'متابعة');
@@ -4874,8 +4945,8 @@
       cleanupStepSideEffects();
       const snap = ret.remedialSnapshot;
       session = snap;
-      state.mapSubView = 'lesson' + targetLesson;
-      state.viewMode = 'lesson' + targetLesson;
+      state.mapSubView = targetLesson === 7 ? 'u2_lesson1' : 'lesson' + targetLesson;
+      state.viewMode = targetLesson === 7 ? 'u2_lesson1' : 'lesson' + targetLesson;
       setUiMode('learning');
       if (ret.finishAfterRecharge) {
         finishSession();
@@ -4891,6 +4962,7 @@
       if (targetLesson === 3) return openLesson3Remedial(unmasteredList, roundNum);
       if (targetLesson === 4) return openLesson4Remedial(unmasteredList, roundNum);
       if (targetLesson === 5) return openLesson5Remedial(unmasteredList, roundNum);
+      if (targetLesson === 7) return openU2L1Remedial(unmasteredList, roundNum);
     }
 
     if (ret.nodeId !== null) {
@@ -4899,6 +4971,7 @@
       if (targetLesson === 3) return openLesson3Node(ret.nodeId, opts);
       if (targetLesson === 4) return openLesson4Node(ret.nodeId, opts);
       if (targetLesson === 5) return openLesson5Node(ret.nodeId, opts);
+      if (targetLesson === 7) return openU2L1Node(ret.nodeId, opts);
       return openNode(ret.nodeId, ret.openOptions || undefined);
     }
 
@@ -4937,6 +5010,10 @@
       return;
     }
 
+    if (s.lesson === 7) {
+      finishU2L1Session();
+      return;
+    }
     if (s.lesson === 5) {
       finishLesson5Session();
       return;
@@ -5181,6 +5258,9 @@
   let chromeBound = false;
   /* ---------------- Lesson 2 & 3 Shared Runner Steps ---------------- */
   function l2Record(nodeId) {
+    if (session && session.lesson === 7) {
+      return typeof getU2L1NodeRecord === 'function' ? getU2L1NodeRecord(nodeId) : null;
+    }
     if (session && session.lesson === 5) {
       return typeof getLesson5NodeRecord === 'function' ? getLesson5NodeRecord(nodeId) : null;
     }
@@ -5231,7 +5311,7 @@
         if (assisted) rec.assistedSteps.add(cur.key);
         else rec.independentSteps.add(cur.key);
       }
-      if (session.lesson === 3 || session.lesson === 5) {
+      if (session.lesson === 3 || session.lesson === 5 || session.lesson === 7) {
         document.querySelectorAll('#l1-shell .l1-hint-bar, #l1-shell .l1-context-row .l1-hint-btn').forEach(el => {
           el.hidden = true;
         });
@@ -5307,7 +5387,7 @@
 
   function l2AppendHintWidget(root, cur, d) {
     if (!cur || cur.noHints || !Array.isArray(cur.hints) || !cur.hints.length) return;
-    const isL3 = Boolean(session && (session.lesson === 3 || session.lesson === 5));
+    const isL3 = Boolean(session && (session.lesson === 3 || session.lesson === 5 || session.lesson === 7));
     if (isL3 && isL2StepPassed(cur)) return;
     const total = cur.hints.length;
     const bar = document.createElement('div');
@@ -5428,6 +5508,42 @@
   function l2RenderVisual(visual, mount, opts) {
     if (!visual || !mount) return;
     const passed = Boolean(opts && opts.passed);
+
+    if (visual.type === 'l5_mini_table') {
+      const card = document.createElement('div');
+      card.className = 'l5-mini-table-card';
+      if (visual.caption) {
+        const cap = document.createElement('div');
+        cap.className = 'l5-mini-table-cap';
+        cap.innerHTML = l2BidiTextHTML(visual.caption);
+        card.append(cap);
+      }
+      const hdrs = Array.isArray(visual.headers) ? visual.headers : [];
+      const tbl = document.createElement('div');
+      tbl.className = 'l5-vtable l5-mini-vtable';
+      tbl.style.setProperty('--l5-vcols', String(Math.max(2, hdrs.length)));
+      hdrs.forEach((h, hIdx) => {
+        const hd = document.createElement('div');
+        hd.className = 'l5-vcell-head' + (hIdx === hdrs.length - 1 ? ' is-sum-col' : '');
+        hd.innerHTML = l2BidiTextHTML(h);
+        tbl.append(hd);
+      });
+      (visual.rows || []).forEach(r => {
+        const rowTone = r.tone || 'normal';
+        (r.cells || []).forEach((val, cIdx) => {
+          const cell = document.createElement('div');
+          const isNumeric = /^[\d,.\s]+$/.test(String(val || '').trim());
+          cell.className = 'l5-vcell-static'
+            + (rowTone === 'goal' ? ' is-goal' : (rowTone === 'error' ? ' is-err' : ''))
+            + (cIdx === hdrs.length - 1 ? ' is-sum-col' : '');
+          cell.innerHTML = isNumeric ? ('<bdi dir="ltr">' + esc(val) + '</bdi>') : l2BidiTextHTML(val);
+          tbl.append(cell);
+        });
+      });
+      card.append(tbl);
+      mount.append(card);
+      return;
+    }
 
     if (visual.type === 'hajj_table' || visual.type === 'tourists_table') {
       const rows = visual.rows || [];
@@ -7350,10 +7466,11 @@
 
   function renderL2ExitMcqStep(cur, root) {
     const d = l2StepData(cur);
+    const isU2L1 = Boolean(session && session.lesson === 7);
     const isL5 = Boolean(session && session.lesson === 5);
     const isL4 = Boolean(session && session.lesson === 4);
     const isL3 = Boolean(session && session.lesson === 3);
-    const rec = l2Record(isL5 ? 9 : (isL4 ? 13 : (isL3 ? 15 : 14)));
+    const rec = l2Record(isU2L1 ? 10 : (isL5 ? 9 : (isL4 ? 13 : (isL3 ? 15 : 14))));
     l2EnsureShuffledOptions(cur, d);
     const items = cur.options || [];
     const passed = isL2StepPassed(cur);
@@ -7735,7 +7852,7 @@
 
   /* ---------------- Lesson 3 & 4 Shared Result Card, Exit Ticket & Session Openers ---------------- */
   function renderMultiLessonResultCard(cfg, badgeUpdater) {
-    ['l2-shell-lab-btn', 'l3-shell-lab-btn', 'l4-shell-lab-btn', 'l5-shell-lab-btn'].forEach(id => {
+    ['l2-shell-lab-btn', 'l3-shell-lab-btn', 'l4-shell-lab-btn', 'l5-shell-lab-btn', 'u2l1-shell-lab-btn'].forEach(id => {
       const btn = byId(id);
       if (btn) btn.hidden = true;
     });
@@ -9471,10 +9588,19 @@
 
         const chipsBar = document.createElement('div');
         chipsBar.className = 'l4-vscene-progress';
+        chipsBar.setAttribute('role', 'group');
+        chipsBar.setAttribute('aria-label', 'عناصر المشهد التفاعلي');
         const chipNodes = itemsList.map((it, idx) => {
-          const chip = document.createElement('span');
+          const chip = document.createElement('button');
+          chip.type = 'button';
           chip.className = 'l4-vscene-chip';
           chip.textContent = it.label;
+          chip.setAttribute('aria-pressed', 'false');
+          chip.addEventListener('click', () => {
+            if (sceneWidget && typeof sceneWidget.select === 'function') {
+              sceneWidget.select(idx, true);
+            }
+          });
           chipsBar.append(chip);
           return chip;
         });
@@ -9482,8 +9608,10 @@
         const syncChipsAndCta = () => {
           itemsList.forEach((_, idx) => {
             if (!chipNodes[idx]) return;
+            const isAct = d.inspectedIdx === idx;
             chipNodes[idx].classList.toggle('is-done', exploredSet.has(idx));
-            chipNodes[idx].classList.toggle('is-active', d.inspectedIdx === idx);
+            chipNodes[idx].classList.toggle('is-active', isAct);
+            chipNodes[idx].setAttribute('aria-pressed', String(isAct));
           });
           if (inExplore) {
             const allExplored = exploredSet.size >= itemsList.length;
@@ -11323,22 +11451,58 @@
       talkCard.append(pills);
 
       const curSc = scenarios.find(s => s.id === d.scenId) || activeScen;
+      const preview = document.createElement('div');
+      preview.className = 'l4-talk-preview';
+
+      const syncPreview = () => {
+        const curMag = Math.max(1, Math.min(50, Number(d.mag) || 1));
+        preview.innerHTML = ''
+          + '<div class="l4-talk-preview-line"><strong>المثال:</strong> ' + esc(curSc.label) + ' بمقدار <bdi dir="ltr">' + curMag + '</bdi> ' + esc(curSc.unit) + '</div>'
+          + '<div class="l4-talk-preview-line"><strong>العدد الممثل:</strong> ' + l4SignedBadgeHTML(-curMag) + ' · <strong>الصفر (<bdi dir="ltr">0</bdi>):</strong> ' + l2BidiTextHTML(curSc.zeroMeaning) + '</div>';
+      };
+
       const stepRow = document.createElement('div');
       stepRow.className = 'l4-thermo-btn-row';
       const minusBtn = document.createElement('button');
       minusBtn.type = 'button';
       minusBtn.className = 'l4-step-btn';
       minusBtn.innerHTML = 'إنقاص المقدار (<bdi dir="ltr">-1</bdi>)';
-      minusBtn.addEventListener('click', () => { d.mag = Math.max(1, (Number(d.mag) || 1) - 1); saveState(); drawBuilder(); });
+      minusBtn.addEventListener('click', () => {
+        d.mag = Math.max(1, (Number(d.mag) || 1) - 1);
+        saveState();
+        syncPreview();
+        if (talkAnimHandle && typeof talkAnimHandle.update === 'function') {
+          talkAnimHandle.update({
+            kind: 'neg_context',
+            mode: curSc ? curSc.id : 'sea',
+            mag: d.mag,
+            live: true,
+            caption: (curSc ? curSc.label : '') + ' (' + (-d.mag) + ')'
+          });
+        }
+      });
       const plusBtn = document.createElement('button');
       plusBtn.type = 'button';
       plusBtn.className = 'l4-step-btn is-primary';
       plusBtn.innerHTML = 'زيادة المقدار (<bdi dir="ltr">+1</bdi>)';
-      plusBtn.addEventListener('click', () => { d.mag = Math.min(50, (Number(d.mag) || 1) + 1); saveState(); drawBuilder(); });
+      plusBtn.addEventListener('click', () => {
+        d.mag = Math.min(50, (Number(d.mag) || 1) + 1);
+        saveState();
+        syncPreview();
+        if (talkAnimHandle && typeof talkAnimHandle.update === 'function') {
+          talkAnimHandle.update({
+            kind: 'neg_context',
+            mode: curSc ? curSc.id : 'sea',
+            mag: d.mag,
+            live: true,
+            caption: (curSc ? curSc.label : '') + ' (' + (-d.mag) + ')'
+          });
+        }
+      });
       stepRow.append(minusBtn, plusBtn);
       talkCard.append(stepRow);
 
-      const mag = Number(d.mag) || 1;
+      const mag = Math.max(1, Math.min(50, Number(d.mag) || 1));
       const animSlot = document.createElement('div');
       talkCard.append(animSlot);
       if (global.BookConceptAnim && typeof global.BookConceptAnim.mount === 'function') {
@@ -11348,14 +11512,21 @@
           mag,
           live: true,
           caption: (curSc ? curSc.label : '') + ' (' + (-mag) + ')'
-        }, animSlot, { compact: true, hideHeader: true });
+        }, animSlot, {
+          compact: true,
+          hideHeader: true,
+          onValueChange: newMag => {
+            const nextM = Math.max(1, Math.min(50, Number(newMag) || 1));
+            if (nextM !== d.mag) {
+              d.mag = nextM;
+              saveState();
+              syncPreview();
+            }
+          }
+        });
       }
 
-      const preview = document.createElement('div');
-      preview.className = 'l4-talk-preview';
-      preview.innerHTML = ''
-        + '<div class="l4-talk-preview-line"><strong>المثال:</strong> ' + esc(curSc.label) + ' بمقدار <bdi dir="ltr">' + mag + '</bdi> ' + esc(curSc.unit) + '</div>'
-        + '<div class="l4-talk-preview-line"><strong>العدد الممثل:</strong> ' + l4SignedBadgeHTML(-mag) + ' · <strong>الصفر (<bdi dir="ltr">0</bdi>):</strong> ' + l2BidiTextHTML(curSc.zeroMeaning) + '</div>';
+      syncPreview();
       talkCard.append(preview);
 
       if (cur.question) {
@@ -11621,6 +11792,39 @@
     root.append(strip);
   }
 
+  function buildL5RatioStrip(rp) {
+    const rStrip = document.createElement('div');
+    rStrip.className = 'l5-ratio-visual';
+    const buildDots = (cnt, tone, txt) => {
+      const capped = Math.min(8, Math.max(1, Number(cnt) || 1));
+      const dots = Array.from({ length: capped }, () => '<span class="l5-marble-dot tone-' + esc(tone) + '" aria-hidden="true"></span>').join('');
+      return '<span class="l5-marble-group">' + dots + '<span>' + l2BidiTextHTML(txt) + '</span></span>';
+    };
+    rStrip.innerHTML = buildDots(rp.leftCount || 1, rp.leftTone || 'green', rp.leftText || '')
+      + '<span class="l5-ratio-op" aria-hidden="true">+</span>'
+      + buildDots(rp.rightCount || 3, rp.rightTone || 'red', rp.rightText || '')
+      + '<span class="l5-ratio-op" aria-hidden="true">⟵</span>'
+      + '<strong class="l5-ratio-sum">' + l2BidiTextHTML(rp.sumText || '') + '</strong>';
+    return rStrip;
+  }
+
+  function buildL5VerifyList(checks) {
+    const wrap = document.createElement('div');
+    wrap.className = 'l5-verify-list';
+    const checkSvg = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+    checks.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'l5-verify-row';
+      row.innerHTML =
+        '<span class="l5-verify-ico">' + checkSvg + '</span>' +
+        '<span class="l5-verify-lbl">' + l2BidiTextHTML(item.label || '') + '</span>' +
+        '<bdi class="l5-verify-eq" dir="ltr">' + esc(item.eq || '') + '</bdi>' +
+        (item.detail ? '<span class="l5-verify-det">' + esc(item.detail) + '</span>' : '');
+      wrap.append(row);
+    });
+    return wrap;
+  }
+
   function renderL5TeachStep(cur, root) {
     const d = l2StepData(cur);
     appendL5PhaseStrip(root, cur.activePhase);
@@ -11642,6 +11846,60 @@
     }
     card.append(head);
 
+    if (Array.isArray(cur.understandItems) && cur.understandItems.length) {
+      const uGrid = document.createElement('div');
+      uGrid.className = 'l5-understand-grid';
+      cur.understandItems.forEach(it => {
+        const box = document.createElement('div');
+        box.className = 'l5-understand-item tone-' + (it.tone || 'green');
+        box.innerHTML = '<span class="l5-understand-tag">' + esc(it.tag || '') + '</span>'
+          + '<span class="l5-understand-txt">' + l2BidiTextHTML(it.text || '') + '</span>';
+        uGrid.append(box);
+      });
+      card.append(uGrid);
+    }
+
+    if (cur.ratioPreview) {
+      card.append(buildL5RatioStrip(cur.ratioPreview));
+    }
+
+    if (Array.isArray(cur.verifyChecks) && cur.verifyChecks.length) {
+      card.append(buildL5VerifyList(cur.verifyChecks));
+    }
+
+    if (cur.planBox) {
+      const pBox = document.createElement('div');
+      pBox.className = 'l5-plan-box';
+      pBox.innerHTML = '<strong class="l5-plan-tag">' + esc(cur.planBox.tag || 'أخطط') + '</strong>'
+        + '<span>' + l2BidiTextHTML(cur.planBox.text || '') + '</span>';
+      card.append(pBox);
+    }
+
+    if (cur.miniTablePreview && Array.isArray(cur.miniTablePreview.headers)) {
+      const mt = cur.miniTablePreview;
+      const tbl = document.createElement('div');
+      tbl.className = 'l5-vtable l5-mini-vtable';
+      tbl.style.setProperty('--l5-vcols', String(mt.headers.length));
+      mt.headers.forEach((h, hIdx) => {
+        const hd = document.createElement('div');
+        hd.className = 'l5-vcell-head' + (hIdx === mt.headers.length - 1 ? ' is-sum-col' : '');
+        hd.innerHTML = l2BidiTextHTML(h);
+        tbl.append(hd);
+      });
+      (mt.rows || []).forEach(r => {
+        (r.cells || []).forEach((v, cIdx) => {
+          const c = document.createElement('div');
+          const isNum = /^[\d,.\s]+$/.test(String(v || '').trim());
+          c.className = 'l5-vcell-static'
+            + (r.tone === 'goal' ? ' is-goal' : '')
+            + (cIdx === mt.headers.length - 1 ? ' is-sum-col' : '');
+          c.innerHTML = isNum ? ('<bdi dir="ltr">' + esc(v) + '</bdi>') : l2BidiTextHTML(v);
+          tbl.append(c);
+        });
+      });
+      card.append(tbl);
+    }
+
     if (Array.isArray(cur.bullets) && cur.bullets.length) {
       const ul = document.createElement('ul');
       ul.className = 'l5-teach-bullets';
@@ -11656,7 +11914,7 @@
     if (cur.verifyBanner) {
       const vp = document.createElement('div');
       vp.className = 'l5-verify-pill';
-      vp.innerHTML = '<span>تحقق سريع:</span><bdi dir="ltr">' + esc(cur.verifyBanner) + '</bdi>';
+      vp.innerHTML = '<span>تحقق سريع:</span><span>' + l2BidiTextHTML(cur.verifyBanner) + '</span>';
       card.append(vp);
     }
 
@@ -11677,7 +11935,7 @@
   }
 
   function wireL5SlotChoiceBoard(cfg) {
-    const { root, cur, d, slots, bankPairCls, drawBoard } = cfg;
+    const { root, cur, d, slots, bankPairCls, drawBoard, renderExtraGuide } = cfg;
     const passed = isL2StepPassed(cur);
     if (!d.values || typeof d.values !== 'object') d.values = {};
     if (!d.wrongSet || typeof d.wrongSet !== 'object') d.wrongSet = {};
@@ -11736,7 +11994,7 @@
           const gTop = document.createElement('div');
           gTop.className = 'l5-active-guide-top';
           gTop.innerHTML = '<span>الخانة المطلوبة الآن: ' + esc(activeSlot.label) + '</span>'
-            + '<span>' + ar((activeIdx >= 0 ? activeIdx : 0) + 1) + ' / ' + ar(slots.length) + '</span>';
+            + '<span class="l5-guide-step-count">خطوة <bdi dir="ltr">' + ((activeIdx >= 0 ? activeIdx : 0) + 1) + '</bdi> من <bdi dir="ltr">' + slots.length + '</bdi></span>';
           guideBox.append(gTop);
 
           if (activeSlot.formula) {
@@ -11744,7 +12002,11 @@
             if (Array.isArray(activeSlot.deps) && activeSlot.deps.length >= 2) {
               const depVal = String(d.values[activeSlot.deps[0]] || '').trim();
               if (depVal) {
-                formulaTxt = 'اجمع العمود: ' + activeSlot.deps[1] + ' + ' + depVal + ' = ؟';
+                if (activeSlot.deps[2] === 'left') {
+                  formulaTxt = 'أضف ' + activeSlot.deps[1] + ' إلى المجموع السابق: ' + depVal + ' + ' + activeSlot.deps[1] + ' = □';
+                } else {
+                  formulaTxt = 'اجمع العددين في هذا الصف: ' + activeSlot.deps[1] + ' + ' + depVal + ' = □';
+                }
               }
             }
             const gFormula = document.createElement('div');
@@ -11752,6 +12014,11 @@
             gFormula.innerHTML = l2BidiTextHTML(formulaTxt);
             guideBox.append(gFormula);
           }
+
+          if (typeof renderExtraGuide === 'function') {
+            renderExtraGuide(activeSlot, guideBox);
+          }
+
           bankMount.append(guideBox);
         }
 
@@ -11814,24 +12081,43 @@
 
   function renderL5TableBuilderStep(cur, root) {
     const d = l2StepData(cur);
-    const cols = (cur.colHeaders || []).length || 4;
-    const rows = cur.rows || [];
+    const isVertical = cur.layout === 'vertical' && Array.isArray(cur.vRows);
 
     const slots = [];
-    for (let cIdx = 0; cIdx < cols; cIdx++) {
-      rows.forEach(row => {
-        const cell = (row.cells || [])[cIdx];
-        if (cell && cell.slotId) {
-          slots.push({
-            slotId: cell.slotId,
-            expected: cell.expected,
-            label: cell.label || row.label,
-            formula: cell.formula || '',
-            deps: cell.deps || null,
-            colIdx: cIdx
-          });
-        }
+    if (isVertical) {
+      cur.vRows.forEach((row, rIdx) => {
+        (row.cells || []).forEach((cell, cIdx) => {
+          if (cell && cell.slotId) {
+            slots.push({
+              slotId: cell.slotId,
+              expected: cell.expected,
+              label: cell.label || ((cur.columns && cur.columns[cIdx] && cur.columns[cIdx].label) || ''),
+              formula: cell.formula || '',
+              deps: cell.deps || null,
+              rowIdx: rIdx,
+              colIdx: cIdx
+            });
+          }
+        });
       });
+    } else {
+      const cols = (cur.colHeaders || []).length || 4;
+      const rows = cur.rows || [];
+      for (let cIdx = 0; cIdx < cols; cIdx++) {
+        rows.forEach(row => {
+          const cell = (row.cells || [])[cIdx];
+          if (cell && cell.slotId) {
+            slots.push({
+              slotId: cell.slotId,
+              expected: cell.expected,
+              label: cell.label || row.label,
+              formula: cell.formula || '',
+              deps: cell.deps || null,
+              colIdx: cIdx
+            });
+          }
+        });
+      }
     }
 
     wireL5SlotChoiceBoard({
@@ -11853,72 +12139,142 @@
         }
 
         if (cur.ratioPreview) {
-          const rp = cur.ratioPreview;
-          const rStrip = document.createElement('div');
-          rStrip.className = 'l5-ratio-visual';
-          const buildDots = (cnt, tone, txt) => {
-            const dots = Array.from({ length: cnt }, () => '<span class="l5-marble-dot tone-' + esc(tone) + '" aria-hidden="true"></span>').join('');
-            return '<span class="l5-marble-group">' + dots + '<span>' + l2BidiTextHTML(txt) + '</span></span>';
-          };
-          rStrip.innerHTML = buildDots(rp.leftCount || 1, rp.leftTone || 'green', rp.leftText || '')
-            + '<span aria-hidden="true">+</span>'
-            + buildDots(rp.rightCount || 3, rp.rightTone || 'red', rp.rightText || '')
-            + '<span aria-hidden="true">⟵</span>'
-            + '<strong>' + l2BidiTextHTML(rp.sumText || '') + '</strong>';
-          card.append(rStrip);
+          card.append(buildL5RatioStrip(cur.ratioPreview));
+        }
+
+        if (cur.outfitPreview && Array.isArray(cur.outfitPreview.ties)) {
+          const op = document.createElement('div');
+          op.className = 'l5-outfit-strip';
+          const tiesHtml = cur.outfitPreview.ties.map(t =>
+            '<span class="l5-tie-chip"><span class="l5-tie-dot tone-' + esc(t.tone || 'dark') + '" aria-hidden="true"></span><span>' + esc(t.label) + '</span></span>'
+          ).join('');
+          op.innerHTML = '<span class="l5-outfit-lbl">' + esc(cur.outfitPreview.title || 'الربطات:') + '</span><div class="l5-tie-list">' + tiesHtml + '</div>';
+          card.append(op);
+        }
+
+        if (cur.coinSwapPreview) {
+          const cs = document.createElement('div');
+          cs.className = 'l5-coin-strip';
+          cs.innerHTML =
+            '<span class="l5-coin-badge is-ten"><bdi dir="ltr">10</bdi> قروش</span>' +
+            '<span class="l5-ratio-op" aria-hidden="true">=</span>' +
+            '<span class="l5-coin-badge is-five"><bdi dir="ltr">5</bdi> قروش</span>' +
+            '<span class="l5-ratio-op" aria-hidden="true">+</span>' +
+            '<span class="l5-coin-badge is-five"><bdi dir="ltr">5</bdi> قروش</span>';
+          card.append(cs);
         }
 
         const activeSlotObj = !locked ? slots.find(s => s.slotId === d.activeSlotId) : null;
-        const activeColIdx = activeSlotObj ? activeSlotObj.colIdx : -1;
 
-        const grid = document.createElement('div');
-        grid.className = 'l5-data-table';
-        grid.style.setProperty('--l5-cols', String(cols));
+        if (isVertical) {
+          const activeRowIdx = activeSlotObj ? activeSlotObj.rowIdx : -1;
+          const cols = cur.columns || [];
+          const grid = document.createElement('div');
+          grid.className = 'l5-vtable';
+          grid.style.setProperty('--l5-vcols', String(Math.max(2, cols.length)));
 
-        const corner = document.createElement('div');
-        corner.className = 'l5-cell-head';
-        corner.textContent = 'البيان';
-        grid.append(corner);
-
-        (cur.colHeaders || []).forEach((h, cIdx) => {
-          const ch = document.createElement('div');
-          ch.className = 'l5-cell-head' + (cIdx === activeColIdx ? ' is-active-col' : '');
-          ch.innerHTML = l2BidiTextHTML(h);
-          grid.append(ch);
-        });
-
-        rows.forEach(row => {
-          const rLbl = document.createElement('div');
-          rLbl.className = 'l5-row-lbl tone-' + (row.tone || 'neutral');
-          rLbl.innerHTML = l2BidiTextHTML(row.label);
-          grid.append(rLbl);
-
-          (row.cells || []).forEach((cell, cIdx) => {
-            if (!cell.slotId) {
-              const stCell = document.createElement('div');
-              stCell.className = 'l5-cell-static tone-' + (row.tone || 'neutral') + (cIdx === activeColIdx ? ' is-active-col' : '');
-              stCell.innerHTML = '<bdi dir="ltr">' + esc(cell.val) + '</bdi>';
-              grid.append(stCell);
-            } else {
-              const val = String((d.values && d.values[cell.slotId]) || '');
-              const isWrong = Boolean(d.wrongSet && d.wrongSet[cell.slotId]);
-              const isAct = !locked && d.activeSlotId === cell.slotId;
-              const btn = document.createElement('button');
-              btn.type = 'button';
-              btn.className = 'l5-cell-slot'
-                + (locked ? ' is-correct' : (isWrong ? ' is-wrong' : (val ? ' is-filled' : '')))
-                + (isAct ? ' is-active' : '');
-              btn.setAttribute('aria-label', cell.label || row.label);
-              btn.setAttribute('aria-pressed', String(isAct));
-              btn.disabled = locked;
-              btn.innerHTML = '<bdi dir="ltr">' + esc(locked ? cell.expected : (val || '؟')) + '</bdi>';
-              btn.addEventListener('click', () => onSelectSlot(cell.slotId));
-              grid.append(btn);
-            }
+          cols.forEach(col => {
+            const hd = document.createElement('div');
+            hd.className = 'l5-vcell-head tone-' + (col.tone || 'neutral');
+            hd.innerHTML = l2BidiTextHTML(col.label);
+            grid.append(hd);
           });
-        });
 
-        card.append(grid);
+          cur.vRows.forEach((row, rIdx) => {
+            const isActRow = rIdx === activeRowIdx;
+            const isGoal = Boolean(row.isGoal);
+            (row.cells || []).forEach((cell, cIdx) => {
+              const colTone = (cols[cIdx] && cols[cIdx].tone) || 'neutral';
+              if (!cell.slotId) {
+                const stCell = document.createElement('div');
+                stCell.className = 'l5-vcell-static tone-' + colTone
+                  + (cell.sub ? ' has-sub' : '')
+                  + (isActRow ? ' is-active-row' : '')
+                  + (isGoal ? ' is-goal' : '');
+                if (cell.sub) {
+                  stCell.innerHTML = '<span class="l5-vcell-main">' + l2BidiTextHTML(cell.val) + '</span>'
+                    + '<span class="l5-vcell-sub">' + l2BidiTextHTML(cell.sub) + '</span>';
+                } else {
+                  stCell.innerHTML = cell.isText
+                    ? l2BidiTextHTML(cell.val)
+                    : ('<bdi dir="ltr">' + esc(cell.val) + '</bdi>');
+                }
+                grid.append(stCell);
+              } else {
+                const val = String((d.values && d.values[cell.slotId]) || '');
+                const isWrong = Boolean(d.wrongSet && d.wrongSet[cell.slotId]);
+                const isAct = !locked && d.activeSlotId === cell.slotId;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'l5-cell-slot'
+                  + (locked ? ' is-correct' : (isWrong ? ' is-wrong' : (val ? ' is-filled' : '')))
+                  + (isAct ? ' is-active' : '');
+                btn.setAttribute('aria-label', cell.label || colTone);
+                btn.setAttribute('aria-pressed', String(isAct));
+                btn.disabled = locked;
+                btn.innerHTML = '<bdi dir="ltr">' + esc(locked ? cell.expected : (val || '؟')) + '</bdi>';
+                btn.addEventListener('click', () => onSelectSlot(cell.slotId));
+                grid.append(btn);
+              }
+            });
+          });
+
+          card.append(grid);
+        } else {
+          const cols = (cur.colHeaders || []).length || 4;
+          const rows = cur.rows || [];
+          const activeColIdx = activeSlotObj ? activeSlotObj.colIdx : -1;
+
+          const grid = document.createElement('div');
+          grid.className = 'l5-data-table';
+          grid.style.setProperty('--l5-cols', String(cols));
+
+          const corner = document.createElement('div');
+          corner.className = 'l5-cell-head';
+          corner.textContent = 'البيان';
+          grid.append(corner);
+
+          (cur.colHeaders || []).forEach((h, cIdx) => {
+            const ch = document.createElement('div');
+            ch.className = 'l5-cell-head' + (cIdx === activeColIdx ? ' is-active-col' : '');
+            ch.innerHTML = l2BidiTextHTML(h);
+            grid.append(ch);
+          });
+
+          rows.forEach(row => {
+            const rLbl = document.createElement('div');
+            rLbl.className = 'l5-row-lbl tone-' + (row.tone || 'neutral');
+            rLbl.innerHTML = l2BidiTextHTML(row.label);
+            grid.append(rLbl);
+
+            (row.cells || []).forEach((cell, cIdx) => {
+              if (!cell.slotId) {
+                const stCell = document.createElement('div');
+                stCell.className = 'l5-cell-static tone-' + (row.tone || 'neutral') + (cIdx === activeColIdx ? ' is-active-col' : '');
+                stCell.innerHTML = '<bdi dir="ltr">' + esc(cell.val) + '</bdi>';
+                grid.append(stCell);
+              } else {
+                const val = String((d.values && d.values[cell.slotId]) || '');
+                const isWrong = Boolean(d.wrongSet && d.wrongSet[cell.slotId]);
+                const isAct = !locked && d.activeSlotId === cell.slotId;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'l5-cell-slot'
+                  + (locked ? ' is-correct' : (isWrong ? ' is-wrong' : (val ? ' is-filled' : '')))
+                  + (isAct ? ' is-active' : '');
+                btn.setAttribute('aria-label', cell.label || row.label);
+                btn.setAttribute('aria-pressed', String(isAct));
+                btn.disabled = locked;
+                btn.innerHTML = '<bdi dir="ltr">' + esc(locked ? cell.expected : (val || '؟')) + '</bdi>';
+                btn.addEventListener('click', () => onSelectSlot(cell.slotId));
+                grid.append(btn);
+              }
+            });
+          });
+
+          card.append(grid);
+        }
+
         mount.append(card);
       }
     });
@@ -11926,13 +12282,16 @@
 
   function renderL5PairTableStep(cur, root) {
     const d = l2StepData(cur);
+    const allNames = Array.isArray(cur.allNames) ? cur.allNames : ['ريما', 'لانا', 'سحر', 'ديمة'];
 
     const slots = (cur.pairs || [])
       .filter(p => Boolean(p.slotId))
       .map(p => ({
         slotId: p.slotId,
         expected: p.expected,
-        label: 'الطريقة ' + ar(p.num) + ' (' + (p.slotRole || 'الزوج') + ')'
+        label: 'الطريقة ' + ar(p.num) + ' (' + (p.slotRole || 'الزوج') + ')',
+        formula: p.formula || '',
+        usedNames: Array.isArray(p.usedNames) ? p.usedNames : []
       }));
 
     wireL5SlotChoiceBoard({
@@ -11941,6 +12300,17 @@
       d,
       slots,
       bankPairCls: true,
+      renderExtraGuide: (activeSlot, guideBox) => {
+        if (!activeSlot || !Array.isArray(activeSlot.usedNames) || !activeSlot.usedNames.length) return;
+        const roster = document.createElement('div');
+        roster.className = 'l5-roster-bar';
+        roster.innerHTML = '<span class="l5-roster-lbl">الصديقات الأربع:</span>' +
+          allNames.map(nm => {
+            const isUsed = activeSlot.usedNames.includes(nm);
+            return '<span class="l5-roster-chip' + (isUsed ? ' is-used' : ' is-open') + '">' + esc(nm) + '</span>';
+          }).join('');
+        guideBox.append(roster);
+      },
       drawBoard: (mount, locked, onSelectSlot) => {
         mount.innerHTML = '';
         const card = document.createElement('div');
@@ -11957,8 +12327,14 @@
         grid.className = 'l5-pair-grid';
 
         (cur.pairs || []).forEach(p => {
+          const isCardActive = !locked && p.slotId && d.activeSlotId === p.slotId;
           const box = document.createElement('div');
-          box.className = 'l5-pair-card';
+          box.className = 'l5-pair-card' + (isCardActive ? ' is-card-active' : '');
+
+          const numHead = document.createElement('div');
+          numHead.className = 'l5-pair-num';
+          numHead.innerHTML = 'الطريقة <bdi dir="ltr">' + esc(String(p.num)) + '</bdi>';
+          box.append(numHead);
 
           const makeSlotBtn = (roleLabel) => {
             const val = String((d.values && d.values[p.slotId]) || '');
@@ -11984,11 +12360,12 @@
             return el;
           };
 
+          // Always consistent order: تمسك الحبل on top, تقفز on bottom!
           if (p.slotId && p.slotRole === 'تمسك') {
-            box.append(makeStatic(ar(p.num) + ') تقفز: ' + p.jump, true));
             box.append(makeSlotBtn('تمسك'));
+            box.append(makeStatic('تقفز: ' + p.jump, false));
           } else {
-            box.append(makeStatic(ar(p.num) + ') تمسك: ' + p.hold, true));
+            box.append(makeStatic('تمسك: ' + p.hold, true));
             if (p.slotId && p.slotRole === 'تقفز') {
               box.append(makeSlotBtn('تقفز'));
             } else {
@@ -12011,6 +12388,7 @@
     if (!d.scenId || !list.some(sc => sc.id === d.scenId)) {
       d.scenId = list[0]?.id || 'juice';
     }
+    if (!d.revealedMap || typeof d.revealedMap !== 'object') d.revealedMap = {};
 
     const card = document.createElement('div');
     card.className = 'l5-strategy-card';
@@ -12028,7 +12406,7 @@
         b.type = 'button';
         b.className = 'l5-scen-btn' + (sc.id === active.id ? ' is-active' : '');
         b.setAttribute('aria-pressed', String(sc.id === active.id));
-        b.innerHTML = l2BidiTextHTML(sc.tabLabel);
+        b.textContent = sc.tabLabel;
         b.addEventListener('click', () => {
           d.scenId = sc.id;
           saveState();
@@ -12043,41 +12421,112 @@
       chip.innerHTML = l2BidiTextHTML(active.story);
       card.append(chip);
 
-      const cols = active.colHeads.length || 4;
-      const grid = document.createElement('div');
-      grid.className = 'l5-data-table';
-      grid.style.setProperty('--l5-cols', String(cols));
+      if (Array.isArray(active.tableRows) && Array.isArray(active.columns)) {
+        const totalRows = active.tableRows.length;
+        const rev = Math.max(1, Math.min(totalRows, Number(d.revealedMap[active.id]) || Math.min(2, totalRows)));
+        d.revealedMap[active.id] = rev;
 
-      const corner = document.createElement('div');
-      corner.className = 'l5-cell-head';
-      corner.textContent = 'البيان';
-      grid.append(corner);
+        const grid = document.createElement('div');
+        grid.className = 'l5-vtable';
+        grid.style.setProperty('--l5-vcols', String(active.columns.length));
 
-      active.colHeads.forEach(h => {
-        const ch = document.createElement('div');
-        ch.className = 'l5-cell-head';
-        ch.innerHTML = l2BidiTextHTML(h);
-        grid.append(ch);
-      });
-
-      active.rowLabels.forEach(r => {
-        const rl = document.createElement('div');
-        rl.className = 'l5-row-lbl tone-' + (r.tone || 'neutral');
-        rl.innerHTML = l2BidiTextHTML(r.label);
-        grid.append(rl);
-        r.vals.forEach(v => {
-          const c = document.createElement('div');
-          c.className = 'l5-cell-static tone-' + (r.tone || 'neutral');
-          c.innerHTML = '<bdi dir="ltr">' + esc(v) + '</bdi>';
-          grid.append(c);
+        active.columns.forEach(col => {
+          const hd = document.createElement('div');
+          hd.className = 'l5-vcell-head tone-' + (col.tone || 'neutral');
+          hd.innerHTML = l2BidiTextHTML(col.label);
+          grid.append(hd);
         });
-      });
-      card.append(grid);
 
-      const sumEl = document.createElement('div');
-      sumEl.className = 'l5-scen-summary';
-      sumEl.innerHTML = l2BidiTextHTML(active.verifyText);
-      card.append(sumEl);
+        active.tableRows.forEach((row, rIdx) => {
+          const isShown = rIdx < rev;
+          const isLatest = rIdx === rev - 1;
+          row.vals.forEach((v, cIdx) => {
+            const colTone = active.columns[cIdx]?.tone || 'neutral';
+            const c = document.createElement('div');
+            const isNum = /^[\d,.\s]+$/.test(String(v || '').trim());
+            c.className = 'l5-vcell-static tone-' + colTone
+              + (isLatest ? ' is-active-row' : '')
+              + (isShown && row.isGoal ? ' is-goal' : '')
+              + (!isShown ? ' is-dim' : '');
+            c.innerHTML = isShown
+              ? (isNum ? ('<bdi dir="ltr">' + esc(v) + '</bdi>') : l2BidiTextHTML(v))
+              : '<bdi dir="ltr">؟</bdi>';
+            grid.append(c);
+          });
+        });
+        card.append(grid);
+
+        const activeNote = active.tableRows[rev - 1]?.note || active.ruleNote || '';
+        const noteEl = document.createElement('div');
+        noteEl.className = 'l5-scen-step-note';
+        noteEl.setAttribute('aria-live', 'polite');
+        noteEl.innerHTML = l2BidiTextHTML(activeNote);
+        card.append(noteEl);
+
+        const ctrls = document.createElement('div');
+        ctrls.className = 'l5-scen-controls';
+        const nextRowBtn = document.createElement('button');
+        nextRowBtn.type = 'button';
+        nextRowBtn.className = 'l5-scen-ctrl-btn is-primary';
+        nextRowBtn.textContent = rev < totalRows ? 'أظهر الصف التالي' : 'إعادة من الصف 1';
+        nextRowBtn.addEventListener('click', () => {
+          d.revealedMap[active.id] = rev < totalRows ? rev + 1 : 1;
+          saveState();
+          draw();
+        });
+        const allBtn = document.createElement('button');
+        allBtn.type = 'button';
+        allBtn.className = 'l5-scen-ctrl-btn';
+        allBtn.textContent = 'إظهار الجدول كاملاً';
+        allBtn.disabled = rev >= totalRows;
+        allBtn.addEventListener('click', () => {
+          d.revealedMap[active.id] = totalRows;
+          saveState();
+          draw();
+        });
+        ctrls.append(nextRowBtn, allBtn);
+        card.append(ctrls);
+
+        if (rev >= totalRows && Array.isArray(active.verifyChecks) && active.verifyChecks.length) {
+          card.append(buildL5VerifyList(active.verifyChecks));
+        }
+      } else {
+        const cols = active.colHeads.length || 4;
+        const grid = document.createElement('div');
+        grid.className = 'l5-data-table';
+        grid.style.setProperty('--l5-cols', String(cols));
+
+        const corner = document.createElement('div');
+        corner.className = 'l5-cell-head';
+        corner.textContent = 'البيان';
+        grid.append(corner);
+
+        active.colHeads.forEach(h => {
+          const ch = document.createElement('div');
+          ch.className = 'l5-cell-head';
+          ch.innerHTML = l2BidiTextHTML(h);
+          grid.append(ch);
+        });
+
+        active.rowLabels.forEach(r => {
+          const rl = document.createElement('div');
+          rl.className = 'l5-row-lbl tone-' + (r.tone || 'neutral');
+          rl.innerHTML = l2BidiTextHTML(r.label);
+          grid.append(rl);
+          r.vals.forEach(v => {
+            const c = document.createElement('div');
+            c.className = 'l5-cell-static tone-' + (r.tone || 'neutral');
+            c.innerHTML = '<bdi dir="ltr">' + esc(v) + '</bdi>';
+            grid.append(c);
+          });
+        });
+        card.append(grid);
+
+        const sumEl = document.createElement('div');
+        sumEl.className = 'l5-scen-summary';
+        sumEl.innerHTML = l2BidiTextHTML(active.verifyText);
+        card.append(sumEl);
+      }
     };
 
     draw();
@@ -12290,6 +12739,1209 @@
     return true;
   }
 
+  /* =========================================================
+     Unit 2 Lesson 1 (lesson = 7): الضرب الذهني — Interactive Renderers & Session Flow
+     ========================================================= */
+
+  function renderU2L1TeachStep(cur, root) {
+    const wrap = document.createElement('div');
+    wrap.className = 'u2-teach-wrap';
+
+    if (cur.animCfg) {
+      const animMount = document.createElement('div');
+      wrap.append(animMount);
+      mountStepConceptAnim(cur, animMount, { lesson: 7 });
+    }
+
+    if (cur.ruleNote) {
+      const ruleBar = document.createElement('div');
+      ruleBar.className = 'u2-rule-bar';
+      ruleBar.innerHTML = l2BidiTextHTML(cur.ruleNote);
+      wrap.append(ruleBar);
+    }
+
+    if (Array.isArray(cur.panels) && cur.panels.length) {
+      const grid = document.createElement('div');
+      grid.className = 'u2-teach-grid';
+      cur.panels.forEach(panel => {
+        const card = document.createElement('section');
+        card.className = 'u2-teach-panel' + (panel.tone === 'half' ? ' is-half' : ' is-double');
+        const head = document.createElement('div');
+        head.className = 'u2-teach-panel-head';
+        head.innerHTML = ''
+          + '<h3 class="u2-teach-panel-title">' + l2BidiTextHTML(panel.title || '') + '</h3>'
+          + (panel.badge ? '<span class="u2-op-badge' + (panel.tone === 'half' ? ' is-half' : '') + '">' + l2BidiTextHTML(panel.badge) + '</span>' : '');
+        card.append(head);
+
+        const list = document.createElement('ul');
+        list.className = 'u2-teach-steps';
+        (panel.steps || []).forEach(st => {
+          const li = document.createElement('li');
+          li.className = 'u2-teach-step-row';
+          li.innerHTML = ''
+            + '<span>' + l2BidiTextHTML(st.label || '') + '</span>'
+            + '<span class="u2-teach-step-eq"><bdi dir="ltr">' + esc(st.eq || '') + '</bdi></span>';
+          list.append(li);
+        });
+        card.append(list);
+        grid.append(card);
+      });
+      wrap.append(grid);
+    }
+
+    if (cur.takeaway) {
+      const sum = document.createElement('div');
+      sum.className = 'u2-teach-summary';
+      sum.innerHTML = l2BidiTextHTML(cur.takeaway);
+      wrap.append(sum);
+    }
+
+    root.append(wrap);
+    setPrimaryButtonState('explanation', l2PassPrimaryLabel());
+    stepUi.onNext = () => {
+      if (!isL2StepPassed(cur)) {
+        const rec = l2Record(session?.nodeId);
+        if (rec) {
+          rec.passed.add(session.index);
+          rec.independentSteps.add(cur.key);
+          saveState();
+        }
+      }
+      advanceStep();
+    };
+  }
+
+  function renderU2L1SplitTreeStep(cur, root) {
+    const d = l2StepData(cur);
+    const passed = isL2StepPassed(cur);
+    const isHalf = cur.mode === 'half';
+    const opTag = isHalf ? '÷ 2' : '× 2';
+    const parts = Array.isArray(cur.parts) ? cur.parts : [];
+    const slotIds = parts.map((_, i) => 'p' + i).concat(['total']);
+
+    if (!d.slots || typeof d.slots !== 'object') d.slots = {};
+    if (passed) {
+      parts.forEach((pt, i) => { d.slots['p' + i] = pt.expected; });
+      d.slots.total = cur.expectedTotal;
+    }
+
+    let selectedSlot = slotIds.find(id => d.slots[id] === undefined || d.slots[id] === null) || slotIds[0];
+    let errorSlots = new Set();
+
+    const wrap = document.createElement('div');
+    wrap.className = 'u2-tree-wrap';
+    root.append(wrap);
+
+    const hintMount = document.createElement('div');
+    root.append(hintMount);
+    l2AppendHintWidget(hintMount, cur, d);
+
+    const allFilled = () => slotIds.every(id => d.slots[id] !== undefined && d.slots[id] !== null);
+
+    const draw = () => {
+      wrap.replaceChildren();
+      const locked = passed;
+      const splitStr = parts.map(pt => pt.base).join(' + ');
+
+      const board = document.createElement('div');
+      board.className = 'u2-tree-board';
+
+      const rootEl = document.createElement('div');
+      rootEl.className = 'u2-tree-root' + (isHalf ? ' is-half' : '');
+      rootEl.innerHTML = '<bdi dir="ltr">' + cur.number + ' = ' + splitStr + '</bdi>';
+      board.append(rootEl);
+
+      const branches = document.createElement('div');
+      branches.className = 'u2-tree-branches' + (parts.length >= 3 ? ' is-three' : '');
+
+      parts.forEach((pt, i) => {
+        const sid = 'p' + i;
+        const val = d.slots[sid];
+        const isSel = !locked && selectedSlot === sid;
+        const isErr = errorSlots.has(sid);
+
+        const br = document.createElement('div');
+        br.className = 'u2-tree-branch';
+        br.innerHTML = ''
+          + '<span class="u2-tree-part-lbl">' + esc(pt.label) + '</span>'
+          + '<span class="u2-tree-part-val"><bdi dir="ltr">' + pt.base + '</bdi></span>'
+          + '<span class="u2-tree-op-tag' + (isHalf ? ' is-half' : '') + '"><bdi dir="ltr">' + opTag + '</bdi></span>';
+
+        const slotBtn = document.createElement('button');
+        slotBtn.type = 'button';
+        slotBtn.dataset.treeSlot = sid;
+        slotBtn.disabled = locked;
+        slotBtn.className = 'u2-slot-btn'
+          + (locked ? ' is-correct' : (isErr ? ' is-error' : (val !== undefined ? ' is-filled' : '')))
+          + (isSel ? ' is-selected' : '');
+        slotBtn.setAttribute('aria-label', (isHalf ? 'نصف ' : 'ضعف ') + pt.base + (val !== undefined ? '، القيمة المختارة ' + val : '، خانة فارغة'));
+        slotBtn.innerHTML = '<bdi dir="ltr">' + (val !== undefined ? val : '؟') + '</bdi>';
+        slotBtn.addEventListener('click', () => {
+          if (locked) return;
+          if (d.slots[sid] !== undefined && selectedSlot === sid) {
+            delete d.slots[sid];
+          }
+          selectedSlot = sid;
+          errorSlots.delete(sid);
+          clearFeedback();
+          draw();
+        });
+        br.append(slotBtn);
+        branches.append(br);
+      });
+      board.append(branches);
+
+      // Final sum row
+      const sumRow = document.createElement('div');
+      sumRow.className = 'u2-tree-sum-row';
+      const sumExpr = parts.map((_, i) => (d.slots['p' + i] !== undefined ? d.slots['p' + i] : '□')).join(' + ');
+      const totalVal = d.slots.total;
+      const isTotalSel = !locked && selectedSlot === 'total';
+      const isTotalErr = errorSlots.has('total');
+
+      const sumLbl = document.createElement('span');
+      sumLbl.textContent = 'المجموع:';
+      sumRow.append(sumLbl);
+
+      const sumEq = document.createElement('div');
+      sumEq.className = 'u2-tree-sum-eq';
+      const sumPartsEl = document.createElement('span');
+      sumPartsEl.textContent = sumExpr + ' =';
+      sumEq.append(sumPartsEl);
+
+      const totBtn = document.createElement('button');
+      totBtn.type = 'button';
+      totBtn.dataset.treeSlot = 'total';
+      totBtn.disabled = locked;
+      totBtn.className = 'u2-slot-btn'
+        + (locked ? ' is-correct' : (isTotalErr ? ' is-error' : (totalVal !== undefined ? ' is-filled' : '')))
+        + (isTotalSel ? ' is-selected' : '');
+      totBtn.setAttribute('aria-label', 'الناتج النهائي' + (totalVal !== undefined ? '، ' + totalVal : '، خانة فارغة'));
+      totBtn.innerHTML = '<bdi dir="ltr">' + (totalVal !== undefined ? totalVal : '؟') + '</bdi>';
+      totBtn.addEventListener('click', () => {
+        if (locked) return;
+        if (d.slots.total !== undefined && selectedSlot === 'total') {
+          delete d.slots.total;
+        }
+        selectedSlot = 'total';
+        errorSlots.delete('total');
+        clearFeedback();
+        draw();
+      });
+      sumEq.append(totBtn);
+      sumRow.append(sumEq);
+      board.append(sumRow);
+      wrap.append(board);
+
+      if (!locked) {
+        const bankLbl = document.createElement('p');
+        bankLbl.className = 'u2-bank-label';
+        bankLbl.textContent = 'اختر العدد المناسب للخانة المحددة (أو اضغط على أي خانة لتعديلها):';
+        wrap.append(bankLbl);
+
+        const bank = document.createElement('div');
+        bank.className = 'u2-choice-bank';
+        const usedVals = new Set(Object.values(d.slots));
+        (cur.choices || []).forEach(ch => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.dataset.treeChoice = String(ch);
+          btn.className = 'u2-chip-btn' + (usedVals.has(ch) ? ' is-used' : '');
+          btn.innerHTML = '<bdi dir="ltr">' + ch + '</bdi>';
+          btn.addEventListener('click', () => {
+            if (locked) return;
+            d.slots[selectedSlot] = ch;
+            errorSlots.delete(selectedSlot);
+            const nextEmpty = slotIds.find(id => d.slots[id] === undefined);
+            if (nextEmpty) selectedSlot = nextEmpty;
+            clearFeedback();
+            draw();
+          });
+          bank.append(btn);
+        });
+        wrap.append(bank);
+      }
+
+      if (locked) {
+        showFeedback('good', cur.explainRight || 'أحسنت!');
+        setPrimaryButtonState('explanation', l2PassPrimaryLabel());
+      } else {
+        setPrimaryButtonState(allFilled() ? 'ready' : 'incomplete', 'تحقّق');
+      }
+    };
+
+    draw();
+
+    stepUi.onCheck = () => {
+      errorSlots = new Set();
+      parts.forEach((pt, i) => {
+        if (Number(d.slots['p' + i]) !== Number(pt.expected)) errorSlots.add('p' + i);
+      });
+      if (Number(d.slots.total) !== Number(cur.expectedTotal)) errorSlots.add('total');
+
+      if (errorSlots.size === 0) {
+        recordL2StepPass(cur, d);
+        draw();
+        showFeedback('good', cur.explainRight || 'ممتاز! اكتملت شجرة التجزئة بدقة.');
+        setPrimaryButtonState('correct', l2PassPrimaryLabel());
+      } else {
+        markL2StepError();
+        selectedSlot = [...errorSlots][0];
+        draw();
+        const onlyTotalWrong = errorSlots.size === 1 && errorSlots.has('total');
+        const msg = onlyTotalWrong
+          ? 'فروع التجزئة صحيحة! راجع عملية جمع النواتج الجزئية فقط.'
+          : (cur.explainWrong || 'تحقق من الخانات المحددة باللون الأحمر ثم أعد المحاولة.');
+        showFeedback('bad', msg);
+        setPrimaryButtonState('wrong', stepUi.needsRecharge ? 'اشحن قلوبك للمتابعة' : 'حاول مجددًا');
+      }
+    };
+
+    stepUi.onRetry = () => {
+      errorSlots.forEach(sid => { delete d.slots[sid]; });
+      selectedSlot = [...errorSlots][0] || slotIds[0];
+      errorSlots.clear();
+      clearFeedback();
+      draw();
+    };
+  }
+
+  function renderU2L1DHChainStep(cur, root) {
+    const d = l2StepData(cur);
+    const passed = isL2StepPassed(cur);
+    if (!Array.isArray(d.rows) || !d.rows.length) {
+      d.rows = [{ a: cur.startA, b: cur.startB, opA: '', opB: '' }];
+    }
+    if (passed) {
+      d.answerVal = String(cur.targetProduct);
+    }
+
+    const wrap = document.createElement('div');
+    wrap.className = 'u2-chain-wrap';
+    root.append(wrap);
+
+    const hintMount = document.createElement('div');
+    root.append(hintMount);
+    l2AppendHintWidget(hintMount, cur, d);
+
+    let inputEl = null;
+    let inputErr = false;
+
+    const applyStep = (side) => {
+      if (passed) return;
+      const last = d.rows[d.rows.length - 1];
+      if (!last || d.rows.length >= 5) return;
+      if (side === 'A' && last.a % 2 === 0 && last.a >= 2) {
+        d.rows.push({ a: last.a / 2, b: last.b * 2, opA: '÷ 2', opB: '× 2' });
+      } else if (side === 'B' && last.b % 2 === 0 && last.b >= 2) {
+        d.rows.push({ a: last.a * 2, b: last.b / 2, opA: '× 2', opB: '÷ 2' });
+      }
+      if (typeof sound === 'function') sound(true);
+      clearFeedback();
+      inputErr = false;
+      draw();
+    };
+
+    const syncPrimary = () => {
+      if (passed) {
+        setPrimaryButtonState('explanation', l2PassPrimaryLabel());
+        return;
+      }
+      const stepsDone = d.rows.length - 1;
+      const parsed = l2ParseIntInput(d.answerVal || '');
+      if (stepsDone >= 1 && parsed !== null) {
+        setPrimaryButtonState('ready', 'تحقّق');
+      } else {
+        setPrimaryButtonState('incomplete', stepsDone < 1 ? 'نفّذ خطوة تنصيف ومضاعفة أولاً' : 'اكتب الناتج ثم تحقّق');
+      }
+    };
+
+    const draw = () => {
+      wrap.replaceChildren();
+      const locked = passed;
+      const last = d.rows[d.rows.length - 1];
+      const stepsDone = d.rows.length - 1;
+
+      const list = document.createElement('div');
+      list.className = 'u2-chain-list';
+      d.rows.forEach((row, idx) => {
+        if (idx > 0) {
+          const conn = document.createElement('div');
+          conn.className = 'u2-chain-connector';
+          conn.innerHTML = ''
+            + '<span class="u2-op-badge' + (row.opA === '÷ 2' ? ' is-half' : '') + '"><bdi dir="ltr">↓ ' + row.opA + '</bdi></span>'
+            + '<span class="u2-op-badge' + (row.opB === '÷ 2' ? ' is-half' : '') + '"><bdi dir="ltr">↓ ' + row.opB + '</bdi></span>';
+          list.append(conn);
+        }
+        const isLast = idx === d.rows.length - 1;
+        const rEl = document.createElement('div');
+        rEl.className = 'u2-chain-row' + (locked ? ' is-done' : (isLast ? ' is-active' : ''));
+        rEl.innerHTML = ''
+          + '<div class="u2-chain-factor' + (isLast && row.a % 2 === 0 ? ' is-even-choice' : '') + '">'
+          + '<span class="u2-chain-val"><bdi dir="ltr">' + row.a + '</bdi></span>'
+          + '<span class="u2-tree-part-lbl">' + (row.a % 2 === 0 ? 'زوجي' : 'فردي') + '</span>'
+          + '</div>'
+          + '<span class="u2-chain-mul-sign" aria-hidden="true">×</span>'
+          + '<div class="u2-chain-factor' + (isLast && row.b % 2 === 0 ? ' is-even-choice' : '') + '">'
+          + '<span class="u2-chain-val"><bdi dir="ltr">' + row.b + '</bdi></span>'
+          + '<span class="u2-tree-part-lbl">' + (row.b % 2 === 0 ? 'زوجي' : 'فردي') + '</span>'
+          + '</div>';
+        list.append(rEl);
+      });
+      wrap.append(list);
+
+      if (!locked) {
+        const canA = last.a % 2 === 0 && last.a >= 2 && d.rows.length < 5;
+        const canB = last.b % 2 === 0 && last.b >= 2 && d.rows.length < 5;
+        const ctrls = document.createElement('div');
+        ctrls.className = 'u2-chain-step-controls';
+
+        const btnA = document.createElement('button');
+        btnA.type = 'button';
+        btnA.dataset.dhAction = 'halveA';
+        btnA.className = 'u2-action-btn' + (cur.recommendedHalveSide === 'A' && canA ? ' is-primary' : ' is-info');
+        btnA.disabled = !canA;
+        btnA.innerHTML = 'نصّف <bdi dir="ltr">' + last.a + '</bdi> · ضاعف <bdi dir="ltr">' + last.b + '</bdi>';
+        btnA.addEventListener('click', () => applyStep('A'));
+
+        const btnB = document.createElement('button');
+        btnB.type = 'button';
+        btnB.dataset.dhAction = 'halveB';
+        btnB.className = 'u2-action-btn' + (cur.recommendedHalveSide === 'B' && canB ? ' is-primary' : ' is-info');
+        btnB.disabled = !canB;
+        btnB.innerHTML = 'ضاعف <bdi dir="ltr">' + last.a + '</bdi> · نصّف <bdi dir="ltr">' + last.b + '</bdi>';
+        btnB.addEventListener('click', () => applyStep('B'));
+
+        ctrls.append(btnA, btnB);
+        wrap.append(ctrls);
+
+        if (stepsDone > 0) {
+          const undoBtn = document.createElement('button');
+          undoBtn.type = 'button';
+          undoBtn.className = 'u2-action-btn';
+          undoBtn.textContent = 'تراجع عن آخر خطوة';
+          undoBtn.addEventListener('click', () => {
+            if (d.rows.length > 1) {
+              d.rows.pop();
+              clearFeedback();
+              draw();
+            }
+          });
+          wrap.append(undoBtn);
+        }
+      }
+
+      const finalBox = document.createElement('div');
+      finalBox.className = 'u2-chain-final-box';
+      const hintLine = stepsDone < (cur.minSteps || 1) && !locked
+        ? 'طبّق خطوة «تنصيف ومضاعفة» أعلاه أولاً لتبسيط الضرب، ثم اكتب الناتج النهائي:'
+        : 'الآن احسب ناتج السطر الأخير ذهنيًا (<bdi dir="ltr">' + last.a + ' × ' + last.b + '</bdi>):';
+      finalBox.innerHTML = '<p class="u2-bank-label">' + hintLine + '</p>';
+
+      const row = document.createElement('div');
+      row.className = 'u2-chain-final-row';
+      const lbl = document.createElement('label');
+      lbl.htmlFor = 'u2-chain-ans-input';
+      lbl.innerHTML = '<strong><bdi dir="ltr">' + last.a + ' × ' + last.b + ' =</bdi></strong>';
+
+      inputEl = document.createElement('input');
+      inputEl.type = 'text';
+      inputEl.id = 'u2-chain-ans-input';
+      inputEl.className = 'u2-num-input' + (locked ? ' is-correct' : (inputErr ? ' is-error' : ''));
+      inputEl.setAttribute('inputmode', 'numeric');
+      inputEl.setAttribute('autocomplete', 'off');
+      inputEl.placeholder = 'الناتج';
+      inputEl.maxLength = 6;
+      inputEl.disabled = locked;
+      inputEl.value = d.answerVal || '';
+      inputEl.addEventListener('input', () => {
+        d.answerVal = inputEl.value;
+        inputErr = false;
+        inputEl.classList.remove('is-error');
+        clearFeedback();
+        syncPrimary();
+      });
+      inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && stepUi.phase === 'ready' && typeof stepUi.onCheck === 'function') {
+          e.preventDefault();
+          stepUi.onCheck();
+        }
+      });
+
+      row.append(lbl, inputEl);
+      finalBox.append(row);
+      wrap.append(finalBox);
+
+      if (locked) {
+        showFeedback('good', cur.explainRight || 'ممتاز!');
+      }
+      syncPrimary();
+    };
+
+    draw();
+
+    stepUi.onCheck = () => {
+      const parsed = l2ParseIntInput(d.answerVal || '');
+      if (parsed === cur.targetProduct) {
+        recordL2StepPass(cur, d);
+        draw();
+        showFeedback('good', cur.explainRight || 'رائع! وصلت للناتج الصحيح ذهنيًا.');
+        setPrimaryButtonState('correct', l2PassPrimaryLabel());
+      } else {
+        markL2StepError();
+        inputErr = true;
+        draw();
+        let msg = cur.explainWrong || 'راجع ناتج ضرب السطر الأخير.';
+        if (parsed !== null && parsed * 10 === cur.targetProduct) {
+          msg = 'قريب جدًا! تذكّر إضافة الصفر عند الضرب في مضاعفات العدد 10.';
+        } else if (parsed !== null && parsed === cur.targetProduct / 2) {
+          msg = 'انتبه! يبدو أنك نصّفت الناتج دون مضاعفة العامل الآخر.';
+        }
+        showFeedback('bad', msg);
+        setPrimaryButtonState('wrong', stepUi.needsRecharge ? 'اشحن قلوبك للمتابعة' : 'حاول مجددًا');
+      }
+    };
+
+    stepUi.onRetry = () => {
+      inputErr = false;
+      d.answerVal = '';
+      clearFeedback();
+      draw();
+      inputEl?.focus();
+    };
+  }
+
+  function renderU2L1MentalDrillStep(cur, root) {
+    const d = l2StepData(cur);
+    const passed = isL2StepPassed(cur);
+    const isHalf = cur.mode === 'half';
+    const items = Array.isArray(cur.items) ? cur.items : [];
+    if (!d.answers || typeof d.answers !== 'object') d.answers = {};
+    if (passed) {
+      items.forEach(it => { d.answers[it.qNum] = String(it.expected); });
+    }
+    let showSplitHelper = Boolean(d.showSplitHelper);
+    let wrongNums = new Set();
+
+    const wrap = document.createElement('div');
+    wrap.className = 'u2-drill-wrap';
+    root.append(wrap);
+
+    const hintMount = document.createElement('div');
+    root.append(hintMount);
+    l2AppendHintWidget(hintMount, cur, d);
+
+    const allEntered = () => items.every(it => l2ParseIntInput(d.answers[it.qNum]) !== null);
+
+    const syncPrimary = () => {
+      if (passed) {
+        setPrimaryButtonState('explanation', l2PassPrimaryLabel());
+      } else {
+        setPrimaryButtonState(allEntered() ? 'ready' : 'incomplete', 'تحقّق من الإجابات الثلاث');
+      }
+    };
+
+    const draw = () => {
+      wrap.replaceChildren();
+      const locked = passed;
+
+      const helperBar = document.createElement('div');
+      helperBar.className = 'u2-rule-bar has-action' + (isHalf ? ' is-info' : '');
+      helperBar.innerHTML = '<span>إرشاد الكتاب: استعمل القيمة المنزلية ' + (isHalf ? 'لتنصيف' : 'لمضاعفة') + ' كل عدد.</span>';
+      if (!locked) {
+        const toggleBtn = document.createElement('button');
+        toggleBtn.type = 'button';
+        toggleBtn.className = 'u2-lab-preset-btn' + (showSplitHelper ? ' is-active' : '');
+        toggleBtn.textContent = showSplitHelper ? 'إخفاء التجزئة' : 'مساعدة التجزئة';
+        toggleBtn.addEventListener('click', () => {
+          showSplitHelper = !showSplitHelper;
+          d.showSplitHelper = showSplitHelper;
+          draw();
+        });
+        helperBar.append(toggleBtn);
+      }
+      wrap.append(helperBar);
+
+      const grid = document.createElement('div');
+      grid.className = 'u2-drill-list';
+
+      items.forEach(it => {
+        const isErr = wrongNums.has(it.qNum);
+        const card = document.createElement('div');
+        card.className = 'u2-drill-card' + (locked ? ' is-correct' : (isErr ? ' is-error' : ''));
+
+        const head = document.createElement('div');
+        head.className = 'u2-drill-head';
+        head.innerHTML = ''
+          + '<span class="u2-drill-qnum' + (isHalf ? ' is-half' : '') + '"><bdi dir="ltr">' + it.qNum + '</bdi></span>'
+          + '<span class="u2-drill-expr"><bdi dir="ltr">' + it.num + '</bdi></span>'
+          + '<span class="u2-op-badge' + (isHalf ? ' is-half' : '') + '"><bdi dir="ltr">' + (isHalf ? '÷ 2' : '× 2') + '</bdi></span>';
+        card.append(head);
+
+        if (showSplitHelper || locked) {
+          const sp = document.createElement('div');
+          sp.className = 'u2-drill-split-hint';
+          sp.innerHTML = l2BidiTextHTML(it.splitText);
+          card.append(sp);
+        }
+
+        const inpRow = document.createElement('div');
+        inpRow.className = 'u2-drill-input-row';
+        const inpId = 'u2-drill-inp-' + it.qNum;
+        const lbl = document.createElement('label');
+        lbl.htmlFor = inpId;
+        lbl.className = 'u2-bank-label';
+        lbl.textContent = isHalf ? 'النصف:' : 'الضعف:';
+
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.id = inpId;
+        inp.dataset.drillQ = String(it.qNum);
+        inp.className = 'u2-num-input' + (locked ? ' is-correct' : (isErr ? ' is-error' : ''));
+        inp.setAttribute('inputmode', 'numeric');
+        inp.setAttribute('autocomplete', 'off');
+        inp.maxLength = 5;
+        inp.disabled = locked;
+        inp.placeholder = '؟';
+        inp.value = d.answers[it.qNum] || '';
+        inp.addEventListener('input', () => {
+          d.answers[it.qNum] = inp.value;
+          wrongNums.delete(it.qNum);
+          inp.classList.remove('is-error');
+          card.classList.remove('is-error');
+          clearFeedback();
+          syncPrimary();
+        });
+        inpRow.append(lbl, inp);
+        card.append(inpRow);
+        grid.append(card);
+      });
+
+      wrap.append(grid);
+      if (locked) {
+        showFeedback('good', cur.explainRight || 'أحسنت!');
+      }
+      syncPrimary();
+    };
+
+    draw();
+
+    stepUi.onCheck = () => {
+      wrongNums = new Set();
+      let swappedOp = false;
+      items.forEach(it => {
+        const val = l2ParseIntInput(d.answers[it.qNum]);
+        if (val !== it.expected) {
+          wrongNums.add(it.qNum);
+          if (isHalf && val === it.num * 2) swappedOp = true;
+          if (!isHalf && val === it.num / 2) swappedOp = true;
+        }
+      });
+
+      if (wrongNums.size === 0) {
+        recordL2StepPass(cur, d);
+        draw();
+        showFeedback('good', cur.explainRight || 'أحسنت! جميع الإجابات صحيحة.');
+        setPrimaryButtonState('correct', l2PassPrimaryLabel());
+      } else {
+        markL2StepError();
+        draw();
+        const msg = swappedOp
+          ? (isHalf ? 'انتبه! المطلوب «نصف» العدد (÷ 2) وليس ضعفه (× 2).' : 'انتبه! المطلوب «ضعف» العدد (× 2) وليس نصفه (÷ 2).')
+          : 'تحقق من البطاقات المحددة باللون الأحمر (' + [...wrongNums].map(n => 'س' + n).join('، ') + ') ثم أعد المحاولة.';
+        showFeedback('bad', msg);
+        setPrimaryButtonState('wrong', stepUi.needsRecharge ? 'اشحن قلوبك للمتابعة' : 'تصحيح الإجابات');
+      }
+    };
+
+    stepUi.onRetry = () => {
+      wrongNums.forEach(q => { d.answers[q] = ''; });
+      wrongNums.clear();
+      clearFeedback();
+      draw();
+    };
+  }
+
+  function renderU2L1BalloonsStep(cur, root) {
+    const d = l2StepData(cur);
+    const passed = isL2StepPassed(cur);
+    if (passed) {
+      d.balloonId = cur.correctBalloonId;
+      d.reasonId = cur.correctReasonId;
+    }
+    let showErr = false;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'u2-reason-wrap';
+    root.append(wrap);
+
+    const hintMount = document.createElement('div');
+    root.append(hintMount);
+    l2AppendHintWidget(hintMount, cur, d);
+
+    const syncPrimary = () => {
+      if (passed) {
+        setPrimaryButtonState('explanation', l2PassPrimaryLabel());
+      } else if (d.balloonId && d.reasonId) {
+        setPrimaryButtonState('ready', 'تحقّق من الاختيار والتبرير');
+      } else {
+        setPrimaryButtonState('incomplete', d.balloonId ? 'اختر التبرير الصحيح أدناه' : 'اختر البالون المختلف أولاً');
+      }
+    };
+
+    const draw = () => {
+      wrap.replaceChildren();
+      const locked = passed;
+
+      const grid = document.createElement('div');
+      grid.className = 'u2-balloons-grid';
+      (cur.balloons || []).forEach(bl => {
+        const isSel = d.balloonId === bl.id;
+        const isRight = bl.id === cur.correctBalloonId;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.balloonId = bl.id;
+        btn.disabled = locked;
+        btn.className = 'u2-balloon-btn'
+          + (locked && isRight ? ' is-correct' : (showErr && isSel && !isRight ? ' is-error' : (isSel ? ' is-selected' : '')));
+        btn.setAttribute('aria-pressed', String(isSel));
+        btn.innerHTML = ''
+          + '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c-4 0-7 3-7 7 0 4.5 3.5 8 7 10 3.5-2 7-5.5 7-10 0-4-3-7-7-7z"/><path d="M12 19v3"/></svg>'
+          + '<span><bdi dir="ltr">' + esc(bl.expr) + '</bdi></span>'
+          + (locked ? '<span class="u2-balloon-parity">' + esc(bl.parity) + '</span>' : '');
+        btn.addEventListener('click', () => {
+          if (locked) return;
+          d.balloonId = bl.id;
+          showErr = false;
+          clearFeedback();
+          draw();
+        });
+        grid.append(btn);
+      });
+      wrap.append(grid);
+
+      if (d.balloonId || locked) {
+        const reasonBox = document.createElement('div');
+        reasonBox.className = 'u2-card';
+        const heading = document.createElement('p');
+        heading.className = 'u2-bank-label';
+        heading.textContent = 'أبرّر إجابتي: لماذا اخترت هذا البالون؟';
+        reasonBox.append(heading);
+
+        const rList = l2CreateRadioOptions({
+          items: (cur.reasons || []).map(r => ({ label: r.label })),
+          selectedIdx: (cur.reasons || []).findIndex(r => r.id === d.reasonId),
+          revealedRightIdx: locked ? (cur.reasons || []).findIndex(r => r.id === cur.correctReasonId) : -1,
+          wrongIndices: showErr && d.reasonId && d.reasonId !== cur.correctReasonId
+            ? [(cur.reasons || []).findIndex(r => r.id === d.reasonId)]
+            : [],
+          disabled: locked,
+          onSelect: (idx) => {
+            if (locked) return;
+            d.reasonId = cur.reasons[idx].id;
+            showErr = false;
+            clearFeedback();
+            draw();
+          }
+        });
+        reasonBox.append(rList);
+        wrap.append(reasonBox);
+      }
+
+      if (locked) {
+        showFeedback('good', cur.explainRight || 'أحسنت!');
+      }
+      syncPrimary();
+    };
+
+    draw();
+
+    stepUi.onCheck = () => {
+      const okBalloon = d.balloonId === cur.correctBalloonId;
+      const okReason = d.reasonId === cur.correctReasonId;
+      if (okBalloon && okReason) {
+        recordL2StepPass(cur, d);
+        draw();
+        showFeedback('good', cur.explainRight || 'أحسنت! اكتشفت المختلف وبرّرت بدقة.');
+        setPrimaryButtonState('correct', l2PassPrimaryLabel());
+      } else {
+        markL2StepError();
+        showErr = true;
+        draw();
+        const msg = !okBalloon
+          ? 'هذا البالون يحتوي على عدد زوجي فيمكن تنصيفه! ابحث عن البالون الذي كلا عدديه فردي.'
+          : 'اخترت البالون الصحيح (29 × 29)، لكن راجع سبب عدم صلاحية التنصيف والمضاعفة له.';
+        showFeedback('bad', msg);
+        setPrimaryButtonState('wrong', stepUi.needsRecharge ? 'اشحن قلوبك للمتابعة' : 'حاول مجددًا');
+      }
+    };
+
+    stepUi.onRetry = () => {
+      showErr = false;
+      clearFeedback();
+      draw();
+    };
+  }
+
+  function renderU2L1TrainStoryStep(cur, root) {
+    const d = l2StepData(cur);
+    const passed = isL2StepPassed(cur);
+    const stops = Array.isArray(cur.stops) ? cur.stops : [];
+    if (!d.stopVals || typeof d.stopVals !== 'object') d.stopVals = {};
+    if (passed) {
+      stops.forEach(st => { d.stopVals[st.id] = String(st.expected); });
+    }
+    let wrongStops = new Set();
+
+    const wrap = document.createElement('div');
+    wrap.className = 'u2-train-wrap';
+    root.append(wrap);
+
+    const hintMount = document.createElement('div');
+    root.append(hintMount);
+    l2AppendHintWidget(hintMount, cur, d);
+
+    const allEntered = () => stops.every(st => l2ParseIntInput(d.stopVals[st.id]) !== null);
+
+    const syncPrimary = () => {
+      if (passed) setPrimaryButtonState('explanation', l2PassPrimaryLabel());
+      else setPrimaryButtonState(allEntered() ? 'ready' : 'incomplete', 'تحقّق من خطوات القطار');
+    };
+
+    const draw = () => {
+      wrap.replaceChildren();
+      const locked = passed;
+
+      const startBar = document.createElement('div');
+      startBar.className = 'u2-rule-bar is-gold';
+      startBar.innerHTML = '<span>نقطة البداية: على متن القطار <strong><bdi dir="ltr">' + cur.startPassengers + '</bdi></strong> راكبًا.</span>';
+      wrap.append(startBar);
+
+      const track = document.createElement('div');
+      track.className = 'u2-train-track';
+
+      stops.forEach((st, idx) => {
+        const isErr = wrongStops.has(st.id);
+        const card = document.createElement('section');
+        card.className = 'u2-train-stop' + (locked ? ' is-done' : (isErr ? ' is-error' : (idx === 0 ? ' is-current' : '')));
+
+        const head = document.createElement('div');
+        head.className = 'u2-train-stop-head';
+        head.innerHTML = '<span class="u2-train-stop-title">' + esc(st.title) + '</span>'
+          + '<span class="u2-op-badge' + (idx === 0 ? ' is-half' : '') + '"><bdi dir="ltr">' + (idx === 0 ? '÷ 2' : (idx === 1 ? '+ 218' : '× 2')) + '</bdi></span>';
+        card.append(head);
+
+        const desc = document.createElement('p');
+        desc.className = 'u2-train-stop-desc';
+        desc.innerHTML = l2BidiTextHTML(st.desc);
+        card.append(desc);
+
+        const calcRow = document.createElement('div');
+        calcRow.className = 'u2-train-calc-row';
+        const inpId = 'u2-train-inp-' + st.id;
+        const lbl = document.createElement('label');
+        lbl.htmlFor = inpId;
+        lbl.className = 'u2-bank-label';
+        lbl.textContent = 'الركاب:';
+
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.id = inpId;
+        inp.dataset.trainStop = st.id;
+        inp.className = 'u2-num-input' + (locked ? ' is-correct' : (isErr ? ' is-error' : ''));
+        inp.setAttribute('inputmode', 'numeric');
+        inp.setAttribute('autocomplete', 'off');
+        inp.maxLength = 4;
+        inp.disabled = locked;
+        inp.placeholder = '؟';
+        inp.value = d.stopVals[st.id] || '';
+        inp.addEventListener('input', () => {
+          d.stopVals[st.id] = inp.value;
+          wrongStops.delete(st.id);
+          inp.classList.remove('is-error');
+          clearFeedback();
+          syncPrimary();
+        });
+        calcRow.append(lbl, inp);
+        card.append(calcRow);
+        track.append(card);
+      });
+
+      wrap.append(track);
+      if (locked) showFeedback('good', cur.explainRight || 'أحسنت!');
+      syncPrimary();
+    };
+
+    draw();
+
+    stepUi.onCheck = () => {
+      wrongStops = new Set();
+      stops.forEach(st => {
+        if (l2ParseIntInput(d.stopVals[st.id]) !== st.expected) wrongStops.add(st.id);
+      });
+      if (wrongStops.size === 0) {
+        recordL2StepPass(cur, d);
+        draw();
+        showFeedback('good', cur.explainRight || 'ممتاز! أصبح في القطار 514 راكبًا.');
+        setPrimaryButtonState('correct', l2PassPrimaryLabel());
+      } else {
+        markL2StepError();
+        draw();
+        const firstWrong = stops.find(st => wrongStops.has(st.id));
+        const msg = firstWrong
+          ? 'راجع «' + firstWrong.title + '»: ' + firstWrong.formula
+          : (cur.explainWrong || 'راجع الحسابات خطوة بخطوة.');
+        showFeedback('bad', msg);
+        setPrimaryButtonState('wrong', stepUi.needsRecharge ? 'اشحن قلوبك للمتابعة' : 'تصحيح الخطوات');
+      }
+    };
+
+    stepUi.onRetry = () => {
+      wrongStops.forEach(id => { d.stopVals[id] = ''; });
+      wrongStops.clear();
+      clearFeedback();
+      draw();
+    };
+  }
+
+  function renderU2L1ReasonBuilderStep(cur, root) {
+    const d = l2StepData(cur);
+    const passed = isL2StepPassed(cur);
+    const slots = (cur.segments || []).filter(s => s.type === 'slot');
+    if (!d.filled || typeof d.filled !== 'object') d.filled = {};
+    if (passed) {
+      slots.forEach(sl => { d.filled[sl.id] = sl.expected; });
+    }
+    let activeSlotId = (slots.find(sl => !d.filled[sl.id]) || slots[0])?.id;
+    let errorSlots = new Set();
+
+    const wrap = document.createElement('div');
+    wrap.className = 'u2-reason-wrap';
+    root.append(wrap);
+
+    const hintMount = document.createElement('div');
+    root.append(hintMount);
+    l2AppendHintWidget(hintMount, cur, d);
+
+    const allFilled = () => slots.every(sl => Boolean(d.filled[sl.id]));
+
+    const draw = () => {
+      wrap.replaceChildren();
+      const locked = passed;
+
+      const sent = document.createElement('div');
+      sent.className = 'u2-reason-sentence';
+      (cur.segments || []).forEach(seg => {
+        if (seg.type === 'text') {
+          const sp = document.createElement('span');
+          sp.innerHTML = l2BidiTextHTML(seg.text);
+          sent.append(sp);
+        } else {
+          const val = d.filled[seg.id];
+          const isSel = !locked && activeSlotId === seg.id;
+          const isErr = errorSlots.has(seg.id);
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.dataset.reasonSlot = seg.id;
+          btn.disabled = locked;
+          btn.className = 'u2-reason-slot'
+            + (locked ? ' is-correct' : (isErr ? ' is-error' : (val ? ' is-filled' : '')))
+            + (isSel ? ' is-selected' : '');
+          btn.innerHTML = l2BidiTextHTML(val || seg.placeholder || '...');
+          btn.addEventListener('click', () => {
+            if (locked) return;
+            if (d.filled[seg.id] && activeSlotId === seg.id) delete d.filled[seg.id];
+            activeSlotId = seg.id;
+            errorSlots.delete(seg.id);
+            clearFeedback();
+            draw();
+          });
+          sent.append(btn);
+        }
+      });
+      wrap.append(sent);
+
+      if (!locked) {
+        const lbl = document.createElement('p');
+        lbl.className = 'u2-bank-label';
+        lbl.textContent = 'اختر العبارة المناسبة لإكمال الفراغ المحدد:';
+        wrap.append(lbl);
+
+        const bank = document.createElement('div');
+        bank.className = 'u2-choice-bank';
+        const usedSet = new Set(Object.values(d.filled));
+        (cur.bank || []).forEach(choice => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.dataset.reasonChoice = choice;
+          btn.className = 'u2-chip-btn' + (usedSet.has(choice) ? ' is-used' : '');
+          btn.innerHTML = l2BidiTextHTML(choice);
+          btn.addEventListener('click', () => {
+            if (locked || !activeSlotId) return;
+            d.filled[activeSlotId] = choice;
+            errorSlots.delete(activeSlotId);
+            const nextEmpty = slots.find(sl => !d.filled[sl.id]);
+            if (nextEmpty) activeSlotId = nextEmpty.id;
+            clearFeedback();
+            draw();
+          });
+          bank.append(btn);
+        });
+        wrap.append(bank);
+      }
+
+      // Optional student example note box
+      const noteCard = document.createElement('div');
+      noteCard.className = 'u2-card';
+      const noteLbl = document.createElement('label');
+      noteLbl.htmlFor = 'u2-talk-note';
+      noteLbl.className = 'u2-bank-label';
+      noteLbl.textContent = 'مساحة اختيارية: اكتب مثالاً من عندك أو اشرح بطريقتك (يمكنك أيضًا مشاركته مع المعلم الذكي):';
+      const ta = document.createElement('textarea');
+      ta.id = 'u2-talk-note';
+      ta.className = 'u2-reason-note-area';
+      ta.placeholder = cur.notePlaceholder || '';
+      ta.maxLength = 250;
+      ta.value = d.studentNote || '';
+      ta.addEventListener('input', () => {
+        d.studentNote = ta.value;
+        saveState();
+      });
+      noteCard.append(noteLbl, ta);
+      wrap.append(noteCard);
+
+      if (locked) {
+        showFeedback('good', cur.explainRight || 'أحسنت!');
+        setPrimaryButtonState('explanation', l2PassPrimaryLabel());
+      } else {
+        setPrimaryButtonState(allFilled() ? 'ready' : 'incomplete', 'تحقّق من القاعدة');
+      }
+    };
+
+    draw();
+
+    stepUi.onCheck = () => {
+      errorSlots = new Set();
+      slots.forEach(sl => {
+        if (d.filled[sl.id] !== sl.expected) errorSlots.add(sl.id);
+      });
+      if (errorSlots.size === 0) {
+        recordL2StepPass(cur, d);
+        draw();
+        showFeedback('good', cur.explainRight || 'ملخص رائع ومكتمل!');
+        setPrimaryButtonState('correct', l2PassPrimaryLabel());
+      } else {
+        markL2StepError();
+        activeSlotId = [...errorSlots][0];
+        draw();
+        showFeedback('bad', cur.explainWrong || 'راجع الفراغات المحددة باللون الأحمر لتكتمل القاعدة بدقة.');
+        setPrimaryButtonState('wrong', stepUi.needsRecharge ? 'اشحن قلوبك للمتابعة' : 'حاول مجددًا');
+      }
+    };
+
+    stepUi.onRetry = () => {
+      errorSlots.forEach(id => { delete d.filled[id]; });
+      activeSlotId = [...errorSlots][0] || slots[0]?.id;
+      errorSlots.clear();
+      clearFeedback();
+      draw();
+    };
+  }
+
+  function showU2L1ResultScreen(cfg) {
+    lastActiveLesson = 7;
+    state.runnerStep = null;
+    state.mapSubView = 'u2_lesson1';
+    state.viewMode = 'result';
+    saveState();
+    renderMultiLessonResultCard(cfg);
+  }
+
+  function evaluateU2L1MasteryScreen() {
+    const rec = typeof getU2L1NodeRecord === 'function' ? getU2L1NodeRecord(10) : null;
+    const defs = U2Lesson1RunnerDefs.U2L1_MASTERY_QUESTIONS || [];
+    const skillsMap = (rec && rec.data && rec.data.skills) || {};
+    const rows = defs.map(q => ({
+      skill: q.skill,
+      label: q.skillLabel,
+      ok: Boolean(skillsMap[q.skill])
+    }));
+    const unmastered = rows.filter(r => !r.ok);
+    const masteredCount = rows.length - unmastered.length;
+    const nodeDef = typeof U2L1_NODES !== 'undefined' ? U2L1_NODES[10] : null;
+    const pts = nodeDef ? nodeDef.points : 20;
+
+    if (unmastered.length === 0) {
+      const hadRem = Boolean(rec && rec.data && rec.data.remedialRound);
+      const stars = !hadRem && (!rec || !rec.errors) ? 3 : 2;
+      const res = typeof completeU2L1Station === 'function'
+        ? completeU2L1Station(10, pts, stars)
+        : { wasDone: false, earnedStars: stars };
+      session = null;
+      showU2L1ResultScreen({
+        ok: true,
+        title: 'أحسنت! أتقنت الضرب الذهني بالكامل',
+        subtitle: res.wasDone
+          ? 'حافظت على إتقان جميع مهارات المضاعفة والتنصيف بنجاح.'
+          : 'أنهيت جميع مهارات الوحدة 2 · الدرس 1 (الضرب الذهني) بإتقان تام!',
+        metrics: [
+          { value: ar(res.earnedStars) + ' من ' + ar(3), label: 'النجوم' },
+          { value: res.wasDone ? '0 (مراجعة)' : '+' + ar(pts), label: 'النقاط المكتسبة' },
+          { value: ar(rows.length) + ' من ' + ar(rows.length), label: 'المهارات المتقنة' }
+        ],
+        skills: rows,
+        primaryLabel: 'العودة لخريطة الدرس',
+        onPrimary: () => closeToMap(7),
+        secondaryLabel: 'إعادة تذكرة الإتقان',
+        onSecondary: () => openU2L1Node(10, { forceReset: true })
+      });
+    } else {
+      const nextRound = (rec && rec.data && Number(rec.data.remedialRound) || 0) + 1;
+      session = null;
+      showU2L1ResultScreen({
+        ok: false,
+        title: 'بقيت ' + ar(unmastered.length) + ' مهارات لإتقان التحدي',
+        subtitle: 'سنتدرب الآن على سؤالين جديدين لكل مهارة متبقية قبل اعتماد تذكرة الإتقان.',
+        metrics: [
+          { value: ar(masteredCount) + ' من ' + ar(rows.length), label: 'المهارات المتقنة' },
+          { value: ar(unmastered.length), label: 'تحتاج تدريبًا' },
+          { value: '0', label: 'نقاط بانتظار الإتقان' }
+        ],
+        skills: rows,
+        primaryLabel: 'تدريب المهارات المتبقية (' + ar(unmastered.length) + ')',
+        onPrimary: () => openU2L1Remedial(unmastered, nextRound),
+        secondaryLabel: 'العودة لخريطة الدرس',
+        onSecondary: () => closeToMap(7)
+      });
+    }
+  }
+
+  function finishU2L1Session() {
+    const s = session;
+    if (!s) return;
+
+    if (s.nodeId === 10) {
+      const rec = typeof getU2L1NodeRecord === 'function' ? getU2L1NodeRecord(10) : null;
+      if (s.remedial && rec) {
+        rec.data = rec.data || {};
+        rec.data.skills = rec.data.skills || {};
+        const bySkill = {};
+        (s.remedialResponses || []).forEach(r => {
+          bySkill[r.skill] = bySkill[r.skill] || [];
+          bySkill[r.skill].push(Boolean(r.ok));
+        });
+        Object.keys(bySkill).forEach(sk => {
+          const arr = bySkill[sk];
+          if (arr.length > 0 && arr.every(Boolean)) {
+            rec.data.skills[sk] = true;
+          }
+        });
+        rec.data.remedialRound = (Number(rec.data.remedialRound) || 0) + 1;
+        saveState();
+      }
+      evaluateU2L1MasteryScreen();
+      return;
+    }
+
+    const rec = typeof getU2L1NodeRecord === 'function' ? getU2L1NodeRecord(s.nodeId) : null;
+    const errCount = rec ? (Number(rec.errors) || 0) : (Number(s.errors) || 0);
+    let stars = errCount === 0 ? 3 : (errCount <= 2 ? 2 : 1);
+    if (rec && rec.assistedSteps && rec.assistedSteps.size > 0) {
+      stars = Math.min(2, stars);
+    }
+
+    const res = typeof completeU2L1Station === 'function'
+      ? completeU2L1Station(s.nodeId, s.points, stars)
+      : { wasDone: false, earnedStars: stars };
+
+    const totalNodes = typeof U2L1_NODES !== 'undefined' ? U2L1_NODES.length : 11;
+    const nextId = s.nodeId + 1;
+    const canGoNext = nextId < totalNodes && (typeof isU2L1NodeUnlocked !== 'function' || isU2L1NodeUnlocked(nextId));
+    const finishedNodeId = s.nodeId;
+    const finishedTitle = s.title;
+    const finishedPts = s.points;
+    session = null;
+
+    showU2L1ResultScreen({
+      ok: true,
+      title: 'أحسنت! أتممت «' + finishedTitle + '»',
+      subtitle: res.wasDone
+        ? 'مراجعة موفقة؛ تم حفظ أدائك دون تكرار النقاط.'
+        : 'أكملت جميع خطوات المحطة بنجاح وفتحت المحطة التالية.',
+      metrics: [
+        { value: ar(res.earnedStars) + ' من ' + ar(3), label: 'النجوم' },
+        { value: res.wasDone ? '0 (مراجعة)' : '+' + ar(finishedPts), label: 'النقاط' },
+        { value: ar(errCount), label: 'محاولات تصحيح' }
+      ],
+      primaryLabel: canGoNext ? 'المحطة التالية' : 'العودة لخريطة الدرس',
+      onPrimary: () => canGoNext ? openU2L1Node(nextId) : closeToMap(7),
+      secondaryLabel: canGoNext ? 'العودة لخريطة الدرس' : 'إعادة المحطة',
+      onSecondary: () => canGoNext ? closeToMap(7) : openU2L1Node(finishedNodeId, { forceReset: true })
+    });
+  }
+
+  function openU2L1Node(nodeId, options) {
+    if (typeof U2Lesson1RunnerDefs === 'undefined') return false;
+    bindShellChromeOnce();
+    cleanupStepSideEffects();
+
+    if (nodeId !== 10 && (state.hearts || 0) <= 0) {
+      return openRecharge({ lesson: 7, nodeId, openOptions: options });
+    }
+
+    const st = typeof getU2L1State === 'function' ? getU2L1State() : null;
+    const rec = typeof getU2L1NodeRecord === 'function' ? getU2L1NodeRecord(nodeId) : null;
+    const totalSteps = U2Lesson1RunnerDefs.getStepCount(nodeId);
+    const alreadyDone = Boolean(st && st.completedNodes && st.completedNodes.has(nodeId));
+
+    if (nodeId === 10 && !options?.forceReset && !options?.review && !options?.preserveProgress && !alreadyDone) {
+      if (rec && rec.passed && rec.passed.size >= totalSteps && rec.data && rec.data.skills) {
+        evaluateU2L1MasteryScreen();
+        return true;
+      }
+    }
+
+    const shouldReset = Boolean((options?.forceReset || options?.review || alreadyDone) && !options?.preserveProgress);
+    if (shouldReset && typeof resetU2L1NodeRecordForReplay === 'function') {
+      resetU2L1NodeRecordForReplay(nodeId);
+    }
+
+    const built = U2Lesson1RunnerDefs.buildU2L1Session(nodeId, {
+      ...options,
+      replay: Boolean(shouldReset || options?.replay)
+    });
+    if (!built) return false;
+    session = built;
+    lastActiveLesson = 7;
+    state.mapSubView = 'u2_lesson1';
+    state.viewMode = 'u2_lesson1';
+    setUiMode('learning');
+    persistRunnerPosition();
+    renderStep();
+    return true;
+  }
+
+  function openU2L1Remedial(unmasteredList, roundNum) {
+    if (typeof U2Lesson1RunnerDefs === 'undefined') return false;
+    bindShellChromeOnce();
+    cleanupStepSideEffects();
+    if ((state.hearts || 0) <= 0) {
+      return openRecharge({ lesson: 7, nodeId: 10, remedialLaunch: { unmasteredList, roundNum } });
+    }
+    const built = U2Lesson1RunnerDefs.buildU2L1RemedialSession(unmasteredList, roundNum);
+    if (!built) {
+      evaluateU2L1MasteryScreen();
+      return false;
+    }
+    session = built;
+    lastActiveLesson = 7;
+    state.mapSubView = 'u2_lesson1';
+    state.viewMode = 'u2_lesson1';
+    setUiMode('learning');
+    renderStep();
+    return true;
+  }
+
   function bindShellChromeOnce() {
     if (chromeBound) return;
     chromeBound = true;
@@ -12409,6 +14061,35 @@
       }
     });
 
+    byId('u2l1-shell-lab-btn')?.addEventListener('click', () => {
+      const dlg = byId('mental-mul-lab-dialog');
+      if (dlg) {
+        dlg.removeAttribute('inert');
+        dlg.removeAttribute('aria-hidden');
+        if (!dlg.dataset.u2l1BoundClose) {
+          dlg.dataset.u2l1BoundClose = '1';
+          dlg.addEventListener('close', () => {
+            if (isActive()) {
+              dlg.setAttribute('inert', '');
+              dlg.setAttribute('aria-hidden', 'true');
+            }
+          });
+        }
+      }
+      if (typeof openMentalMulLab === 'function') {
+        const cur = session?.steps?.[session.index];
+        if (cur && cur.kind === 'u2l1_split_tree') {
+          openMentalMulLab({ mode: 'tree', op: cur.mode === 'half' ? 'half' : 'double', num: cur.number });
+        } else if (cur && cur.kind === 'u2l1_mental_drill' && Array.isArray(cur.items) && cur.items[0]) {
+          openMentalMulLab({ mode: 'tree', op: cur.mode === 'half' ? 'half' : 'double', num: cur.items[0].num });
+        } else if (cur && cur.kind === 'u2l1_dh_chain') {
+          openMentalMulLab({ mode: 'chain', a: cur.startA, b: cur.startB });
+        } else {
+          openMentalMulLab({ mode: 'chain', a: 35, b: 16 });
+        }
+      }
+    });
+
     byId('l1-primary-btn')?.addEventListener('click', async () => {
       if (isSubmitting || !stepUi) return;
       isSubmitting = true;
@@ -12518,7 +14199,7 @@
 
   function closeToMap(targetLesson) {
     cleanupStepSideEffects();
-    const resolvedLesson = (targetLesson === 1 || targetLesson === 2 || targetLesson === 3 || targetLesson === 4 || targetLesson === 5)
+    const resolvedLesson = (targetLesson === 1 || targetLesson === 2 || targetLesson === 3 || targetLesson === 4 || targetLesson === 5 || targetLesson === 7)
       ? targetLesson
       : (session ? (session.lesson || 1) : lastActiveLesson);
     const wasInfinite = session?.mode === 'infinite';
@@ -12527,11 +14208,13 @@
     if (wasInfinite) state.infiniteMode = false;
     state.runnerStep = null;
     state.viewMode = 'map';
-    state.mapSubView = resolvedLesson === 5
-      ? 'lesson5'
-      : (resolvedLesson === 4
-        ? 'lesson4'
-        : (resolvedLesson === 3 ? 'lesson3' : (resolvedLesson === 2 ? 'lesson2' : 'lesson1')));
+    state.mapSubView = resolvedLesson === 7
+      ? 'u2_lesson1'
+      : (resolvedLesson === 5
+        ? 'lesson5'
+        : (resolvedLesson === 4
+          ? 'lesson4'
+          : (resolvedLesson === 3 ? 'lesson3' : (resolvedLesson === 2 ? 'lesson2' : 'lesson1'))));
     setUiMode('map');
     if (typeof updateViewDom === 'function') updateViewDom();
     if (typeof renderHUD === 'function') renderHUD();
@@ -12545,6 +14228,9 @@
       playgroundState.number = state.playgroundNumber;
     }
     const vm = state.viewMode || 'map';
+    if (state.runnerStep?.lesson === 7 && Number.isInteger(state.runnerStep.nodeId)) {
+      return openU2L1Node(state.runnerStep.nodeId, { preserveProgress: true });
+    }
     if (state.runnerStep?.lesson === 5 && Number.isInteger(state.runnerStep.nodeId)) {
       return openLesson5Node(state.runnerStep.nodeId, { preserveProgress: true });
     }
@@ -12557,9 +14243,9 @@
     if (state.runnerStep?.lesson === 2 && Number.isInteger(state.runnerStep.nodeId)) {
       return openLesson2Node(state.runnerStep.nodeId, { preserveProgress: true });
     }
-    if (vm === 'map' || vm === 'lesson2' || vm === 'lesson3' || vm === 'lesson4' || vm === 'lesson5' || vm === 'result') {
-      if (vm === 'lesson2' || vm === 'lesson3' || vm === 'lesson4' || vm === 'lesson5') state.mapSubView = vm;
-      if (vm === 'result' || vm === 'lesson2' || vm === 'lesson3' || vm === 'lesson4' || vm === 'lesson5') state.viewMode = 'map';
+    if (vm === 'map' || vm === 'lesson2' || vm === 'lesson3' || vm === 'lesson4' || vm === 'lesson5' || vm === 'u2_lesson1' || vm === 'result') {
+      if (vm === 'lesson2' || vm === 'lesson3' || vm === 'lesson4' || vm === 'lesson5' || vm === 'u2_lesson1') state.mapSubView = vm;
+      if (vm === 'result' || vm === 'lesson2' || vm === 'lesson3' || vm === 'lesson4' || vm === 'lesson5' || vm === 'u2_lesson1') state.viewMode = 'map';
       setUiMode('map');
       return false;
     }
@@ -12588,6 +14274,8 @@
     openLesson4Remedial,
     openLesson5Node,
     openLesson5Remedial,
+    openU2L1Node,
+    openU2L1Remedial,
     openInfinite,
     openRecharge,
     openScratchpad,
